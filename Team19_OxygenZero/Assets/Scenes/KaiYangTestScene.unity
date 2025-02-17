@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -302,8 +302,62 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355544202}
   serializedVersion: 2
+  m_LocalRotation: {x: 0.07153495, y: 0.75519466, z: -0.08360075, w: 0.6462002}
+  m_LocalPosition: {x: -15.19, y: 7.27, z: 4.58}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 12.634, y: 98.895, z: 0}
+--- !u!1 &645069867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 645069869}
+  - component: {fileID: 645069868}
+  m_Layer: 0
+  m_Name: GridManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &645069868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645069867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 842cabd57a3f329459a29201295fc1e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridSize: 3
+  roomPrefabs:
+  - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
+  - {fileID: 6645659838018712191, guid: fd25edfad2b5a26459e47770923720e2, type: 3}
+  - {fileID: 6645659838018712191, guid: 76ddbfa6f0bcfa74bbf934062a074659, type: 3}
+  pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
+  roomSpacing: 40
+  pathWidth: 8
+  pathLength: 10
+  pathHeight: 0.01
+--- !u!4 &645069869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645069867}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: -0.9019608, y: 0.39343548, z: -0.16918387}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -315,3 +369,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 355544205}
   - {fileID: 125993591}
+  - {fileID: 645069869}
