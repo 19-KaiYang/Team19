@@ -520,9 +520,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  crouchSpeed: 2
   rotationSpeed: 5
   lookSensitivity: 0.4
   maxLookAngle: 85
+  normalHeight: 2
+  crouchHeight: 0.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
