@@ -4,9 +4,17 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    public float walkSpeed = 5f;
+    public float sprintSpeed = 10f;
     public float crouchSpeed = 2f;
     public float rotationSpeed = 5f;
+    private bool isSprinting = false;
+
+    [Header("Jump Settings")]
+    public float jumpHeight = 2f;
+    public float gravity = -9.81f;
+    private Vector3 velocity;
+    private bool isGrounded;
 
     [Header("Look Settings")]
     public float lookSensitivity = 2f;
@@ -16,8 +24,8 @@ public class PlayerController : MonoBehaviour
     public float normalHeight = 2f;
     public float crouchHeight = 1f;
     private bool isCrouching = false;
-    private float crouchTransitionSpeed = 5f; 
-    private float targetHeight; 
+    private float targetHeight;
+    private float crouchTransitionSpeed = 5f;
 
     [Header("References")]
     private PlayerInput playerInput;
@@ -25,6 +33,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 lookInput;
     private Transform cameraTransform;
+
     private float xRotation = 0f;
 
     private void Awake()
@@ -55,11 +64,21 @@ public class PlayerController : MonoBehaviour
         lookInput = value.Get<Vector2>();
     }
 
+    public void OnJump(InputValue value)
+    {
+        if (value.isPressed && isGrounded) 
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+    }
+
     private void Update()
     {
         HandleMovement();
         HandleLook();
         HandleCrouch();
+        HandleSprint();
+        ApplyGravity();
     }
 
     private void HandleMovement()
@@ -71,9 +90,19 @@ public class PlayerController : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-        float currentSpeed = isCrouching ? crouchSpeed : moveSpeed;
+       
+        float currentSpeed = walkSpeed;
+        if (isCrouching)
+        {
+            currentSpeed = crouchSpeed;
+        }
+        else if (isSprinting && !isCrouching) 
+        {
+            currentSpeed = sprintSpeed;
+        }
+
         Vector3 movement = (forward * moveInput.y + right * moveInput.x) * currentSpeed;
-        characterController.SimpleMove(movement);
+        characterController.Move(movement * Time.deltaTime);
     }
 
     private void HandleLook()
@@ -90,28 +119,61 @@ public class PlayerController : MonoBehaviour
 
     private void HandleCrouch()
     {
-       
         var crouchAction = playerInput.actions["Crouch"];
 
-      
-        if (crouchAction.IsPressed() && !isCrouching)
+        if (crouchAction.IsPressed()) 
         {
-           
-            isCrouching = true;
-            targetHeight = crouchHeight;
-        }
-       
-        else if (!crouchAction.IsPressed() && isCrouching)
-        {
-           
-            if (!Physics.Raycast(transform.position, Vector3.up, normalHeight))
+            if (!isCrouching)
             {
-               
-                isCrouching = false;
-                targetHeight = normalHeight;
+                isCrouching = true;
+                targetHeight = crouchHeight;
+            }
+        }
+        else 
+        {
+            if (isCrouching)
+            {
+                if (!Physics.Raycast(transform.position, Vector3.up, normalHeight))
+                {
+                    isCrouching = false;
+                    targetHeight = normalHeight;
+                }
             }
         }
 
         characterController.height = Mathf.Lerp(characterController.height, targetHeight, crouchTransitionSpeed * Time.deltaTime);
+    }
+
+    private void HandleSprint()
+    {
+        var sprintAction = playerInput.actions["Sprint"];
+
+        if (sprintAction.IsPressed()) 
+        {
+            if (!isSprinting)
+            {
+                isSprinting = true;
+            }
+        }
+        else 
+        {
+            if (isSprinting)
+            {
+                isSprinting = false;
+            }
+        }
+    }
+
+    private void ApplyGravity()
+    {
+        isGrounded = characterController.isGrounded;
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; 
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+        characterController.Move(velocity * Time.deltaTime);
     }
 }
