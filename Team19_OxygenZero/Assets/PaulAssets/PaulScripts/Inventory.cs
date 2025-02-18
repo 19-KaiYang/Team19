@@ -7,7 +7,7 @@ public class Inventory : MonoBehaviour
     // Amount of slots you want to assign to the inventory
     private static int slotAmount = 10;
     // array of item slots
-    public GameObject[] itemSlots = new GameObject[slotAmount];
+    private GameObject[] itemSlots = new GameObject[slotAmount];
 
     // Acts to set the item amount for each item
     private int[] itemAmount = new int[slotAmount];
@@ -26,6 +26,7 @@ public class Inventory : MonoBehaviour
 
     // Acts as a bag to store all inventory items
     [SerializeField] private GameObject InventoryBag;
+    [SerializeField] private GameObject InventoryDisplay;
 
     // Start is called before the first frame update
     void Start()
@@ -65,6 +66,14 @@ public class Inventory : MonoBehaviour
         {
             UseItem("Hotdog");
         }
+
+
+        // Inventory Open and close Logic
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            InventoryDisplay.SetActive(!InventoryDisplay.activeSelf);
+        }
+
     }
 
     public void AddItem(string name, float cost, float weight)
