@@ -341,8 +341,6 @@ MonoBehaviour:
   innerGridSize: 3
   roomPrefabs:
   - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
-  - {fileID: 6645659838018712191, guid: fd25edfad2b5a26459e47770923720e2, type: 3}
-  - {fileID: 6645659838018712191, guid: 76ddbfa6f0bcfa74bbf934062a074659, type: 3}
   pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
   shuttlePlatformPrefab: {fileID: 3366130203979176033, guid: fd991a1e685028240a8456a68db5694b, type: 3}
   roomSpacing: 40
@@ -519,13 +517,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 373ac480060c6f146a0614994076efb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  walkSpeed: 5
+  sprintSpeed: 10
   crouchSpeed: 2
   rotationSpeed: 5
+  jumpHeight: 2
+  gravity: -9.81
   lookSensitivity: 0.4
   maxLookAngle: 85
-  normalHeight: 2.5
-  crouchHeight: -0.9
+  normalHeight: 2
+  crouchHeight: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
