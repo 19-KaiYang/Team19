@@ -338,12 +338,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842cabd57a3f329459a29201295fc1e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 3
+  innerGridSize: 3
   roomPrefabs:
   - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
   - {fileID: 6645659838018712191, guid: fd25edfad2b5a26459e47770923720e2, type: 3}
   - {fileID: 6645659838018712191, guid: 76ddbfa6f0bcfa74bbf934062a074659, type: 3}
   pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
+  shuttlePlatformPrefab: {fileID: 3366130203979176033, guid: fd991a1e685028240a8456a68db5694b, type: 3}
   roomSpacing: 40
   pathWidth: 8
   pathLength: 10
