@@ -4,12 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - itemName
-  - itemCost
-  - itemWeight
-  - Cheeseburger
-  - itemAmount
-  - Hotdog
+  - ShuttlePlatform
   layers:
   - Default
   - TransparentFX
