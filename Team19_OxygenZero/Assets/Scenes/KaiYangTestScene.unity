@@ -524,8 +524,8 @@ MonoBehaviour:
   rotationSpeed: 5
   lookSensitivity: 0.4
   maxLookAngle: 85
-  normalHeight: 2
-  crouchHeight: 0.2
+  normalHeight: 2.5
+  crouchHeight: -0.9
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

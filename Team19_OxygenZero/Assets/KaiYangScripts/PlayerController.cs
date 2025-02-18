@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public float normalHeight = 2f;
     public float crouchHeight = 1f;
     private bool isCrouching = false;
+    private float crouchTransitionSpeed = 5f; 
+    private float targetHeight; 
 
     [Header("References")]
     private PlayerInput playerInput;
@@ -23,7 +25,6 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 lookInput;
     private Transform cameraTransform;
-
     private float xRotation = 0f;
 
     private void Awake()
@@ -54,18 +55,11 @@ public class PlayerController : MonoBehaviour
         lookInput = value.Get<Vector2>();
     }
 
-    public void OnCrouch(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            ToggleCrouch();
-        }
-    }
-
     private void Update()
     {
         HandleMovement();
         HandleLook();
+        HandleCrouch();
     }
 
     private void HandleMovement()
@@ -94,22 +88,30 @@ public class PlayerController : MonoBehaviour
         cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
-    private void ToggleCrouch()
+    private void HandleCrouch()
     {
-        if (!isCrouching)
+       
+        var crouchAction = playerInput.actions["Crouch"];
+
+      
+        if (crouchAction.IsPressed() && !isCrouching)
         {
-          
-            characterController.height = crouchHeight;
+           
             isCrouching = true;
+            targetHeight = crouchHeight;
         }
-        else
+       
+        else if (!crouchAction.IsPressed() && isCrouching)
         {
            
             if (!Physics.Raycast(transform.position, Vector3.up, normalHeight))
             {
-                characterController.height = normalHeight;
+               
                 isCrouching = false;
+                targetHeight = normalHeight;
             }
         }
+
+        characterController.height = Mathf.Lerp(characterController.height, targetHeight, crouchTransitionSpeed * Time.deltaTime);
     }
 }
