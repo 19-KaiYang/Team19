@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private Transform cameraTransform;
 
     private float xRotation = 0f;
+    public float interactRange = 5f;
 
     private void Awake()
     {
@@ -31,6 +33,8 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.tag = "Player";
         }
+
+        
     }
 
     private void Start()
@@ -53,6 +57,42 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleLook();
+
+        if (playerInput.actions["Interact"].WasPressedThisFrame())
+        {
+            InteractWithObject();
+        }
+    }
+
+    private void InteractWithObject()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)); // Center of screen
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, interactRange))
+        {
+            if (hit.collider.CompareTag("Door")) // Check if object has "Door" tag
+            {
+                Debug.Log("Interacting with Door: " + hit.collider.name);
+
+                // Try getting an animator component from the door
+                Animator doorAnimator = hit.collider.GetComponentInChildren<Animator>();
+                DoorScript doorScript = hit.collider.GetComponent<DoorScript>(); 
+
+                if (doorAnimator != null)
+                {
+                    if (doorScript.GetDoorStatus())
+                    {
+                        bool isOpen = doorAnimator.GetBool("IsDoorOpen"); // Get current door state
+                        doorAnimator.SetBool("IsDoorOpen", !isOpen); // Toggle door state
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("No door detected. Hit: " + hit.collider.name);
+            }
+        }
     }
 
     private void HandleMovement()
@@ -78,6 +118,7 @@ public class PlayerController : MonoBehaviour
       
         transform.Rotate(Vector3.up * mouseX);
 
+        
        
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);

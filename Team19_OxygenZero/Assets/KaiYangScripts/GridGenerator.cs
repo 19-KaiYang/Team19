@@ -190,7 +190,7 @@ public class GridGenerator : MonoBehaviour
                     }
 
                     // SetDoors expects: true to close, false to open
-                    room.SetDoors(!top, !bottom, !left, !right);
+                    room.SetDoors(top, bottom, left, right);
                 }
             }
         }

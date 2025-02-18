@@ -521,7 +521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotationSpeed: 5
-  lookSensitivity: 0.4
+  lookSensitivity: 0.1
   maxLookAngle: 85
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
