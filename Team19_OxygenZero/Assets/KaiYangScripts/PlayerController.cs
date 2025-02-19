@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
@@ -38,6 +39,11 @@ public class PlayerController : MonoBehaviour
     private float xRotation = 0f;
     public float interactRange = 5f;
 
+    public GameObject inventory;
+
+    public Inventory inventorySystem;
+
+    
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -48,9 +54,6 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.tag = "Player";
         }
-
-        
-
     }
 
     private void Start()
@@ -67,7 +70,7 @@ public class PlayerController : MonoBehaviour
     {
         moveInput = value.Get<Vector2>();
     }
-
+    
     public void OnLook(InputValue value)
     {
         lookInput = value.Get<Vector2>();
@@ -90,14 +93,28 @@ public class PlayerController : MonoBehaviour
         HandleSprint();
         ApplyGravity();
 
+        InteractWithInventory();
+        DropItem();     
+        HandleCursor();
+
         if (playerInput.actions["Interact"].WasPressedThisFrame())
-        {
-            InteractWithObject();
+        {  
+            if (Time.timeScale != 0)
+            {
+                InteractWithObject();
+                PickupItem();
+            }
         }
     }
 
     private void InteractWithObject()
     {
+        if (inventory != null)
+        {
+            inventory = GameObject.FindWithTag("Inventory");
+            inventorySystem = inventory.GetComponent<Inventory>();
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)); // Center of screen
         RaycastHit hit;
 
@@ -153,16 +170,19 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLook()
     {
-        float mouseX = lookInput.x * lookSensitivity;
-        float mouseY = lookInput.y * lookSensitivity;
+            float mouseX = lookInput.x * lookSensitivity;
+            float mouseY = lookInput.y * lookSensitivity;
 
-        transform.Rotate(Vector3.up * mouseX);
 
-        
-       
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            // Camera X rotation
+            transform.Rotate(Vector3.up * mouseX);
+            //Camera y rotation
+            cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+
+
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
     }
 
     private void HandleCrouch()
@@ -226,6 +246,96 @@ public class PlayerController : MonoBehaviour
         characterController.Move(new Vector3(0, velocity.y * Time.deltaTime, 0));
     }
 
+    public void InteractWithInventory()
+    {
+        var ToggleInventoryAction = playerInput.actions["ToggleInventory"];
+
+        if (ToggleInventoryAction.WasPressedThisFrame())
+        {
+            if (inventorySystem != null && inventorySystem.InventoryDisplay != null)
+            {
+                inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
+            }
+        }
+    
+    }
+
+    public void PickupItem()
+    {
+        // Create a ray from the center of the camera's view
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+
+        // Variable to store hit information
+        RaycastHit hit;
+
+        // Maximum distance for the raycast
+        float maxDistance = 3f;
+
+        // Cast the ray
+        if (Physics.Raycast(ray, out hit, maxDistance))
+        {
+            // Check if we hit something
+            if (hit.collider != null)
+            {
+                // Get the GameObject that was hit
+                GameObject hitObject = hit.collider.gameObject;
+
+           
+                if (hitObject.CompareTag("Ammo"))
+                {
+                    inventorySystem.AddItem("Ammo", 0.5f, 0.8f);
+                    Destroy(hitObject);
+                }
+
+                if (hitObject.CompareTag("Ammo2"))
+                {
+                    inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
+                    Destroy(hitObject);
+                }                          
+            }
+        }       
+    }
+
+
+    public void DropItem()
+    {
+        var DropAction = playerInput.actions["DropItem"];
+
+        if (DropAction.WasPressedThisFrame()) // Ensure it's only triggered once per frame
+        {
+            for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+            {
+                if (inventorySystem.itemSlots[i] != null && inventorySystem.SlotSelected[i])
+                {
+                    Debug.Log("Object Dropped");
+                    Vector3 playerposition = transform.position;
+                    inventorySystem.SpawnByTag(inventorySystem.itemSlots[i].tag, playerposition);
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+
+                    break; // Stop after dropping the first selected item
+                }
+            }
+        }
+    }
+
+    public void HandleCursor()
+    {
+        if (inventory != null)
+        {
+            if (inventorySystem.InventoryDisplay.activeSelf == false)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                Time.timeScale = 1f;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Time.timeScale = 0f;
+            }
+        }
+    }
 
     private void CheckGround()
     {
