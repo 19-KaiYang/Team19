@@ -1,13 +1,16 @@
-
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
     // Amount of slots you want to assign to the inventory
     private static int slotAmount = 10;
+
     // array of item slots
-    private GameObject[] itemSlots = new GameObject[slotAmount];
+    public GameObject[] itemSlots = new GameObject[slotAmount];
 
     // Acts to set the item amount for each item
     private int[] itemAmount = new int[slotAmount];
@@ -18,17 +21,31 @@ public class Inventory : MonoBehaviour
     // Acts to set the item amount for each item
     private float[] itemWeight = new float[slotAmount];
 
+    // Acts to set the button for each item
+    [SerializeField] private Button[] itemButton = new Button[slotAmount];
+
+    // Acts to set the highlight for each item
+    [SerializeField] private Image[] Highlight = new Image[slotAmount];
+
+    // Acts to set the slot selection when clicked for each item
+    [SerializeField] public bool[] SlotSelected = new bool[slotAmount];
+
     private GameObject[] itemVariables = new GameObject[4];
 
     // An item slot to instantiate into the inventory everytime a new item is added into inventory
     [SerializeField] private GameObject itemPrefab;
-    
 
     // Acts as a bag to store all inventory items
     [SerializeField] private GameObject InventoryBag;
-    [SerializeField] private GameObject InventoryDisplay;
+    [SerializeField] public GameObject InventoryDisplay;
 
-    // Start is called before the first frame update
+    public List<GameObject> prefabs;  // Assign prefabs in the Inspector
+    public Dictionary<string, GameObject> prefabDictionary = new Dictionary<string, GameObject>();
+
+
+    // Track button initialization
+    private bool[] buttonInitialized = new bool[slotAmount];
+
     void Start()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -37,52 +54,98 @@ public class Inventory : MonoBehaviour
             itemAmount[i] = 0;
             itemCost[i] = 0;
             itemWeight[i] = 0;
+            buttonInitialized[i] = false;
         }
 
         for (int i = 0; i < itemVariables.Length; i++)
         {
             itemVariables[i] = null;
         }
+
+        InventoryDisplay.SetActive(false);
+
+        foreach (var prefab in prefabs)
+        {
+            prefabDictionary[prefab.tag] = prefab; // Store prefabs by tag
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.F))
+        if (InventoryDisplay.activeSelf)
         {
-            AddItem("Cheeseburger", 2.5f, 10);
-        }
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            AddItem("Hotdog", 1, 8);
-        }
-
-        if(Input.GetKeyDown(KeyCode.Z))
-        {
-            UseItem("Cheeseburger");           
+            for (int i = 0; i < itemSlots.Length; i++)
+            {
+                if (itemSlots[i] != null && !buttonInitialized[i])
+                {
+                    InitializeButtonForSlot(i);
+                }
+            }
         }
 
-        if(Input.GetKeyDown (KeyCode.X))
+        // To uncheck slotselected if slot does not exist
+        for (int i = 0; i < itemSlots.Length; i++)
         {
-            UseItem("Hotdog");
+            if(itemSlots[i] == null)
+            {
+                SlotSelected[i] = false;
+            }
+        }
+    }
+
+    private void InitializeButtonForSlot(int slotIndex)
+    {
+        if (itemSlots[slotIndex] == null) return;
+
+        Button[] itemButtons = itemSlots[slotIndex].GetComponentsInChildren<Button>(true);
+
+        foreach (Button button in itemButtons)
+        {
+            if (button.gameObject.CompareTag("itemButton"))
+            {
+
+                if (button != null)
+                {
+                    itemButton[slotIndex] = button;
+
+                    // Remove any existing listeners to prevent duplicates
+                    button.onClick.RemoveAllListeners();
+
+                    // Add the new listener with the correct index
+                    int index = slotIndex; // Create a local copy for the closure
+                    button.onClick.AddListener(() => ButtonSelect(itemButton[index]));
+
+                    Debug.Log($"Button initialized for slot {slotIndex}: {button.name}");
+                }
+                else
+                {
+                    Debug.LogError("Button not found inside item prefab.");
+                }
+
+                // Setup highlight
+                if (button.transform.childCount > 0)
+                {
+                    Highlight[slotIndex] = button.transform.GetChild(0).GetComponent<Image>();
+                    if (Highlight[slotIndex] != null)
+                    {
+                        Debug.Log($"Highlight Found: {Highlight[slotIndex].name}");
+                        Highlight[slotIndex].gameObject.SetActive(false);
+                    }
+                }
+            }
         }
 
-
-        // Inventory Open and close Logic
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            InventoryDisplay.SetActive(!InventoryDisplay.activeSelf);
-        }
-
+        buttonInitialized[slotIndex] = true;
     }
 
     public void AddItem(string name, float cost, float weight)
     {
-   
-        for(int i = 0;i < itemSlots.Length;i++)
+        for (int i = 0; i < itemSlots.Length; i++)
         {
             if (itemSlots[i] == null)
             {
+                buttonInitialized[i] = false; // Reset the initialization flag
+
                 // instantiated an item prefab in an empty item slot in inventory
                 itemSlots[i] = Instantiate(itemPrefab);
                 // Set item into the bag by making it a child of the bag
@@ -102,7 +165,6 @@ public class Inventory : MonoBehaviour
                 // To get the TMP texts that are parented to the item prefab
                 TMP_Text[] itemTexts = itemSlots[i].GetComponentsInChildren<TMP_Text>(true);
 
-
                 foreach (TMP_Text text in itemTexts)
                 {
                     // Set the name of the item visually
@@ -111,7 +173,7 @@ public class Inventory : MonoBehaviour
                         text.text = name;
                     }
                     // Set the item amount visually
-                    else if(text.gameObject.CompareTag("itemAmount"))
+                    else if (text.gameObject.CompareTag("itemAmount"))
                     {
                         text.text = itemAmount[i].ToString();
                     }
@@ -125,7 +187,6 @@ public class Inventory : MonoBehaviour
                     {
                         text.text = itemWeight[i].ToString("F2") + "kg";
                     }
-
                 }
                 break;
             }
@@ -139,11 +200,12 @@ public class Inventory : MonoBehaviour
 
                 // set total weight
                 float totalWeight = itemWeight[i] * itemAmount[i];
+
                 // To get the TMP texts that are parented to the item prefab
                 TMP_Text[] itemTexts = itemSlots[i].GetComponentsInChildren<TMP_Text>(true);
 
                 foreach (TMP_Text text in itemTexts)
-                {                   
+                {
                     // Set the item amount visually
                     if (text.gameObject.CompareTag("itemAmount"))
                     {
@@ -162,12 +224,10 @@ public class Inventory : MonoBehaviour
                 }
                 break;
             }
-            
         }
     }
 
-
-    public void UseItem(string name)
+    public void RemoveItem(string name)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
@@ -175,13 +235,12 @@ public class Inventory : MonoBehaviour
             {
                 if (itemAmount[i] > 0)
                 {
-                    // Increase the item amount
+                    // Decrease the item amount
                     itemAmount[i]--;
 
                     float totalCost = itemCost[i] * itemAmount[i];
-
-                    // set total weight
                     float totalWeight = itemWeight[i] * itemAmount[i];
+
                     // To get the TMP texts that are parented to the item prefab
                     TMP_Text[] itemTexts = itemSlots[i].GetComponentsInChildren<TMP_Text>(true);
 
@@ -203,14 +262,19 @@ public class Inventory : MonoBehaviour
                             text.text = totalWeight.ToString("F2") + "kg";
                         }
                     }
-                   
                 }
-                if (itemAmount[i] <= 0)
+
+                if (itemAmount[i] == 0)
                 {
+                    buttonInitialized[i] = false; // Reset the initialization flag
+
                     itemSlots[i] = null;
                     itemAmount[i] = 0;
                     itemCost[i] = 0;
                     itemWeight[i] = 0;
+                    Highlight[i] = null;
+                    SlotSelected[i] = false;
+                    itemButton[i] = null;
 
                     if (InventoryBag.transform.childCount > 0)
                     {
@@ -220,46 +284,71 @@ public class Inventory : MonoBehaviour
 
                     // Shift the slots
                     for (int j = i; j < itemSlots.Length - 1; j++)
-                    {
-                        if (itemSlots[j + 1] != null)
-                        {
-                            itemSlots[j] = itemSlots[j + 1];
-                            itemAmount[j] = itemAmount[j + 1];
-                            itemCost[j] = itemCost[j + 1];
-                            itemWeight[j] = itemWeight[j + 1];
-
-                            if (itemSlots[j] != null)
-                            {
-                                // The GameObject is also shifted in the hierarchy
-                                if (InventoryBag.transform.childCount > j + 1)
-                                {
-                                    Transform child = InventoryBag.transform.GetChild(j + 1);
-                                    child.SetSiblingIndex(j);
-                                }
-                            }
-                        }
-
+                    {                                              
+                        itemSlots[j] = itemSlots[j + 1];
+                        itemAmount[j] = itemAmount[j + 1];
+                        itemCost[j] = itemCost[j + 1];
+                        itemWeight[j] = itemWeight[j + 1];
+                        buttonInitialized[j] = buttonInitialized[j + 1];
+                        Highlight[j] = Highlight[j + 1];
+                        SlotSelected[j] = SlotSelected[j + 1];
+                        itemButton[j] = itemButton[j + 1];
+                        buttonInitialized[j] = false;
                     }
-                    // clear the last slot 
+
+                    // Clear the last slot 
                     itemSlots[itemSlots.Length - 1] = null;
                     itemAmount[itemSlots.Length - 1] = 0;
                     itemCost[itemSlots.Length - 1] = 0;
                     itemWeight[itemSlots.Length - 1] = 0;
-
-                    
+                    buttonInitialized[itemSlots.Length - 1] = false;
+                    Highlight[itemSlots.Length - 1] = null;
+                    SlotSelected[itemSlots.Length - 1] = false;
+                    itemButton[itemSlots.Length - 1] = null;
                 }
                 break;
             }
-            else if (itemSlots[i] != null && itemSlots[i].tag != name)
-            {
-               // Do nothing
-            }
-            
-        }     
+        }
     }
 
+    // Function for handling all button click events in the inventory except for the open and close inventory buttons
+    public void ButtonSelect(Button button)
+    {
+        Debug.Log("Button Clicked: " + button.name);
 
+        // Deactivate all existing highlights first
+        for (int i = 0; i < Highlight.Length; i++)
+        {
+            if (Highlight[i] != null)
+            {
+                Highlight[i].gameObject.SetActive(false);
+                SlotSelected[i] = false;
+            }
+        }
 
+        // Afterwards, set highlight for most recently pressed button
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (button == itemButton[i])
+            {
+                if (Highlight[i] != null)
+                {
+                    Highlight[i].gameObject.SetActive(true);
+                    SlotSelected[i] = true;
+                }
+            }
+        }
+    }
 
-
+    public void SpawnByTag(string tag, Vector3 position)
+    {
+        if (prefabDictionary.TryGetValue(tag, out GameObject prefab))
+        {
+            Instantiate(prefab, position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError("No prefab found with tag: " + tag);
+        }
+    }
 }

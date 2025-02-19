@@ -5,6 +5,16 @@ TagManager:
   serializedVersion: 2
   tags:
   - ShuttlePlatform
+  - itemWeight
+  - itemCost
+  - itemName
+  - itemAmount
+  - Inventory
+  - Ammo
+  - itemImage
+  - itemVariables
+  - Ammo2
+  - itemButton
   layers:
   - Default
   - TransparentFX
