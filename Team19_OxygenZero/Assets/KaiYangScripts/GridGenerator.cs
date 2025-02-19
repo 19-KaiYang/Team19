@@ -85,8 +85,16 @@ public class GridGenerator : MonoBehaviour
 
             // Spawn shuttle platform
             Vector3 shuttlePosition = new Vector3(selectedPosition.x * roomSpacing, 0, selectedPosition.y * roomSpacing);
+            // Ensure correct rotation on X-axis placement
+            int correctedRotation = selectedPosition.rotation;
+            if (selectedPosition.direction == "left") correctedRotation = 90;
+            if (selectedPosition.direction == "right") correctedRotation = 270;
+            if (selectedPosition.direction == "bottom") correctedRotation = 0;
+            if (selectedPosition.direction == "top") correctedRotation = 180;
+
             GameObject shuttlePlatform = Instantiate(shuttlePlatformPrefab, shuttlePosition,
-                Quaternion.Euler(0, selectedPosition.rotation, 0));
+                Quaternion.Euler(0, correctedRotation, 0));
+
 
             shuttlePlatform.tag = "ShuttlePlatform";
             ShuttlePlatform = shuttlePlatform;
@@ -103,20 +111,24 @@ public class GridGenerator : MonoBehaviour
                 Debug.LogError("Player not found in scene! Make sure it has the 'Player' tag.");
             }
 
-            // Create connecting path
             Vector3 pathPosition = shuttlePosition;
-            if (selectedPosition.rotation == 90) // Facing right
-                pathPosition += new Vector3(roomSpacing / 2, pathHeight / 2, 0);
-            else if (selectedPosition.rotation == -90) // Facing left
-                pathPosition += new Vector3(-roomSpacing / 2, pathHeight / 2, 0);
-            else if (selectedPosition.rotation == 180) // Facing up
-                pathPosition += new Vector3(0, pathHeight / 2, roomSpacing / 2);
-            else // Facing down
-                pathPosition += new Vector3(0, pathHeight / 2, -roomSpacing / 2);
+            float pathCenterOffset = 17.5f;  // Center position of the gap
+            float pathScaleLength = 15f;      // Correct scale to bridge the gap
 
+            if (selectedPosition.rotation == 90) // Facing right
+                pathPosition += new Vector3(pathCenterOffset, pathHeight / 2, 0);
+            else if (selectedPosition.rotation == -90) // Facing left
+                pathPosition += new Vector3(-pathCenterOffset, pathHeight / 2, 0);
+            else if (selectedPosition.rotation == 180) // Facing up
+                pathPosition += new Vector3(0, pathHeight / 2, pathCenterOffset);
+            else // Facing down
+                pathPosition += new Vector3(0, pathHeight / 2, -pathCenterOffset);
+
+            // Instantiate and scale the path correctly
             GameObject connectingPath = Instantiate(pathPrefab, pathPosition,
-                Quaternion.Euler(0, selectedPosition.rotation == 0 || selectedPosition.rotation == 180 ? 90 : 0, 0));
-            connectingPath.transform.localScale = new Vector3(pathLength, pathHeight, pathWidth);
+                Quaternion.Euler(0, (selectedPosition.rotation == 0 || selectedPosition.rotation == 180) ? 90 : 0, 0));
+            connectingPath.transform.localScale = new Vector3(pathScaleLength, pathHeight, pathWidth);
+
         }
 
         // Generate paths between inner grid rooms
