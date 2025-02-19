@@ -758,6 +758,7 @@ MonoBehaviour:
   maxLookAngle: 85
   normalHeight: 2
   crouchHeight: 0.5
+  interactRange: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
