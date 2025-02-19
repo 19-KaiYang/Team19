@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5784200802688962025}
   - component: {fileID: 2340272409994706072}
   - component: {fileID: 8612980683993746960}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 13559541775072522}
   - component: {fileID: 6111327980742467852}
   - component: {fileID: 6331134280369716041}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LeftWall_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 4004912260400268623}
   - component: {fileID: 3668288498147537029}
   - component: {fileID: 3805055013649385268}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LeftWall_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -327,7 +327,7 @@ GameObject:
   - component: {fileID: 2306497635942176850}
   - component: {fileID: 2379305573190467603}
   - component: {fileID: 4326767291599979062}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightWall_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 5680768802592913308}
   - component: {fileID: 2175388735970634373}
   - component: {fileID: 7524004787225083899}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TopWall_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 9099993414476588600}
   - component: {fileID: 6840925133378344574}
   - component: {fileID: 5596335547322070700}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TopDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -642,7 +642,7 @@ GameObject:
   - component: {fileID: 4022933983470299436}
   - component: {fileID: 9035988924370133262}
   - component: {fileID: 6528566557163234183}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BottomDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +744,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3665370342870155356}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spawnpoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -778,7 +778,7 @@ GameObject:
   - component: {fileID: 6136669096993335134}
   - component: {fileID: 8122764291751333556}
   - component: {fileID: 6305781501906428452}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BottomWall_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -881,7 +881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6501130152868574986}
   - component: {fileID: 8465563343236338008}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -955,7 +955,7 @@ GameObject:
   - component: {fileID: 4985087307640895445}
   - component: {fileID: 3158718484697785630}
   - component: {fileID: 6409681362126804777}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1057,7 +1057,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4126879620059914778}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spawnpoint (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1091,7 +1091,7 @@ GameObject:
   - component: {fileID: 2622221655621992083}
   - component: {fileID: 5805914260242137302}
   - component: {fileID: 3674514250920875028}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BottomWall_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1196,7 +1196,7 @@ GameObject:
   - component: {fileID: 8747684241496042150}
   - component: {fileID: 7282212466250574880}
   - component: {fileID: 8414406518356659265}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TopWall_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1301,7 +1301,7 @@ GameObject:
   - component: {fileID: 3591238320827711576}
   - component: {fileID: 4946119725810367546}
   - component: {fileID: 6703938176858816953}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LeftDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1406,7 +1406,7 @@ GameObject:
   - component: {fileID: 8750145465656720469}
   - component: {fileID: 3372204664305614067}
   - component: {fileID: 734042734819235582}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightWall_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}

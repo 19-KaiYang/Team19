@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2948866265354512015}
   - component: {fileID: 565071983012880455}
   - component: {fileID: 5725349958161261260}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 555543872417469304}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Shuttle
   m_TagString: ShuttlePlatform
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 8183963102115555300}
   - component: {fileID: 3092745642315890371}
   - component: {fileID: 7286934063727282155}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: ShuttleFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

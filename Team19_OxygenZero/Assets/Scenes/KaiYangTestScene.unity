@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 355544205}
   - component: {fileID: 355544204}
   - component: {fileID: 355544203}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -340,9 +340,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2117549350}
   minimapCamera: {fileID: 0}
-  minimapSize: 100
+  minimapSize: 300
   minimapHeight: 100
   minimapOffset: {x: 10, y: 10}
+  minimapZoom: 25
+  groundColor: {r: 0, g: 0, b: 0, a: 1}
+  showShadows: 0
 --- !u!4 &556463319
 Transform:
   m_ObjectHideFlags: 0
@@ -604,7 +607,7 @@ GameObject:
   - component: {fileID: 2117549347}
   - component: {fileID: 2117549351}
   - component: {fileID: 2117549352}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -657,7 +660,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bd5105d6cee95c7449e8a169b0c7b529, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

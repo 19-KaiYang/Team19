@@ -11,7 +11,14 @@ public class MinimapController : MonoBehaviour
     [Header("Minimap Settings")]
     public float minimapSize = 200f;
     public float minimapHeight = 100f;
-    public Vector2 minimapOffset = new Vector2(10f, 10f); // Offset from top-left corner
+    public Vector2 minimapOffset = new Vector2(10f, 10f);
+    [Range(10f, 100f)]
+    public float minimapZoom = 25f;
+
+    [Header("Visual Settings")]
+    public Color groundColor = Color.white;
+    public bool showShadows = false;
+
 
     private RectTransform minimapRect;
     private RenderTexture minimapRenderTexture;
@@ -23,12 +30,10 @@ public class MinimapController : MonoBehaviour
 
         SetupMinimapCamera();
         CreateMinimapUI();
-
     }
 
     void SetupMinimapCamera()
     {
-        // Create a new camera if not assigned
         if (minimapCamera == null)
         {
             GameObject camObj = new GameObject("Minimap Camera");
@@ -36,64 +41,73 @@ public class MinimapController : MonoBehaviour
             minimapCamera.transform.parent = transform;
         }
 
-        // Configure the camera
         minimapCamera.orthographic = true;
-        minimapCamera.orthographicSize = 50f; // Adjust based on your grid size
-        minimapCamera.cullingMask = LayerMask.GetMask("Default"); // Adjust layers as needed
-        minimapCamera.clearFlags = CameraClearFlags.SolidColor;
-        minimapCamera.backgroundColor = Color.black;
+        minimapCamera.orthographicSize = minimapZoom;
 
-        // Create and assign render texture
+        minimapCamera.cullingMask = LayerMask.GetMask("Minimap");
+
+        minimapCamera.clearFlags = CameraClearFlags.SolidColor;
+        minimapCamera.backgroundColor = groundColor;
+
+        if (!showShadows)
+        {
+            minimapCamera.renderingPath = RenderingPath.Forward;
+            minimapCamera.allowHDR = false;
+            minimapCamera.allowMSAA = false;
+        }
+
         minimapRenderTexture = new RenderTexture(512, 512, 16, RenderTextureFormat.ARGB32);
+        minimapRenderTexture.Create();
         minimapCamera.targetTexture = minimapRenderTexture;
     }
 
     void CreateMinimapUI()
     {
-        // Create UI container
         GameObject minimapObj = new GameObject("Minimap UI");
         minimapObj.transform.parent = transform;
 
-        // Add Canvas components
         Canvas canvas = minimapObj.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100; // Ensure it's on top
+        canvas.sortingOrder = 100;
 
-        // Create the minimap image
+        GameObject maskObj = new GameObject("Minimap Mask");
+        maskObj.transform.parent = minimapObj.transform;
+
+        RectTransform maskRect = maskObj.AddComponent<RectTransform>();
+        maskRect.sizeDelta = new Vector2(minimapSize, minimapSize);
+        maskRect.anchorMin = new Vector2(0, 1);
+        maskRect.anchorMax = new Vector2(0, 1);
+        maskRect.pivot = new Vector2(0, 1);
+        maskRect.anchoredPosition = minimapOffset;
+
+        UnityEngine.UI.Image maskImage = maskObj.AddComponent<UnityEngine.UI.Image>();
+        maskImage.sprite = CreateCircleMask();
+        maskObj.AddComponent<UnityEngine.UI.Mask>();
+
         GameObject imageObj = new GameObject("Minimap Image");
-        imageObj.transform.parent = minimapObj.transform;
+        imageObj.transform.parent = maskObj.transform;
 
-        // Setup RectTransform
         minimapRect = imageObj.AddComponent<RectTransform>();
         minimapRect.sizeDelta = new Vector2(minimapSize, minimapSize);
-        minimapRect.anchorMin = new Vector2(0, 1);
-        minimapRect.anchorMax = new Vector2(0, 1);
-        minimapRect.pivot = new Vector2(0, 1);
-        minimapRect.anchoredPosition = minimapOffset;
+        minimapRect.anchorMin = Vector2.zero;
+        minimapRect.anchorMax = Vector2.one;
+        minimapRect.offsetMin = Vector2.zero;
+        minimapRect.offsetMax = Vector2.zero;
 
-        // Setup Image component
-        UnityEngine.UI.Image minimapImage = imageObj.AddComponent<UnityEngine.UI.Image>();
-        minimapImage.sprite = Sprite.Create(new Texture2D(1, 1), new Rect(0, 0, 1, 1), Vector2.zero);
-        minimapImage.material = new Material(Shader.Find("Unlit/Texture"));
-        minimapImage.material.mainTexture = minimapRenderTexture;
-
-        // Make it circular
-        minimapImage.maskable = true;
-        imageObj.AddComponent<UnityEngine.UI.Mask>();
-        minimapImage.sprite = CreateCircleMask();
+        UnityEngine.UI.RawImage minimapImage = imageObj.AddComponent<UnityEngine.UI.RawImage>();
+        minimapImage.texture = minimapRenderTexture;
     }
 
     void LateUpdate()
     {
         if (player != null && minimapCamera != null)
         {
-            // Update camera position to follow player
             Vector3 newPos = player.position;
             newPos.y = minimapHeight;
             minimapCamera.transform.position = newPos;
-
-            // Update camera rotation to match player's rotation
             minimapCamera.transform.rotation = Quaternion.Euler(90f, player.eulerAngles.y, 0f);
+            minimapCamera.orthographicSize = minimapZoom;
+            minimapCamera.backgroundColor = groundColor;
         }
     }
 
