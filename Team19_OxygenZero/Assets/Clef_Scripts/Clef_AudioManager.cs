@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using TMPro;
 using System.Collections.Generic;
 
@@ -8,6 +9,11 @@ public class Clef_AudioManager : MonoBehaviour
     [Header("Audio Sources")]
     public AudioSource backgroundMusic;
     public AudioSource soundEffects;
+
+    [Header("Audio Mixer")]
+    public AudioMixer audioMixer;
+    public string bgmMixerParam = "BGMVolume"; // The parameter name in your audio mixer
+    public string sfxMixerParam = "SFXVolume";
 
     [Header("UI Elements")]
     public Slider bgmSlider;
@@ -25,35 +31,73 @@ public class Clef_AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> bgmDictionary = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> sfxDictionary = new Dictionary<string, AudioClip>();
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        // initialize dictionary
+        // Initialize dictionary
         LoadAudioDictionaries();
+    }
 
-        // Play background music if not already playing
-        if (!backgroundMusic.isPlaying)
-        {
-            PlayBGM("BattleBGM"); // Change this to load the correct saved BGM
-        }
-
-
-        // load saved audio settings
-        bgmVolume = PlayerPrefs.GetFloat("BGMVolume", 1f);
-        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+    private void SetInitialVolumes()
+    {
         bool isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
 
-        // apply saved settings
-        bgmSlider.value = bgmVolume;
-        sfxSlider.value = sfxVolume;
-        muteToggle.isOn = isMuted;
+        // Load saved volume settings
+        bgmVolume = PlayerPrefs.GetFloat("BGMVolume", 1f);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
 
-        ApplyAudioSettings();
+        // Set AudioSource volumes
+        if (backgroundMusic != null)
+            backgroundMusic.volume = isMuted ? 0f : bgmVolume;
+        if (soundEffects != null)
+            soundEffects.volume = isMuted ? 0f : sfxVolume;
 
-        // add listeners
-        bgmSlider.onValueChanged.AddListener(SetBGMVolume);
-        sfxSlider.onValueChanged.AddListener(SetSFXVolume);
-        muteToggle.onValueChanged.AddListener(ToggleMute);
+        // Set AudioMixer volumes
+        if (audioMixer != null)
+        {
+            float bgmMixerVolume = isMuted ? -80f : Mathf.Log10(bgmVolume) * 20f;
+            float sfxMixerVolume = isMuted ? -80f : Mathf.Log10(sfxVolume) * 20f;
+
+            audioMixer.SetFloat(bgmMixerParam, bgmMixerVolume);
+            audioMixer.SetFloat(sfxMixerParam, sfxMixerVolume);
+        }
+
+        // Set UI elements and trigger listeners immediately
+        if (bgmSlider != null)
+        {
+            bgmSlider.value = bgmVolume;
+            bgmSlider.onValueChanged.AddListener(SetBGMVolume);
+            SetBGMVolume(bgmSlider.value); // 🔥 Trigger listener at start
+        }
+
+        if (sfxSlider != null)
+        {
+            sfxSlider.value = sfxVolume;
+            sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+            SetSFXVolume(sfxSlider.value); // 🔥 Trigger listener at start
+        }
+
+        if (muteToggle != null)
+        {
+            muteToggle.isOn = isMuted;
+            muteToggle.onValueChanged.AddListener(ToggleMute);
+            ToggleMute(muteToggle.isOn); // 🔥 Trigger listener at start
+        }
+
+        // Initialize and play last saved BGM
+        string lastPlayingBGM = PlayerPrefs.GetString("LastPlayingBGM", "BattleBGM");
+        PlayBGM(lastPlayingBGM);
+
+        Debug.Log($"Applied Volumes -> BGM: {bgmVolume} (dB: {Mathf.Log10(bgmVolume) * 20f}), SFX: {sfxVolume} (dB: {Mathf.Log10(sfxVolume) * 20f}), Muted: {isMuted}");
+    }
+
+
+
+
+
+    void Start()
+    {
+        // Initialize both AudioSource and AudioMixer volumes
+        SetInitialVolumes();
     }
 
     private void LoadAudioDictionaries()
@@ -81,7 +125,18 @@ public class Clef_AudioManager : MonoBehaviour
     public void SetBGMVolume(float volume)
     {
         bgmVolume = volume;
-        ApplyAudioSettings();
+        bool isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
+
+        if (!isMuted && backgroundMusic != null)
+        {
+            backgroundMusic.volume = volume;
+            if (audioMixer != null)
+            {
+                float mixerVolume = Mathf.Log10(volume) * 20f;
+                audioMixer.SetFloat(bgmMixerParam, mixerVolume);
+            }
+        }
+
         PlayerPrefs.SetFloat("BGMVolume", volume);
         PlayerPrefs.Save();
     }
@@ -89,16 +144,40 @@ public class Clef_AudioManager : MonoBehaviour
     public void SetSFXVolume(float volume)
     {
         sfxVolume = volume;
-        ApplyAudioSettings();
+        bool isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
+
+        if (!isMuted && soundEffects != null)
+        {
+            soundEffects.volume = volume;
+            if (audioMixer != null)
+            {
+                float mixerVolume = Mathf.Log10(volume) * 20f;
+                audioMixer.SetFloat(sfxMixerParam, mixerVolume);
+            }
+        }
+
         PlayerPrefs.SetFloat("SFXVolume", volume);
         PlayerPrefs.Save();
     }
 
     public void ToggleMute(bool isMuted)
     {
+        if (audioMixer != null)
+        {
+            float bgmMixerVolume = isMuted ? -80f : Mathf.Log10(bgmVolume) * 20f;
+            float sfxMixerVolume = isMuted ? -80f : Mathf.Log10(sfxVolume) * 20f;
+
+            audioMixer.SetFloat(bgmMixerParam, bgmMixerVolume);
+            audioMixer.SetFloat(sfxMixerParam, sfxMixerVolume);
+        }
+
+        if (backgroundMusic != null)
+            backgroundMusic.volume = isMuted ? 0f : bgmVolume;
+        if (soundEffects != null)
+            soundEffects.volume = isMuted ? 0f : sfxVolume;
+
         PlayerPrefs.SetInt("IsMuted", isMuted ? 1 : 0);
         PlayerPrefs.Save();
-        ApplyAudioSettings();
     }
 
     // Update is called once per frame
@@ -131,6 +210,10 @@ public class Clef_AudioManager : MonoBehaviour
             backgroundMusic.clip = clip;
             backgroundMusic.loop = true;
             backgroundMusic.Play();
+
+            // Save the currently playing BGM
+            PlayerPrefs.SetString("LastPlayingBGM", name);
+            PlayerPrefs.Save();
         }
         else
         {

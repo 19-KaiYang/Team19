@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/ClefTestScene.unity
+    guid: cc2ecd82dd9b4ce4891572d595f5f1bd
   m_configObjects: {}
