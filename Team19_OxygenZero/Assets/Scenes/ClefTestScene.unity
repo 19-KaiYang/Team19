@@ -633,7 +633,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundMusic: {fileID: 1989241233}
   soundEffects: {fileID: 607470936}
-  audioMixer: {fileID: 0}
+  audioMixer: {fileID: 24100000, guid: dfc4b9c9c297ff94f81fdf1fcab37d83, type: 2}
   bgmMixerParam: BGMVolume
   sfxMixerParam: SFXVolume
   bgmSlider: {fileID: 339718996}
