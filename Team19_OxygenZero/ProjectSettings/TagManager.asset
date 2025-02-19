@@ -6,16 +6,6 @@ TagManager:
   tags:
   - ShuttlePlatform
   - Door
-  - itemWeight
-  - itemCost
-  - itemName
-  - itemAmount
-  - Inventory
-  - Ammo
-  - itemImage
-  - itemVariables
-  - Ammo2
-  - itemButton
   layers:
   - Default
   - TransparentFX
