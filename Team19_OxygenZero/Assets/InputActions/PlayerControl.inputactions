@@ -27,6 +27,18 @@
                     "name": "Interact",
                     "type": "Button",
                     "id": "838d033c-f481-4a57-a1a3-25ea9b7b4b67",
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "6e2ea593-0336-4f31-8e4f-f9f2a47fff7b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "eebf7d0b-945e-46aa-83a2-78fe6b90dbf4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -108,6 +120,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "id": "9bfb8350-1250-483c-8043-0ee305006f95",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "61847204-b732-4952-95b4-0758f5c84b8c",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f3d67ea5-7ec0-41af-bdf8-bc4bf97d8c50",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
