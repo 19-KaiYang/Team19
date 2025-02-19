@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private Transform cameraTransform;
 
     private float xRotation = 0f;
+    public float interactRange = 5f;
 
     public GameObject inventory;
 
@@ -55,12 +57,18 @@ public class PlayerController : MonoBehaviour
 
         inventory = GameObject.FindWithTag("Inventory");
         inventorySystem = inventory.GetComponent<Inventory>();
+        
+
     }
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        isCrouching = false; 
+        targetHeight = normalHeight;
+        characterController.height = normalHeight; 
     }
 
     public void OnMove(InputValue value)
@@ -83,6 +91,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        CheckGround();
         HandleMovement();
         HandleLook();
         HandleCrouch();
@@ -90,13 +99,48 @@ public class PlayerController : MonoBehaviour
         ApplyGravity();
 
         InteractWithInventory();
-
-        if (Time.timeScale != 0)
-        {
-            PickupItem();
-        }
         DropItem();     
         HandleCursor();
+
+        if (playerInput.actions["Interact"].WasPressedThisFrame())
+        {  
+            if (Time.timeScale != 0)
+            {
+                InteractWithObject();
+                PickupItem();
+            }
+        }
+    }
+
+    private void InteractWithObject()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)); // Center of screen
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, interactRange))
+        {
+            if (hit.collider.CompareTag("Door")) // Check if object has "Door" tag
+            {
+                Debug.Log("Interacting with Door: " + hit.collider.name);
+
+                // Try getting an animator component from the door
+                Animator doorAnimator = hit.collider.GetComponentInChildren<Animator>();
+                DoorScript doorScript = hit.collider.GetComponent<DoorScript>(); 
+
+                if (doorAnimator != null)
+                {
+                    if (doorScript.GetDoorStatus())
+                    {
+                        bool isOpen = doorAnimator.GetBool("IsDoorOpen"); // Get current door state
+                        doorAnimator.SetBool("IsDoorOpen", !isOpen); // Toggle door state
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("No door detected. Hit: " + hit.collider.name);
+            }
+        }
     }
 
     private void HandleMovement()
@@ -136,6 +180,8 @@ public class PlayerController : MonoBehaviour
             cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
 
+        
+       
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
     }
@@ -189,15 +235,16 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyGravity()
     {
-        isGrounded = characterController.isGrounded;
-
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; 
+            velocity.y = -2f;  
+        }
+        else
+        {
+            velocity.y += gravity * Time.deltaTime;
         }
 
-        velocity.y += gravity * Time.deltaTime;
-        characterController.Move(velocity * Time.deltaTime);
+        characterController.Move(new Vector3(0, velocity.y * Time.deltaTime, 0));
     }
 
     public void InteractWithInventory()
@@ -205,7 +252,7 @@ public class PlayerController : MonoBehaviour
         var ToggleInventoryAction = playerInput.actions["ToggleInventory"];
 
 
-        if(ToggleInventoryAction.WasPressedThisFrame() && inventorySystem != null && inventorySystem.InventoryDisplay != null)
+        if(inventorySystem != null && inventorySystem.InventoryDisplay != null)
         {
             inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
         }
@@ -214,8 +261,6 @@ public class PlayerController : MonoBehaviour
 
     public void PickupItem()
     {
-        var PickupAction = playerInput.actions["Pickup"];
-
         // Create a ray from the center of the camera's view
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
@@ -234,21 +279,18 @@ public class PlayerController : MonoBehaviour
                 // Get the GameObject that was hit
                 GameObject hitObject = hit.collider.gameObject;
 
+           
+                if (hitObject.CompareTag("Ammo"))
+                {
+                    inventorySystem.AddItem("Ammo", 0.5f, 0.8f);
+                    Destroy(hitObject);
+                }
 
-                if (PickupAction.WasPressedThisFrame())
-                {                   
-                    if (hitObject.CompareTag("Ammo"))
-                    {
-                        inventorySystem.AddItem("Ammo", 0.5f, 0.8f);
-                        Destroy(hitObject);
-                    }
-
-                    if (hitObject.CompareTag("Ammo2"))
-                    {
-                        inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
-                        Destroy(hitObject);
-                    }
-                }                            
+                if (hitObject.CompareTag("Ammo2"))
+                {
+                    inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
+                    Destroy(hitObject);
+                }                          
             }
         }       
     }
@@ -290,4 +332,22 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 0f;
         }
     }
+
+    private void CheckGround()
+    {
+        float rayLength = characterController.height / 2 + 0.1f; 
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, rayLength);
+    }
+
+    private float GetGroundHeight()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, Mathf.Infinity))
+        {
+            return hit.point.y + characterController.height / 2;
+        }
+        return transform.position.y; // Fallback if no ground detected
+    }
+
+
 }

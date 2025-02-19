@@ -24,9 +24,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Crouch",
+                    "name": "Interact",
                     "type": "Button",
-                    "id": "6e2ea593-0336-4f31-8e4f-f9f2a47fff7b",
+                    "id": "838d033c-f481-4a57-a1a3-25ea9b7b4b67",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -44,7 +44,7 @@
                 {
                     "name": "Sprint",
                     "type": "Button",
-                    "id": "fb1f3c5a-dc27-42e6-a7b5-cd70c4332a9a",
+                    "id": "dc513f45-ef57-45e6-a95b-613607f30a6a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -72,6 +72,12 @@
                     "name": "DropItem",
                     "type": "Button",
                     "id": "328ac926-bacf-4644-b646-395d40326b02",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "c2f2a858-55ff-41c3-830d-cb6893744794",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -147,12 +153,12 @@
                 },
                 {
                     "name": "",
-                    "id": "9bfb8350-1250-483c-8043-0ee305006f95",
-                    "path": "<Keyboard>/leftCtrl",
+                    "id": "0cdee19d-6cd2-4a60-9139-c7943eb60aa7",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Crouch",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -191,23 +197,18 @@
                 },
                 {
                     "name": "",
-                    "id": "97a68c20-d60d-44ab-81bd-d1c2ec122ef8",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pickup",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "d61efc58-92cf-45f9-b43e-f1cacef0085c",
                     "path": "<Keyboard>/g",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "DropItem",
+                    "id": "14ea105e-6b30-424c-b927-c114f1c62a38",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
