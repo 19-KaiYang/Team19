@@ -86,6 +86,9 @@ public class PlayerController : MonoBehaviour
         CheckGround();
         HandleMovement();
         HandleLook();
+        HandleCrouch();
+        HandleSprint();
+        ApplyGravity();
 
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
@@ -122,9 +125,6 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("No door detected. Hit: " + hit.collider.name);
             }
         }
-        HandleCrouch();
-        HandleSprint();
-        ApplyGravity();
     }
 
     private void HandleMovement()
