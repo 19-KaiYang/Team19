@@ -432,8 +432,8 @@ MonoBehaviour:
   innerGridSize: 3
   roomPrefabs:
   - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
-  - {fileID: 6645659838018712191, guid: fd25edfad2b5a26459e47770923720e2, type: 3}
-  - {fileID: 6645659838018712191, guid: 76ddbfa6f0bcfa74bbf934062a074659, type: 3}
+  - {fileID: 6645659838018712191, guid: fe5f013c4279d9244aa0b1e45c67795c, type: 3}
+  - {fileID: 6645659838018712191, guid: 9c582cc8bce6ce5499d0671eb4a633df, type: 3}
   pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
   shuttlePlatformPrefab: {fileID: 3366130203979176033, guid: fd991a1e685028240a8456a68db5694b, type: 3}
   roomSpacing: 40
@@ -498,6 +498,7 @@ MonoBehaviour:
   maxLookAngle: 85
   normalHeight: 2.5
   crouchHeight: -0.9
+  interactRange: 5
   inventory: {fileID: 0}
   inventorySystem: {fileID: 0}
 --- !u!114 &2109807475
@@ -958,7 +959,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7771871641330026807, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 34.903954
+      value: 34.904324
       objectReference: {fileID: 0}
     - target: {fileID: 7874339595257040804, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_AnchorMax.y

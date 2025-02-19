@@ -54,11 +54,6 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.tag = "Player";
         }
-
-        inventory = GameObject.FindWithTag("Inventory");
-        inventorySystem = inventory.GetComponent<Inventory>();
-        
-
     }
 
     private void Start()
@@ -114,6 +109,12 @@ public class PlayerController : MonoBehaviour
 
     private void InteractWithObject()
     {
+        if (inventory != null)
+        {
+            inventory = GameObject.FindWithTag("Inventory");
+            inventorySystem = inventory.GetComponent<Inventory>();
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0)); // Center of screen
         RaycastHit hit;
 
@@ -169,21 +170,19 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLook()
     {
-        float mouseX = lookInput.x * lookSensitivity;
-        float mouseY = lookInput.y * lookSensitivity;
+            float mouseX = lookInput.x * lookSensitivity;
+            float mouseY = lookInput.y * lookSensitivity;
 
-        if (inventorySystem.InventoryDisplay.activeSelf == false)
-        {
+
             // Camera X rotation
             transform.Rotate(Vector3.up * mouseX);
             //Camera y rotation
             cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-        }
 
-        
-       
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
+
+
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
     }
 
     private void HandleCrouch()
@@ -251,10 +250,12 @@ public class PlayerController : MonoBehaviour
     {
         var ToggleInventoryAction = playerInput.actions["ToggleInventory"];
 
-
-        if(inventorySystem != null && inventorySystem.InventoryDisplay != null)
+        if (ToggleInventoryAction.WasPressedThisFrame())
         {
-            inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
+            if (inventorySystem != null && inventorySystem.InventoryDisplay != null)
+            {
+                inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
+            }
         }
     
     }
@@ -319,17 +320,20 @@ public class PlayerController : MonoBehaviour
 
     public void HandleCursor()
     {
-        if (inventorySystem.InventoryDisplay.activeSelf == false)
+        if (inventory != null)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            Time.timeScale = 1f;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Time.timeScale = 0f;
+            if (inventorySystem.InventoryDisplay.activeSelf == false)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                Time.timeScale = 1f;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                Time.timeScale = 0f;
+            }
         }
     }
 
