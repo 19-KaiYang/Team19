@@ -46,12 +46,18 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.tag = "Player";
         }
+
+
     }
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        isCrouching = false; 
+        targetHeight = normalHeight;
+        characterController.height = normalHeight; 
     }
 
     public void OnMove(InputValue value)
@@ -74,6 +80,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        CheckGround();
         HandleMovement();
         HandleLook();
         HandleCrouch();
@@ -166,14 +173,34 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyGravity()
     {
-        isGrounded = characterController.isGrounded;
-
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f; 
+            velocity.y = -2f;  
+        }
+        else
+        {
+            velocity.y += gravity * Time.deltaTime;
         }
 
-        velocity.y += gravity * Time.deltaTime;
-        characterController.Move(velocity * Time.deltaTime);
+        characterController.Move(new Vector3(0, velocity.y * Time.deltaTime, 0));
     }
+
+
+    private void CheckGround()
+    {
+        float rayLength = characterController.height / 2 + 0.1f; 
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, rayLength);
+    }
+
+    private float GetGroundHeight()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, Mathf.Infinity))
+        {
+            return hit.point.y + characterController.height / 2;
+        }
+        return transform.position.y; // Fallback if no ground detected
+    }
+
+
 }
