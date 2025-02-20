@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using System.Collections;
 
 public class OxygenSystem : MonoBehaviour
@@ -18,7 +20,13 @@ public class OxygenSystem : MonoBehaviour
 
     private float originalBarHeight;
     private bool isFlashing = false;
-    private Color defaultColor; 
+    private Color defaultColor;
+
+
+    [Header("Post-Processing")]
+    public Volume postProcessingVolume;  
+    private ChromaticAberration chromaticAberration;
+
 
     private void Start()
     {
@@ -26,7 +34,12 @@ public class OxygenSystem : MonoBehaviour
         oxygenConsumptionRate = defaultConsumptionRate;
         originalBarHeight = oxygenBarFill.sizeDelta.y;
 
-        defaultColor = oxygenBarImage.color; 
+        defaultColor = oxygenBarImage.color;
+
+        if (postProcessingVolume.profile.TryGet(out chromaticAberration))
+        {
+            chromaticAberration.intensity.value = 0f; 
+        }
     }
 
     private void Update()
@@ -41,6 +54,7 @@ public class OxygenSystem : MonoBehaviour
         }
         UpdateUI();
         CheckOxygenWarning();
+        UpdateChromaticAberration();
 
         if (currentOxygen <= 0 && !isDead)
         {
@@ -58,6 +72,24 @@ public class OxygenSystem : MonoBehaviour
     {
         currentOxygen += 5f * Time.deltaTime;
         currentOxygen = Mathf.Clamp(currentOxygen, 0, maxOxygen);
+    }
+
+    private void UpdateChromaticAberration()
+    {
+        if (chromaticAberration != null)
+        {
+            if (currentOxygen <= 20)
+            {
+               
+                float intensity = Mathf.InverseLerp(20, 0, currentOxygen); 
+                chromaticAberration.intensity.value = intensity;
+            }
+            else
+            {
+                
+                chromaticAberration.intensity.value = 0f;
+            }
+        }
     }
 
     private void UpdateUI()
