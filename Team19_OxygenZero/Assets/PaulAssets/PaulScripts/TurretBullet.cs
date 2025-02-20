@@ -13,7 +13,6 @@ public class TurretBullet : MonoBehaviour
     public void Initialize(Vector3 shootDirection)
     {
         direction = shootDirection.normalized; // Normalize direction to ensure consistent speed
-        Destroy(gameObject, lifetime); // Destroy bullet after a set time
     }
 
     private void Update()
