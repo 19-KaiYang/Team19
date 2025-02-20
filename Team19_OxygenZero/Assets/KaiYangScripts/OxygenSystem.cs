@@ -81,7 +81,7 @@ public class OxygenSystem : MonoBehaviour
             if (currentOxygen <= 20)
             {
                
-                float intensity = Mathf.InverseLerp(20, 0, currentOxygen); 
+                float intensity = Mathf.InverseLerp(20, 0, currentOxygen) * 0.3f; 
                 chromaticAberration.intensity.value = intensity;
             }
             else
