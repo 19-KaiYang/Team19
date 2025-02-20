@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bd5105d6cee95c7449e8a169b0c7b529, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: PlayerInput
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &5486174113357471440
@@ -154,7 +154,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 373ac480060c6f146a0614994076efb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  walkSpeed: 5
+  sprintSpeed: 10
+  crouchSpeed: 2
   rotationSpeed: 5
+  jumpHeight: 2
+  gravity: -9.81
   lookSensitivity: 2
   maxLookAngle: 85
+  normalHeight: 2
+  crouchHeight: 1
+  interactRange: 5
+  inventory: {fileID: 0}
+  inventorySystem: {fileID: 0}

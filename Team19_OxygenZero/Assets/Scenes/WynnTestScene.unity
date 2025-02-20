@@ -156,10 +156,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 373ac480060c6f146a0614994076efb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  walkSpeed: 5
+  sprintSpeed: 10
+  crouchSpeed: 2
   rotationSpeed: 5
+  jumpHeight: 2
+  gravity: -9.81
   lookSensitivity: 0.1
   maxLookAngle: 85
+  normalHeight: 2
+  crouchHeight: 1
   interactRange: 3
 --- !u!114 &588795417
 MonoBehaviour:

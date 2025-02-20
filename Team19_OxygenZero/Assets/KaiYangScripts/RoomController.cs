@@ -17,7 +17,12 @@ public class RoomController : MonoBehaviour
     public GameObject topDoor, bottomDoor, leftDoor, rightDoor;
     public GameObject doorPrefab;
 
+    [Header("Room Oxygen Settings")]
+    public float oxygenConsumptionRate = 1f;
+
     [SerializeField] private List<GameObject> spawnedDoors = new List<GameObject>(); // List to store spawned doors
+
+   
 
     public void Awake()
     {
@@ -109,6 +114,30 @@ public class RoomController : MonoBehaviour
                 // 67% chance to spawn an object from this specific spawn point's list
                 GameObject selectedObject = spawnData.possibleObjects[Random.Range(0, spawnData.possibleObjects.Length)];
                 Instantiate(selectedObject, spawnData.spawnPoint.position, Quaternion.identity, transform);
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            OxygenSystem playerOxygen = other.GetComponent<OxygenSystem>();
+            if (playerOxygen != null)
+            {
+                playerOxygen.SetOxygenConsumptionRate(oxygenConsumptionRate);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            OxygenSystem playerOxygen = other.GetComponent<OxygenSystem>();
+            if (playerOxygen != null)
+            {
+                playerOxygen.SetOxygenConsumptionRate(playerOxygen.defaultConsumptionRate); 
             }
         }
     }
