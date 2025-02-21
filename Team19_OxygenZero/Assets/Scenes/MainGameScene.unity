@@ -419,12 +419,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6272021796826400131, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: prefabs.Array.size
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6272021796826400131, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: prefabs.Array.data[0]
       value: 
-      objectReference: {fileID: 9034113559786487516, guid: 885803ba626d5a64c93bf16748372f22, type: 3}
+      objectReference: {fileID: 5521245590161471410, guid: 5decbce5f762cd54584c450f8075d2ed, type: 3}
     - target: {fileID: 6272021796826400131, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: prefabs.Array.data[1]
       value: 
@@ -510,6 +510,8 @@ MonoBehaviour:
   innerGridSize: 3
   roomPrefabs:
   - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
+  - {fileID: 6645659838018712191, guid: fe5f013c4279d9244aa0b1e45c67795c, type: 3}
+  - {fileID: 6645659838018712191, guid: 9c582cc8bce6ce5499d0671eb4a633df, type: 3}
   pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
   shuttlePlatformPrefab: {fileID: 3366130203979176033, guid: fd991a1e685028240a8456a68db5694b, type: 3}
   roomSpacing: 40
