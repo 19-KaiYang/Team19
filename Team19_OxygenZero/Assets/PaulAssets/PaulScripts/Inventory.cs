@@ -25,7 +25,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Button[] itemButton = new Button[slotAmount];
 
     // Acts to set the highlight for each item
-    [SerializeField] private Image[] Highlight = new Image[slotAmount];
+    public Image[] Highlight = new Image[slotAmount];
 
     // Acts to set the slot selection when clicked for each item
     [SerializeField] public bool[] SlotSelected = new bool[slotAmount];
@@ -46,6 +46,12 @@ public class Inventory : MonoBehaviour
     // Track button initialization
     private bool[] buttonInitialized = new bool[slotAmount];
 
+    public bool[] itemEquipped = new bool[slotAmount];
+
+    public Transform itemHolderPosition;
+    [SerializeField] private GameObject itemHolder;
+    public Transform dropArea;
+
     void Start()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -55,6 +61,7 @@ public class Inventory : MonoBehaviour
             itemCost[i] = 0;
             itemWeight[i] = 0;
             buttonInitialized[i] = false;
+            itemEquipped[i] = false;
         }
 
         for (int i = 0; i < itemVariables.Length; i++)
@@ -275,6 +282,7 @@ public class Inventory : MonoBehaviour
                     Highlight[i] = null;
                     SlotSelected[i] = false;
                     itemButton[i] = null;
+                    itemEquipped[i] = false;
 
                     if (InventoryBag.transform.childCount > 0)
                     {
@@ -294,6 +302,7 @@ public class Inventory : MonoBehaviour
                         SlotSelected[j] = SlotSelected[j + 1];
                         itemButton[j] = itemButton[j + 1];
                         buttonInitialized[j] = false;
+                        itemEquipped[j] = itemEquipped[j + 1];
                     }
 
                     // Clear the last slot 
@@ -305,6 +314,7 @@ public class Inventory : MonoBehaviour
                     Highlight[itemSlots.Length - 1] = null;
                     SlotSelected[itemSlots.Length - 1] = false;
                     itemButton[itemSlots.Length - 1] = null;
+                    itemEquipped[itemSlots.Length - 1] = false;
                 }
                 break;
             }
@@ -340,15 +350,75 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void SpawnByTag(string tag, Vector3 position)
+    public void SpawnByTag(string tag, Vector3 position, Transform parent = null)
     {
         if (prefabDictionary.TryGetValue(tag, out GameObject prefab))
         {
-            Instantiate(prefab, position, Quaternion.identity);
+            GameObject spawnedItem = Instantiate(prefab, position, Quaternion.identity);
+            if (parent != null)
+            {
+                spawnedItem.transform.SetParent(parent, false); // Set parent without changing local scale/position
+            }
         }
         else
         {
             Debug.LogError("No prefab found with tag: " + tag);
+        }
+    }
+
+
+    public void EquipItem()
+    {
+        for(int i=0;i <itemSlots.Length;i++)
+        {
+            if (itemSlots[i] != null && SlotSelected[i] == true)
+            {
+                // Check if an item is already equipped and unequip it first
+                for (int j = 0; j < itemSlots.Length; j++)
+                {
+                    if (itemEquipped[j] == true && j != i)
+                    {
+                        // Destroy the currently equipped item
+                        foreach (Transform child in itemHolder.transform)
+                        {
+                            Destroy(child.gameObject);
+                        }
+                        itemEquipped[j] = false;
+                    }
+                }
+
+                // Toggle equipment status for the selected item
+                itemEquipped[i] = !itemEquipped[i];
+
+                if (itemEquipped[i] == true)
+                {
+                    // Spawn item and set its parent to itemHolder
+                    SpawnByTag(itemSlots[i].tag, itemHolder.transform.position, itemHolder.transform);
+
+                    foreach (Transform child in itemHolder.transform)
+                    {
+                        child.localPosition = Vector3.zero;
+                        child.localRotation = Quaternion.identity;
+
+                        foreach (Transform child2 in child)
+                        {
+                            if (child2.CompareTag("pickupPrompt"))
+                            {
+                                child2.gameObject.SetActive(false);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Unequip the item
+                    foreach (Transform child in itemHolder.transform)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+            
+            }
         }
     }
 }
