@@ -167,7 +167,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -272,7 +272,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -377,7 +377,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -482,7 +482,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -680,7 +680,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -733,6 +733,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6501130152868574986}
   - component: {fileID: 8465563343236338008}
+  - component: {fileID: 1631125784325404283}
   m_Layer: 7
   m_Name: Room
   m_TagString: Untagged
@@ -787,6 +788,7 @@ MonoBehaviour:
   leftDoor: {fileID: 7956050200041005482}
   rightDoor: {fileID: 6788404788634758816}
   doorPrefab: {fileID: 7299637128063180689, guid: c82537ee3d772634fb3614dd44ac8cb1, type: 3}
+  oxygenConsumptionRate: 5
   spawnedDoors: []
   spawnPoints:
   - spawnPoint: {fileID: 3665370342870155356}
@@ -797,6 +799,27 @@ MonoBehaviour:
     possibleObjects:
     - {fileID: 7267338717773695343, guid: c6387efd5f7b3ce43afa42122934c2d1, type: 3}
     - {fileID: 7850883037210452163, guid: 93c2b73c422e6db4f9a03b1a64b8505c, type: 3}
+--- !u!65 &1631125784325404283
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6645659838018712191}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 30.073288, y: 10.674465, z: 30.144001}
+  m_Center: {x: -0.018104553, y: 4.8372335, z: -0.018852234}
 --- !u!1 &6788404788634758816
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,7 +944,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1026,7 +1049,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1162,7 +1185,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30dcfb939d84fc6499df021dd0c9b891, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

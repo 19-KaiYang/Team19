@@ -78,9 +78,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Shoot",
+                    "name": "ToggleCursor",
                     "type": "Button",
-                    "id": "3f788dff-d273-49c5-b343-5c4dec99a606",
+                    "id": "4a2867a4-388f-4c45-be5f-b3466e78f4d4",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -222,12 +222,12 @@
                 },
                 {
                     "name": "",
-                    "id": "34444a7c-da54-4214-93bb-da31979187c6",
-                    "path": "<Mouse>/leftButton",
+                    "id": "496e6758-5ea0-4cff-b1f0-5cd790f7d219",
+                    "path": "<Keyboard>/leftAlt",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Shoot",
+                    "action": "ToggleCursor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
