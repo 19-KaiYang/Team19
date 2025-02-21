@@ -1,5 +1,6 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,7 +40,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject InventoryBag;
     [SerializeField] public GameObject InventoryDisplay;
 
-    public List<GameObject> prefabs;  // Assign prefabs in the Inspector
+    public List<GameObject> droppedPrefabs;  // Assign prefabs in the Inspector
     public Dictionary<string, GameObject> prefabDictionary = new Dictionary<string, GameObject>();
 
 
@@ -71,7 +72,7 @@ public class Inventory : MonoBehaviour
 
         InventoryDisplay.SetActive(false);
 
-        foreach (var prefab in prefabs)
+        foreach (var prefab in droppedPrefabs)
         {
             prefabDictionary[prefab.tag] = prefab; // Store prefabs by tag
         }
@@ -346,6 +347,17 @@ public class Inventory : MonoBehaviour
                     Highlight[i].gameObject.SetActive(true);
                     SlotSelected[i] = true;
                 }
+            }
+        }
+    }
+
+    public void SpawnObject()
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i] != null)
+            {
+
             }
         }
     }
