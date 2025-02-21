@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class MinimapController : MonoBehaviour
 {
+    public enum MinimapPosition
+    {
+        TopLeft,
+        TopRight,
+        BottomLeft,
+        BottomRight,
+        Custom
+    }
+
     [Header("References")]
     public Transform player;
     public Camera minimapCamera;
@@ -11,16 +20,19 @@ public class MinimapController : MonoBehaviour
     [Header("Minimap Settings")]
     public float minimapSize = 200f;
     public float minimapHeight = 100f;
-    public Vector2 minimapOffset = new Vector2(10f, 10f);
-    [Range(10f, 100f)]
     public float minimapZoom = 25f;
+
+    [Header("Position Settings")]
+    public MinimapPosition position = MinimapPosition.TopLeft;
+    public Vector2 customPosition = Vector2.zero;
+    public Vector2 padding = new Vector2(10f, 10f);
 
     [Header("Visual Settings")]
     public Color groundColor = Color.white;
     public bool showShadows = false;
 
-
     private RectTransform minimapRect;
+    private RectTransform maskRect;
     private RenderTexture minimapRenderTexture;
 
     void Start()
@@ -43,9 +55,7 @@ public class MinimapController : MonoBehaviour
 
         minimapCamera.orthographic = true;
         minimapCamera.orthographicSize = minimapZoom;
-
         minimapCamera.cullingMask = LayerMask.GetMask("Minimap");
-
         minimapCamera.clearFlags = CameraClearFlags.SolidColor;
         minimapCamera.backgroundColor = groundColor;
 
@@ -73,12 +83,9 @@ public class MinimapController : MonoBehaviour
         GameObject maskObj = new GameObject("Minimap Mask");
         maskObj.transform.parent = minimapObj.transform;
 
-        RectTransform maskRect = maskObj.AddComponent<RectTransform>();
+        maskRect = maskObj.AddComponent<RectTransform>();
         maskRect.sizeDelta = new Vector2(minimapSize, minimapSize);
-        maskRect.anchorMin = new Vector2(0, 1);
-        maskRect.anchorMax = new Vector2(0, 1);
-        maskRect.pivot = new Vector2(0, 1);
-        maskRect.anchoredPosition = minimapOffset;
+        UpdateMinimapPosition();
 
         UnityEngine.UI.Image maskImage = maskObj.AddComponent<UnityEngine.UI.Image>();
         maskImage.sprite = CreateCircleMask();
@@ -98,6 +105,49 @@ public class MinimapController : MonoBehaviour
         minimapImage.texture = minimapRenderTexture;
     }
 
+    void UpdateMinimapPosition()
+    {
+        if (maskRect == null) return;
+
+        switch (position)
+        {
+            case MinimapPosition.TopLeft:
+                maskRect.anchorMin = new Vector2(0, 1);
+                maskRect.anchorMax = new Vector2(0, 1);
+                maskRect.pivot = new Vector2(0, 1);
+                maskRect.anchoredPosition = new Vector2(padding.x, -padding.y);
+                break;
+
+            case MinimapPosition.TopRight:
+                maskRect.anchorMin = new Vector2(1, 1);
+                maskRect.anchorMax = new Vector2(1, 1);
+                maskRect.pivot = new Vector2(1, 1);
+                maskRect.anchoredPosition = new Vector2(-padding.x, -padding.y);
+                break;
+
+            case MinimapPosition.BottomLeft:
+                maskRect.anchorMin = new Vector2(0, 0);
+                maskRect.anchorMax = new Vector2(0, 0);
+                maskRect.pivot = new Vector2(0, 0);
+                maskRect.anchoredPosition = new Vector2(padding.x, padding.y);
+                break;
+
+            case MinimapPosition.BottomRight:
+                maskRect.anchorMin = new Vector2(1, 0);
+                maskRect.anchorMax = new Vector2(1, 0);
+                maskRect.pivot = new Vector2(1, 0);
+                maskRect.anchoredPosition = new Vector2(-padding.x, padding.y);
+                break;
+
+            case MinimapPosition.Custom:
+                maskRect.anchorMin = new Vector2(0, 0);
+                maskRect.anchorMax = new Vector2(0, 0);
+                maskRect.pivot = new Vector2(0, 0);
+                maskRect.anchoredPosition = customPosition;
+                break;
+        }
+    }
+
     void LateUpdate()
     {
         if (player != null && minimapCamera != null)
@@ -109,6 +159,11 @@ public class MinimapController : MonoBehaviour
             minimapCamera.orthographicSize = minimapZoom;
             minimapCamera.backgroundColor = groundColor;
         }
+    }
+
+    void OnValidate()
+    {
+        UpdateMinimapPosition();
     }
 
     Sprite CreateCircleMask()

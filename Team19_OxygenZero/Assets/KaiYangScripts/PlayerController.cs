@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 lookInput;
     private Transform cameraTransform;
 
+    private bool isCursorToggle;
+
     private float xRotation = 0f;
     public float interactRange = 5f;
 
@@ -91,21 +93,25 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        CheckGround();
-        HandleMovement();
-
-        if (disableRotation == false)
-        {
-            HandleLook();
-        }
-        HandleCrouch();
-        HandleSprint();
-        ApplyGravity();
-
-        InteractWithInventory();
-        DropItem();     
         HandleCursor();
-        HandleGuns();
+        ToggleCursor();
+
+        if (!isCursorToggle)
+        {
+            CheckGround();
+            HandleMovement();
+            if (disableRotation == false)
+            {
+                HandleLook();
+            }
+            HandleCrouch();
+            HandleSprint();
+            InteractWithInventory();
+            DropItem();
+            HandleGuns();
+        }
+
+        ApplyGravity();
 
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {  
@@ -113,6 +119,30 @@ public class PlayerController : MonoBehaviour
             {
                 InteractWithObject();
                 PickupItem();
+            }
+        }
+    }
+
+    private void ToggleCursor()
+    {
+        // Check if inventory is open; if it is, do nothing
+        if (inventorySystem != null)
+        {
+            if (inventorySystem.InventoryDisplay.activeSelf)
+                return;
+
+            // If inventory is NOT open, allow Alt key to unlock the cursor
+            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held down
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                isCursorToggle = true;
+            }
+            else // Alt key is released
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                isCursorToggle = false;
             }
         }
     }
