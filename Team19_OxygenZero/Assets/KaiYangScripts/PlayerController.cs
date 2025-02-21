@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
 
     public Inventory inventorySystem;
 
-    
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -383,6 +382,4 @@ public class PlayerController : MonoBehaviour
         }
         return transform.position.y; // Fallback if no ground detected
     }
-
-
 }
