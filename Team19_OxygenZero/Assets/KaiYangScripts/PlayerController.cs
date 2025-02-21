@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
                 return;
 
             // If inventory is NOT open, allow Alt key to unlock the cursor
-            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held down
+            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held downs
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
