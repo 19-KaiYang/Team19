@@ -217,8 +217,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 786707027}
   - {fileID: 177180644}
+  - {fileID: 786707027}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1657,11 +1657,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5354871494541060188, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_Size
-      value: 0.8836533
+      value: 0.8540643
       objectReference: {fileID: 0}
     - target: {fileID: 5354871494541060188, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_Value
-      value: 0
+      value: -0.000008863598
       objectReference: {fileID: 0}
     - target: {fileID: 5354871494541060188, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_TargetGraphic
@@ -1733,7 +1733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7771871641330026807, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 34.90466
+      value: 48.202274
       objectReference: {fileID: 0}
     - target: {fileID: 7874339595257040804, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: m_AnchorMax.y
