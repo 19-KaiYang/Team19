@@ -45,6 +45,11 @@ public class PlayerController : MonoBehaviour
 
     public Inventory inventorySystem;
 
+    [SerializeField] private RaycastWeapon currentWeapon;
+
+    private bool disableRotation;
+
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -65,6 +70,7 @@ public class PlayerController : MonoBehaviour
         isCrouching = false; 
         targetHeight = normalHeight;
         characterController.height = normalHeight; 
+        disableRotation = false;
     }
 
     public void OnMove(InputValue value)
@@ -94,11 +100,15 @@ public class PlayerController : MonoBehaviour
         {
             CheckGround();
             HandleMovement();
-            HandleLook();
+            if (disableRotation == false)
+            {
+                HandleLook();
+            }
             HandleCrouch();
             HandleSprint();
             InteractWithInventory();
             DropItem();
+            HandleGuns();
         }
 
         ApplyGravity();
@@ -122,7 +132,7 @@ public class PlayerController : MonoBehaviour
                 return;
 
             // If inventory is NOT open, allow Alt key to unlock the cursor
-            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held down
+            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held downs
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
@@ -285,6 +295,18 @@ public class PlayerController : MonoBehaviour
             if (inventorySystem != null && inventorySystem.InventoryDisplay != null)
             {
                 inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
+                disableRotation = inventorySystem.InventoryDisplay.activeSelf;
+                if(inventorySystem.InventoryDisplay.activeSelf == false)
+                {
+                    for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+                    {
+                        if (inventorySystem.itemSlots[i] != null)
+                        {
+                            inventorySystem.Highlight[i].gameObject.SetActive(false);
+                            inventorySystem.SlotSelected[i] = false;
+                        }
+                    }
+                }
             }
         }
     
@@ -321,7 +343,19 @@ public class PlayerController : MonoBehaviour
                 {
                     inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
                     Destroy(hitObject);
-                }                          
+                }
+
+                if (hitObject.CompareTag("Revolver"))
+                {
+                    inventorySystem.AddItem("Revolver", 3.5f, 2.8f);
+                    Destroy(hitObject);
+                }
+
+                if (hitObject.CompareTag("AK47"))
+                {
+                    inventorySystem.AddItem("AK47", 5.2f, 3.8f);
+                    Destroy(hitObject);
+                }
             }
         }       
     }
@@ -331,17 +365,40 @@ public class PlayerController : MonoBehaviour
     {
         var DropAction = playerInput.actions["DropItem"];
 
+        Transform DropArea = inventorySystem.dropArea.transform;
+
         if (DropAction.WasPressedThisFrame()) // Ensure it's only triggered once per frame
         {
             for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
             {
-                if (inventorySystem.itemSlots[i] != null && inventorySystem.SlotSelected[i])
+                if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
+                {
+                    inventorySystem.SpawnByTag(inventorySystem.itemSlots[i].tag, DropArea.position);
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+                    break;
+                }
+                else if (inventorySystem.itemEquipped[i])
                 {
                     Debug.Log("Object Dropped");
-                    Vector3 playerposition = transform.position;
-                    inventorySystem.SpawnByTag(inventorySystem.itemSlots[i].tag, playerposition);
+
+                    Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
+                    
+                    equippedItem.transform.SetParent(null);
+
+                    equippedItem.transform.position = DropArea.position;
+                                       
                     inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
 
+                    foreach (Transform child in equippedItem)
+                    {
+                        if (child.CompareTag("pickupPrompt"))
+                        {
+                            child.gameObject.SetActive(true);
+                        }
+                    }
+
+                    inventorySystem.itemEquipped[i] = false;
+                  
                     break; // Stop after dropping the first selected item
                 }
             }
@@ -382,4 +439,28 @@ public class PlayerController : MonoBehaviour
         }
         return transform.position.y; // Fallback if no ground detected
     }
+
+    private void HandleGuns()
+    {
+        var ShootAction = playerInput.actions["Shoot"];
+
+
+        if (RaycastWeapon.weaponName == "Ak47" && currentWeapon.CanShoot)
+        {
+            if (ShootAction.IsPressed())
+            {
+                currentWeapon.Shoot();
+            }
+        }
+
+        if (RaycastWeapon.weaponName == "Revolver" && currentWeapon.CanShoot)
+        {
+            if (ShootAction.WasPressedThisFrame())
+            {
+                currentWeapon.Shoot();
+            }
+        }
+    }
+
+
 }

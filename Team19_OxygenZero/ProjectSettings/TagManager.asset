@@ -16,6 +16,10 @@ TagManager:
   - Ammo2
   - itemButton
   - Door
+  - AK47
+  - Revolver
+  - pickupPrompt
+  - muzzleArea
   layers:
   - Default
   - TransparentFX
