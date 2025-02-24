@@ -20,6 +20,9 @@ TagManager:
   - Revolver
   - pickupPrompt
   - muzzleArea
+  - scrapMetal
+  - battery
+  - oxygenTank
   layers:
   - Default
   - TransparentFX

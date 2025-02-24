@@ -402,6 +402,7 @@ MonoBehaviour:
   interactRange: 5
   inventory: {fileID: 1337869060}
   inventorySystem: {fileID: 1337869062}
+  currentWeapon: {fileID: 0}
 --- !u!114 &900517739
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ public class Inventory : MonoBehaviour
     public GameObject[] itemSlots = new GameObject[slotAmount];
 
     // Acts to set the item amount for each item
-    private int[] itemAmount = new int[slotAmount];
+    public int[] itemAmount = new int[slotAmount];
 
     // Acts to set the item amount for each item
     private float[] itemCost = new float[slotAmount];
@@ -418,6 +418,48 @@ public class Inventory : MonoBehaviour
                     }
                 }
             
+            }
+        }
+    }
+
+    // check how many of a specific item the player has
+    public int GetItemCount(string itemName)
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i] != null && itemSlots[i].tag == itemName)
+            {
+                return itemAmount[i];
+            }
+        }
+        return 0;
+    }
+
+    // check if player has a required amount of an item
+    public bool HasItem(string itemName, int requiredAmount)
+    {
+        return GetItemCount(itemName) >= requiredAmount;
+    }
+
+    // remove a specific quantity of an item from inventory
+    public void RemoveItem(string itemName, int amountToRemove)
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i] != null && itemSlots[i].tag == itemName)
+            {
+                if (itemAmount[i] >= amountToRemove)
+                {
+                    itemAmount[i] -= amountToRemove;
+
+                    // If item amount is 0, remove from inventory
+                    if (itemAmount[i] <= 0)
+                    {
+                        Destroy(itemSlots[i]);
+                        itemSlots[i] = null;
+                    }
+                    break;
+                }
             }
         }
     }
