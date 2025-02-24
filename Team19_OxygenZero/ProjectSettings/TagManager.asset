@@ -22,6 +22,7 @@ TagManager:
   - Crosshair
   - bulletEffect
   - Item
+  - Turret
   layers:
   - Default
   - TransparentFX

@@ -1090,7 +1090,6 @@ MonoBehaviour:
   pathHeight: 0.01
   generateNavMesh: 1
   enemyPrefabs:
-  - {fileID: 5848866822026551962, guid: 049dd6383e2439641b36a61eea8fbca5, type: 3}
   - {fileID: 8978072946499045513, guid: e5825b0849643214f8348120245700a4, type: 3}
   enemySpawnChance: 0.7
   minEnemiesPerRoom: 0
