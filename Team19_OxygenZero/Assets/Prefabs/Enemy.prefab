@@ -195,4 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patrolRadius: 10
   detectionRange: 15
-  patrolWaitTime: 2
+  fieldOfViewAngle: 120
+  attackRange: 5
+  attackFieldOfView: 60
+  attackCooldown: 2
