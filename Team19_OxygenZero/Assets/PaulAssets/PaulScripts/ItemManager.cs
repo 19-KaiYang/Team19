@@ -21,15 +21,38 @@ public class ItemManager : MonoBehaviour
         }
         foreach (var prefab in GameItemPrefabs)
         {
-            prefabDictionary[prefab.name] = prefab; // Store prefabs by tag
+            ObjectData objectData = prefab.GetComponent<ObjectData>();
+            RaycastWeapon raycastWeapon = prefab.GetComponent<RaycastWeapon>();
+            if (objectData != null)
+            {
+                // Store the prefab with the weaponName as the key
+                prefabDictionary[objectData.item.itemName.ToString()] = prefab; // Ensure weaponName is a string
+            }
+
+            if(raycastWeapon != null)
+            {
+                // Store the prefab with the weaponName as the key
+                prefabDictionary[raycastWeapon.weaponData.weaponName.ToString()] = prefab; // Ensure weaponName is a string
+            }
         }
     }
 
-    public void SpawnByTag(string name, Vector3 position, Transform parent = null)
+    public void SpawnByItemName(string name, Vector3 position, Transform parent = null)
     {
         if (prefabDictionary.TryGetValue(name, out GameObject prefab))
         {
             GameObject spawnedItem = Instantiate(prefab, position, Quaternion.identity);
+
+            // Ensure the spawned object has the correct tag
+            if (prefab.CompareTag("Item"))
+            {
+                spawnedItem.tag = "Item";
+            }
+            else if (prefab.CompareTag("Weapon"))
+            {
+                spawnedItem.tag = "Weapon";
+            }
+
             if (parent != null)
             {
                 spawnedItem.transform.SetParent(parent, false); // Set parent without changing local scale/position
@@ -37,7 +60,8 @@ public class ItemManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("No prefab found with name: " + tag);
+            Debug.LogError("No prefab found with name: " + name);
         }
     }
+
 }

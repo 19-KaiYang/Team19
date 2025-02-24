@@ -39,6 +39,7 @@ public abstract class Weapon : MonoBehaviour
 
         }
 
+
         // Spawn Muzzle Effect at muzzle for every shot         
         GameObject MuzzleEffect = Instantiate(GunMuzzleEffect, MuzzlePosition.transform.position, Quaternion.identity);
         ParentObject(MuzzleEffect, MuzzlePosition);

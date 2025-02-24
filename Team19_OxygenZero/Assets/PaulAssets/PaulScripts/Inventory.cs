@@ -391,7 +391,7 @@ public class Inventory : MonoBehaviour
                 if (itemEquipped[i] == true)
                 {
                     // Spawn item and set its parent to itemHolder
-                    ItemManager.Instance.SpawnByTag(itemSlots[i].name, itemHolder.transform.position, itemHolder.transform);
+                    ItemManager.Instance.SpawnByItemName(itemSlots[i].name, itemHolder.transform.position, itemHolder.transform);
 
                     foreach (Transform child in itemHolder.transform)
                     {
@@ -462,32 +462,78 @@ public class Inventory : MonoBehaviour
         return 0;
     }
 
-    // check if player has a required amount of an item
-    public bool HasItem(string itemName, int requiredAmount)
-    {
-        return GetItemCount(itemName) >= requiredAmount;
-    }
+   
 
     // remove a specific quantity of an item from inventory
     public void RemoveItem(string itemName, int amountToRemove)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i] != null && itemSlots[i].tag == itemName)
+            if (itemSlots[i] != null && itemSlots[i].name == itemName)
             {
                 if (itemAmount[i] >= amountToRemove)
                 {
                     itemAmount[i] -= amountToRemove;
-
-                    // If item amount is 0, remove from inventory
-                    if (itemAmount[i] <= 0)
-                    {
-                        Destroy(itemSlots[i]);
-                        itemSlots[i] = null;
-                    }
-                    break;
                 }
+
+                if (itemAmount[i] == 0)
+                {
+                    if (InventoryBag.transform.childCount > 0)
+                    {
+                        foreach (Transform child in InventoryBag.transform)
+                        {
+                            if (child.name == itemSlots[i].name)
+                            {
+                                Destroy(child.gameObject);
+                                Debug.Log("Item Destroyed");
+                            }
+                        }
+                    }
+                    buttonInitialized[i] = false; // Reset the initialization flag
+
+                    itemSlots[i] = null;
+                    itemAmount[i] = 0;
+                    itemCost[i] = 0;
+                    itemWeight[i] = 0;
+                    Highlight[i] = null;
+                    SlotSelected[i] = false;
+                    itemButton[i] = null;
+                    itemEquipped[i] = false;
+
+                    
+
+                    // Shift the slots
+                    for (int j = i; j < itemSlots.Length - 1; j++)
+                    {
+                        itemSlots[j] = itemSlots[j + 1];
+                        itemAmount[j] = itemAmount[j + 1];
+                        itemCost[j] = itemCost[j + 1];
+                        itemWeight[j] = itemWeight[j + 1];
+                        buttonInitialized[j] = buttonInitialized[j + 1];
+                        Highlight[j] = Highlight[j + 1];
+                        SlotSelected[j] = SlotSelected[j + 1];
+                        itemButton[j] = itemButton[j + 1];
+                        buttonInitialized[j] = false;
+                        itemEquipped[j] = itemEquipped[j + 1];
+                    }
+
+                    // Clear the last slot 
+                    itemSlots[itemSlots.Length - 1] = null;
+                    itemAmount[itemSlots.Length - 1] = 0;
+                    itemCost[itemSlots.Length - 1] = 0;
+                    itemWeight[itemSlots.Length - 1] = 0;
+                    buttonInitialized[itemSlots.Length - 1] = false;
+                    Highlight[itemSlots.Length - 1] = null;
+                    SlotSelected[itemSlots.Length - 1] = false;
+                    itemButton[itemSlots.Length - 1] = null;
+                    itemEquipped[itemSlots.Length - 1] = false;
+                  
+                }
+                
             }
         }
     }
+
+
+
 }

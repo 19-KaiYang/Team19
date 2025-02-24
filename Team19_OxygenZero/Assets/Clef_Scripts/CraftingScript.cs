@@ -11,6 +11,7 @@ public class CraftingScript : MonoBehaviour
 
     private CraftingRecipe selectedRecipe; // the currently selected recipe
 
+    private GameObject FindInventory;
     [SerializeField]private Inventory inventory;
 
     // the place in where the text should spawn in
@@ -18,13 +19,23 @@ public class CraftingScript : MonoBehaviour
 
     [SerializeField] private GameObject textPrefab;
 
-    private int[] requiredIngredients;
+    bool RequirementMet = false;
+
+    bool RecipeSelected = false;
+
+
+    void Start()
+    {
+        FindInventory = GameObject.FindWithTag("Inventory");
+        inventory= FindInventory.GetComponent<Inventory>();
+    }
 
     
    
 
     public void SelectItem(string itemName)
     {
+        RecipeSelected = true;
         // find the recipe for the selected item
         selectedRecipe = recipes.Find( r => r.result.itemName == itemName);
 
@@ -55,36 +66,40 @@ public class CraftingScript : MonoBehaviour
 
                     TMP_Text ingredientText = TextPrefab.GetComponent<TMP_Text>();
 
+                    // Search inventory for this ingredient
+                    int foundAmount = 0;
                     for (int j = 0; j < inventory.itemSlots.Length; j++)
                     {
-                        // check if the item slot is not empty
+                        Debug.Log($"Checking inventory slot {j}");
                         if (inventory.itemSlots[j] != null)
                         {
-                            ObjectData objectData = inventory.itemSlots[j].GetComponent<ObjectData>();
-
-                            // Check if the item has an objectdata
-                            if (objectData != null)
+                            Debug.Log($"Comparing {inventory.itemSlots[j].name} with {selectedRecipe.ingredients[i].item.itemName}");
+                            if (inventory.itemSlots[j].name == selectedRecipe.ingredients[i].item.itemName)
                             {
-                                // Check if there is an item in inventory that is the required ingredient
-                                if (objectData.item.itemName == selectedRecipe.ingredients[i].item.itemName)
+                                
+                                foundAmount = inventory.itemAmount[j];
+                                if (foundAmount >= selectedRecipe.ingredients[i].item.amount)
                                 {
-                                    ingredientText.text = selectedRecipe.ingredients[i].item.itemName + " x" + inventory.itemAmount[j] + "/" + selectedRecipe.ingredients[i].amount;
-                                    Debug.Log("Ingredient text written");
                                     obtainedIngredients[i] = true;
-                                }                                                                                                                                                
-                            }                          
-                        }                      
-                    }
-                    if (obtainedIngredients[i] == false)
-                    {
-                        ingredientText.text = selectedRecipe.ingredients[i].item.itemName + " x" + selectedRecipe.ingredients[i].amount;
-                    }
-
-
+                                }
+                                    Debug.Log($"Found {foundAmount} of {selectedRecipe.ingredients[i].item.itemName}");
+                                break;  // Exit the j loop once we find the ingredient
+                            }
+                        }
+                    }        
+                        // Display the ingredients you have and in the ingredients needed
+                        ingredientText.text = $"{selectedRecipe.ingredients[i].item.itemName} x{foundAmount}/{selectedRecipe.ingredients[i].amount}";                  
                 }
-                else
-                {
+                
+            }
 
+            for (int i = 0; i < obtainedIngredients.Length; i++)
+            {
+                RequirementMet = true;
+                if (obtainedIngredients[i] == false)
+                {
+                    RequirementMet = false;
+                    break;
                 }
             }
 
@@ -97,34 +112,96 @@ public class CraftingScript : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (RecipeSelected == true)
+        {
+            bool[] obtainedIngredients = new bool[selectedRecipe.ingredients.Length];
+            if (selectedRecipe != null)
+            {
+                // update the selected item name
+                selectedItemText.text = "<b>" + selectedRecipe.result.itemName + "</b>";
+
+
+                
+
+
+                for (int i = 0; i < selectedRecipe.ingredients.Length; i++)
+                {
+                    // set ingredient texts
+                    if (selectedRecipe.ingredients.Length > 0)
+                    {
+                       GameObject Text = ingredientContents.GetChild(i).gameObject;
+                        TMP_Text ingredientText = Text.GetComponent<TMP_Text>();
+
+                        // Search inventory for this ingredient
+                        int foundAmount = 0;
+                        for (int j = 0; j < inventory.itemSlots.Length; j++)
+                        {
+                            Debug.Log($"Checking inventory slot {j}");
+                            if (inventory.itemSlots[j] != null)
+                            {
+                                Debug.Log($"Comparing {inventory.itemSlots[j].name} with {selectedRecipe.ingredients[i].item.itemName}");
+                                if (inventory.itemSlots[j].name == selectedRecipe.ingredients[i].item.itemName)
+                                {
+
+                                    foundAmount = inventory.itemAmount[j];
+                                    if (foundAmount >= selectedRecipe.ingredients[i].item.amount)
+                                    {
+                                        obtainedIngredients[i] = true;
+                                    }
+                                    Debug.Log($"Found {foundAmount} of {selectedRecipe.ingredients[i].item.itemName}");
+                                    break;  // Exit the j loop once we find the ingredient
+                                }
+                            }
+                        }
+                        // Display the ingredients you have and in the ingredients needed
+                        ingredientText.text = $"{selectedRecipe.ingredients[i].item.itemName} x{foundAmount}/{selectedRecipe.ingredients[i].amount}";
+                    }
+
+                }
+
+                for (int i = 0; i < obtainedIngredients.Length; i++)
+                {
+                    RequirementMet = true;
+                    if (obtainedIngredients[i] == false)
+                    {
+                        RequirementMet = false;
+                        break;
+                    }
+                }
+            }
+
+
+
+        }
+    }
+
     public void CraftItem()
     {
         if (selectedRecipe == null)
         {
-            Debug.LogError("No reicpe selected");
+            Debug.LogError("No recipe selected");
             return;
         }
-
-        // check if player has all required ingredients
-        for (int i = 0; i < selectedRecipe.ingredients.Length; i++)
+     
+        if (RequirementMet == false)
         {
-            if (!inventory.HasItem(selectedRecipe.ingredients[i].item.itemName, selectedRecipe.ingredients[i].amount))
+             Debug.LogWarning("Not enough material to craft " + selectedRecipe.result.itemName);
+             return;
+        }
+
+        if (RequirementMet == true)
+        {
+            // remove the required items from inventory
+            for (int i = 0; i < selectedRecipe.ingredients.Length; i++)
             {
-                Debug.LogWarning("Not enough material to craft " + selectedRecipe.result.itemName);
-                return;
+                inventory.RemoveItem(selectedRecipe.ingredients[i].item.itemName, selectedRecipe.ingredients[i].amount);
             }
+            // add the crafted item to the inventory
+            inventory.AddItem(selectedRecipe.result.itemName, "Item", selectedRecipe.result.price, selectedRecipe.result.weight);
+            Debug.Log("Crafted: " + selectedRecipe.result.itemName);
         }
-
-        // remove the required items from inventory
-        for (int i = 0; i < selectedRecipe.ingredients.Length; i++)
-        {
-            inventory.RemoveItem(selectedRecipe.ingredients[i].item.itemName, selectedRecipe.ingredients[i].amount);
-        }
-
-        // add the crafted item to the inventory
-        inventory.AddItem(selectedRecipe.result.itemName, selectedRecipe.result.price, selectedRecipe.result.weight);
-        Debug.Log("Crafted: " + selectedRecipe.result.itemName);
-
         // refresh UI after crafting
         SelectItem(selectedRecipe.result.itemName);
     }
@@ -137,17 +214,5 @@ public class CraftingScript : MonoBehaviour
     public void OnClickBatteryPack()
     {
         SelectItem("Battery Pack");
-    }
-
-    // Start is called beforre the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

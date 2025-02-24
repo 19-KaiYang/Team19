@@ -31,7 +31,6 @@ public class RaycastWeapon : Weapon
         GameObject inventoryObject = GameObject.FindWithTag("Inventory");
         inventory = inventoryObject.GetComponent<Inventory>();
         fpsController.currentWeapon = this.GetComponent<RaycastWeapon>();
-
         Image CrosshairImage = Crosshair.GetComponent<Image>();
 
         CrosshairImage.enabled = true;
