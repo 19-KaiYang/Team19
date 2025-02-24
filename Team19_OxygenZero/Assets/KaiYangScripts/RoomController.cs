@@ -1,8 +1,10 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class SpawnPointData
@@ -100,21 +102,64 @@ public class RoomController : MonoBehaviour
         foreach (SpawnPointData spawnData in spawnPoints)
         {
             if (spawnData.spawnPoint == null || spawnData.possibleObjects.Length == 0)
-                continue; // Skip if no spawn point or objects available
+                continue;
 
-            float spawnChance = Random.value; // Generates a random number between 0 and 1
+            float spawnChance = Random.value;
 
             if (spawnChance < 0.33f)
             {
-                // 33% chance to spawn nothing (skip this spawn point)
                 continue;
             }
             else
             {
-                // 67% chance to spawn an object from this specific spawn point's list
                 GameObject selectedObject = spawnData.possibleObjects[Random.Range(0, spawnData.possibleObjects.Length)];
-                Instantiate(selectedObject, spawnData.spawnPoint.position, Quaternion.identity, transform);
+                GameObject spawnedObject = Instantiate(selectedObject, spawnData.spawnPoint.position, Quaternion.identity, transform);
+
+                // Add NavMeshObstacle component if it doesn't exist
+                NavMeshObstacle obstacle = spawnedObject.GetComponent<NavMeshObstacle>();
+                if (obstacle == null)
+                {
+                    obstacle = spawnedObject.AddComponent<NavMeshObstacle>();
+                }
+
+                // Configure the obstacle
+                Collider objectCollider = spawnedObject.GetComponent<Collider>();
+                if (objectCollider != null)
+                {
+                    // Match obstacle size to collider
+                    if (objectCollider is BoxCollider boxCollider)
+                    {
+                        obstacle.size = Vector3.Scale(boxCollider.size, spawnedObject.transform.localScale);
+                        obstacle.center = boxCollider.center;
+                    }
+                    else
+                    {
+                        // Default size for other collider types
+                        obstacle.radius = 0.5f;
+                        obstacle.height = 2f;
+                    }
+                }
+
+                // Set obstacle properties
+                obstacle.carving = true; // This makes the agent avoid the obstacle
+                obstacle.carveOnlyStationary = true; // Only carve if object doesn't move
+
+                // Rebuild NavMesh to include new obstacles
+                StartCoroutine(RebuildNavMeshDelayed());
             }
+        }
+    }
+
+    private System.Collections.IEnumerator RebuildNavMeshDelayed()
+    {
+        // Wait for a frame to ensure all objects are properly placed
+        yield return new WaitForEndOfFrame();
+
+        // Find and rebuild the NavMeshSurface
+        NavMeshSurface surface = GetComponentInParent<NavMeshSurface>();
+        if (surface != null)
+        {
+            surface.BuildNavMesh();
         }
     }
 
