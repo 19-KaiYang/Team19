@@ -10,16 +10,16 @@ TagManager:
   - itemName
   - itemAmount
   - Inventory
-  - Ammo
   - itemImage
   - itemVariables
-  - Ammo2
   - itemButton
   - Door
-  - AK47
-  - Revolver
   - pickupPrompt
   - muzzleArea
+  - Weapon
+  - Crosshair
+  - bulletEffect
+  - Item
   layers:
   - Default
   - TransparentFX

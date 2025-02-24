@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -45,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
     public Inventory inventorySystem;
 
-    [SerializeField] private RaycastWeapon currentWeapon;
+    public RaycastWeapon currentWeapon;
 
     private bool disableRotation;
 
@@ -67,17 +69,19 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        isCrouching = false; 
+        isCrouching = false;
         targetHeight = normalHeight;
-        characterController.height = normalHeight; 
+        characterController.height = normalHeight;
         disableRotation = false;
+
+        currentWeapon = null;
     }
 
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
     }
-    
+
     public void OnLook(InputValue value)
     {
         lookInput = value.Get<Vector2>();
@@ -85,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputValue value)
     {
-        if (value.isPressed && isGrounded) 
+        if (value.isPressed && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -114,7 +118,7 @@ public class PlayerController : MonoBehaviour
         ApplyGravity();
 
         if (playerInput.actions["Interact"].WasPressedThisFrame())
-        {  
+        {
             if (Time.timeScale != 0)
             {
                 InteractWithObject();
@@ -166,7 +170,7 @@ public class PlayerController : MonoBehaviour
 
                 // Try getting an animator component from the door
                 Animator doorAnimator = hit.collider.GetComponentInChildren<Animator>();
-                DoorScript doorScript = hit.collider.GetComponent<DoorScript>(); 
+                DoorScript doorScript = hit.collider.GetComponent<DoorScript>();
 
                 if (doorAnimator != null)
                 {
@@ -193,13 +197,13 @@ public class PlayerController : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-       
+
         float currentSpeed = walkSpeed;
         if (isCrouching)
         {
             currentSpeed = crouchSpeed;
         }
-        else if (isSprinting && !isCrouching) 
+        else if (isSprinting && !isCrouching)
         {
             currentSpeed = sprintSpeed;
         }
@@ -210,26 +214,26 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLook()
     {
-            float mouseX = lookInput.x * lookSensitivity;
-            float mouseY = lookInput.y * lookSensitivity;
+        float mouseX = lookInput.x * lookSensitivity;
+        float mouseY = lookInput.y * lookSensitivity;
 
 
-            // Camera X rotation
-            transform.Rotate(Vector3.up * mouseX);
-            //Camera y rotation
-            cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        // Camera X rotation
+        transform.Rotate(Vector3.up * mouseX);
+        //Camera y rotation
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
 
 
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
     }
 
     private void HandleCrouch()
     {
         var crouchAction = playerInput.actions["Crouch"];
 
-        if (crouchAction.IsPressed()) 
+        if (crouchAction.IsPressed())
         {
             if (!isCrouching)
             {
@@ -237,7 +241,7 @@ public class PlayerController : MonoBehaviour
                 targetHeight = crouchHeight;
             }
         }
-        else 
+        else
         {
             if (isCrouching)
             {
@@ -256,14 +260,14 @@ public class PlayerController : MonoBehaviour
     {
         var sprintAction = playerInput.actions["Sprint"];
 
-        if (sprintAction.IsPressed()) 
+        if (sprintAction.IsPressed())
         {
             if (!isSprinting)
             {
                 isSprinting = true;
             }
         }
-        else 
+        else
         {
             if (isSprinting)
             {
@@ -276,7 +280,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f;  
+            velocity.y = -2f;
         }
         else
         {
@@ -296,7 +300,7 @@ public class PlayerController : MonoBehaviour
             {
                 inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
                 disableRotation = inventorySystem.InventoryDisplay.activeSelf;
-                if(inventorySystem.InventoryDisplay.activeSelf == false)
+                if (inventorySystem.InventoryDisplay.activeSelf == false)
                 {
                     for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
                     {
@@ -309,7 +313,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-    
+
     }
 
     public void PickupItem()
@@ -326,38 +330,36 @@ public class PlayerController : MonoBehaviour
         // Cast the ray
         if (Physics.Raycast(ray, out hit, maxDistance))
         {
+            Debug.Log("Raycast hit: " + hit.collider.gameObject.name); // Debug log for hit object
             // Check if we hit something
             if (hit.collider != null)
             {
                 // Get the GameObject that was hit
                 GameObject hitObject = hit.collider.gameObject;
+                Debug.Log("Hit object tag: " + hitObject.tag); // Check detected tag
 
-           
-                if (hitObject.CompareTag("Ammo"))
+                if (hitObject.CompareTag("Item"))
                 {
-                    inventorySystem.AddItem("Ammo", 0.5f, 0.8f);
+                    ObjectData Item = hitObject.GetComponent<ObjectData>();
+                    inventorySystem.AddItem(Item.item.itemName, "Item", 0.5f, 0.8f);
                     Destroy(hitObject);
                 }
 
-                if (hitObject.CompareTag("Ammo2"))
+
+
+                if (hitObject.CompareTag("Weapon"))
                 {
-                    inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
+                    RaycastWeapon weaponItem = hitObject.GetComponent<RaycastWeapon>();
+                    inventorySystem.AddItem(weaponItem.weaponData.weaponName, "Weapon", 3.5f, 2.8f);
                     Destroy(hitObject);
                 }
 
-                if (hitObject.CompareTag("Revolver"))
-                {
-                    inventorySystem.AddItem("Revolver", 3.5f, 2.8f);
-                    Destroy(hitObject);
-                }
-
-                if (hitObject.CompareTag("AK47"))
-                {
-                    inventorySystem.AddItem("AK47", 5.2f, 3.8f);
-                    Destroy(hitObject);
-                }
             }
-        }       
+        }
+        else
+        {
+            Debug.Log("Raycast did not hit anything");
+        }
     }
 
 
@@ -373,8 +375,8 @@ public class PlayerController : MonoBehaviour
             {
                 if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
                 {
-                    inventorySystem.SpawnByTag(inventorySystem.itemSlots[i].tag, DropArea.position);
-                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+                    ItemManager.Instance.SpawnByItemName(inventorySystem.itemSlots[i].name, DropArea.position);
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
                     break;
                 }
                 else if (inventorySystem.itemEquipped[i])
@@ -382,23 +384,36 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Object Dropped");
 
                     Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
-                    
+
                     equippedItem.transform.SetParent(null);
 
                     equippedItem.transform.position = DropArea.position;
-                                       
-                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
+
+                    // Disable Crosshair when weapon unequipped
+                    // Raycastweapon
+                    RaycastWeapon raycastWeapon = equippedItem.GetComponent<RaycastWeapon>();
+                    GameObject currentCrosshair = raycastWeapon.Crosshair;
+                    Image CrosshairImage = currentCrosshair.GetComponent<Image>();
+                    CrosshairImage.enabled = false;
 
                     foreach (Transform child in equippedItem)
                     {
                         if (child.CompareTag("pickupPrompt"))
                         {
-                            child.gameObject.SetActive(true);
+                            child.gameObject.SetActive(true);                          
                         }
                     }
 
+                    currentWeapon = null;
+
+                    
+
                     inventorySystem.itemEquipped[i] = false;
-                  
+
+                    
+
                     break; // Stop after dropping the first selected item
                 }
             }
@@ -426,7 +441,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        float rayLength = characterController.height / 2 + 0.1f; 
+        float rayLength = characterController.height / 2 + 0.1f;
         isGrounded = Physics.Raycast(transform.position, Vector3.down, rayLength);
     }
 
@@ -444,20 +459,23 @@ public class PlayerController : MonoBehaviour
     {
         var ShootAction = playerInput.actions["Shoot"];
 
-
-        if (RaycastWeapon.weaponName == "Ak47" && currentWeapon.CanShoot)
+        if (currentWeapon != null)
         {
-            if (ShootAction.IsPressed())
+
+            if (currentWeapon.weaponState == "Ak47" && currentWeapon.CanShoot)
             {
-                currentWeapon.Shoot();
+                if (ShootAction.IsPressed())
+                {
+                    currentWeapon.Shoot();
+                }
             }
-        }
 
-        if (RaycastWeapon.weaponName == "Revolver" && currentWeapon.CanShoot)
-        {
-            if (ShootAction.WasPressedThisFrame())
+            if (currentWeapon.weaponState == "Revolver" && currentWeapon.CanShoot)
             {
-                currentWeapon.Shoot();
+                if (ShootAction.WasPressedThisFrame())
+                {
+                    currentWeapon.Shoot();
+                }
             }
         }
     }

@@ -227,9 +227,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6004624544770370152}
   - component: {fileID: 2475925023469876773}
+  - component: {fileID: 6425001354917908463}
   m_Layer: 6
-  m_Name: AK47
-  m_TagString: AK47
+  m_Name: Ak47
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -274,6 +275,35 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.06615877, y: 0.22408152, z: 0.81846}
   m_Center: {x: -0.0035448074, y: -0.009441853, z: 0.10771918}
+--- !u!114 &6425001354917908463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2861378150491720436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab6bb96a275e43343957e1c42b556ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectSpawner: {fileID: 0}
+  bulletEffectSpawner: {fileID: 0}
+  GunMuzzleEffect: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
+  MuzzlePosition: {fileID: 4662723504233994183}
+  playerCamera: {fileID: 0}
+  weaponData: {fileID: 11400000, guid: 6e09804e7e9c37b42a1ce42a3f263c21, type: 2}
+  inventory: {fileID: 0}
+  weaponState: 
+  ammoCount: 0
+  maxAmmoCount: 0
+  Missile: {fileID: 0}
+  MissilePosition: {fileID: 0}
+  LauncherMuzzleEffect: {fileID: 0}
+  LauncherMuzzlePosition: {fileID: 0}
+  CanShoot: 0
+  fpsController: {fileID: 0}
+  Crosshair: {fileID: 0}
 --- !u!1 &3206517045330725838
 GameObject:
   m_ObjectHideFlags: 0

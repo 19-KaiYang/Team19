@@ -9,18 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7e2ff13d10ade43b18f2494f797fa8, type: 3}
-  m_Name: Ak47
+  m_Script: {fileID: 11500000, guid: ea8f638b4ed4c5145ad2e7224e00c65f, type: 3}
+  m_Name: Ammo 2
   m_EditorClassIdentifier: 
-  weaponName: Ak47
-  damage: 10
-  range: 300
-  fireRate: 0.1
-  Ammo: 300
-  maxAmmo: 300
-  cost: 1
-  weight: 1
+  itemName: Ammo2
+  icon: {fileID: 0}
   amount: 1
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 1
+  weight: 3
+  price: 2
