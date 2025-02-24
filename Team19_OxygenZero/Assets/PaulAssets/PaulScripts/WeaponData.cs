@@ -7,7 +7,11 @@ public class WeaponData : ScriptableObject
     public float damage = 10f;
     public float range = 100f;
     public float fireRate = 0.1f;
-    public int maxAmmo = 100;
+    public int Ammo = 0;
+    public int maxAmmo = 0;
+    public int cost = 1;
+    public int weight = 1;
+    public int amount = 1;
     public LayerMask hitLayers; // Layers the weapon can hit
 }
 

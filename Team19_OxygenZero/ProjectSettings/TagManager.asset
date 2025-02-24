@@ -16,13 +16,15 @@ TagManager:
   - Ammo2
   - itemButton
   - Door
-  - AK47
-  - Revolver
   - pickupPrompt
   - muzzleArea
   - scrapMetal
   - battery
   - oxygenTank
+  - Weapon
+  - Crosshair
+  - bulletEffect
+  - Item
   layers:
   - Default
   - TransparentFX

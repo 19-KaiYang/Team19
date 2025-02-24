@@ -39,8 +39,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject InventoryBag;
     [SerializeField] public GameObject InventoryDisplay;
 
-    public List<GameObject> prefabs;  // Assign prefabs in the Inspector
-    public Dictionary<string, GameObject> prefabDictionary = new Dictionary<string, GameObject>();
+    private GameObject player;
 
 
     // Track button initialization
@@ -54,6 +53,8 @@ public class Inventory : MonoBehaviour
 
     void Start()
     {
+
+        player = GameObject.FindWithTag("Player");
         for (int i = 0; i < itemSlots.Length; i++)
         {
             itemSlots[i] = null;
@@ -71,10 +72,14 @@ public class Inventory : MonoBehaviour
 
         InventoryDisplay.SetActive(false);
 
-        foreach (var prefab in prefabs)
+        GameObject CrossHair = GameObject.FindWithTag("Crosshair");
+        if (CrossHair != null)
         {
-            prefabDictionary[prefab.tag] = prefab; // Store prefabs by tag
+            Image CrosshairImage = CrossHair.GetComponent<Image>();
+            CrosshairImage.enabled = false;
         }
+
+
     }
 
     private void Update()
@@ -145,7 +150,7 @@ public class Inventory : MonoBehaviour
         buttonInitialized[slotIndex] = true;
     }
 
-    public void AddItem(string name, float cost, float weight)
+    public void AddItem(string name,string tag, float cost, float weight)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
@@ -158,7 +163,7 @@ public class Inventory : MonoBehaviour
                 // Set item into the bag by making it a child of the bag
                 itemSlots[i].transform.SetParent(InventoryBag.transform, false);
                 // Set the name and tag of the item
-                itemSlots[i].tag = name;
+                itemSlots[i].tag = tag;
                 itemSlots[i].name = name;
 
                 // Set the item cost
@@ -168,6 +173,8 @@ public class Inventory : MonoBehaviour
 
                 // Increase the item amount
                 itemAmount[i]++;
+
+                
 
                 // To get the TMP texts that are parented to the item prefab
                 TMP_Text[] itemTexts = itemSlots[i].GetComponentsInChildren<TMP_Text>(true);
@@ -197,7 +204,7 @@ public class Inventory : MonoBehaviour
                 }
                 break;
             }
-            else if (itemSlots[i].tag == name)
+            else if (itemSlots[i].name == name)
             {
                 // Increase the item amount
                 itemAmount[i]++;
@@ -238,7 +245,7 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i] != null && itemSlots[i].tag == name)
+            if (itemSlots[i] != null && itemSlots[i].name == name)
             {
                 if (itemAmount[i] > 0)
                 {
@@ -350,21 +357,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void SpawnByTag(string tag, Vector3 position, Transform parent = null)
-    {
-        if (prefabDictionary.TryGetValue(tag, out GameObject prefab))
-        {
-            GameObject spawnedItem = Instantiate(prefab, position, Quaternion.identity);
-            if (parent != null)
-            {
-                spawnedItem.transform.SetParent(parent, false); // Set parent without changing local scale/position
-            }
-        }
-        else
-        {
-            Debug.LogError("No prefab found with tag: " + tag);
-        }
-    }
+    
 
 
     public void EquipItem()
@@ -373,6 +366,7 @@ public class Inventory : MonoBehaviour
         {
             if (itemSlots[i] != null && SlotSelected[i] == true)
             {
+                
                 // Check if an item is already equipped and unequip it first
                 for (int j = 0; j < itemSlots.Length; j++)
                 {
@@ -387,25 +381,58 @@ public class Inventory : MonoBehaviour
                     }
                 }
 
-                // Toggle equipment status for the selected item
-                itemEquipped[i] = !itemEquipped[i];
+                // Only equip if its a weapon
+                if (itemSlots[i].tag == "Weapon")
+                {
+                    // Toggle equipment status for the selected item
+                    itemEquipped[i] = !itemEquipped[i];                   
+                }
 
                 if (itemEquipped[i] == true)
                 {
                     // Spawn item and set its parent to itemHolder
-                    SpawnByTag(itemSlots[i].tag, itemHolder.transform.position, itemHolder.transform);
+                    ItemManager.Instance.SpawnByTag(itemSlots[i].name, itemHolder.transform.position, itemHolder.transform);
 
                     foreach (Transform child in itemHolder.transform)
                     {
                         child.localPosition = Vector3.zero;
                         child.localRotation = Quaternion.identity;
 
-                        foreach (Transform child2 in child)
+                       
+                        RaycastWeapon weaponItem = child.GetComponent<RaycastWeapon>();
+
+                        if (weaponItem != null)
                         {
-                            if (child2.CompareTag("pickupPrompt"))
+                            weaponItem.InitializeWeapon();
+
+                            if (weaponItem.Crosshair != null)
                             {
-                                child2.gameObject.SetActive(false);
+                                if (weaponItem.Crosshair.activeSelf == false)
+                                {
+                                    weaponItem.Crosshair.SetActive(true);
+                                }
                             }
+                            else
+                            {
+                                Debug.Log("Crosshair is null");
+                            }
+                            PlayerController currentPlayer = player.GetComponent<PlayerController>();
+                            if (currentPlayer != null)
+                            {
+                                currentPlayer.currentWeapon = weaponItem;
+                            }
+
+                            foreach (Transform child2 in child)
+                            {
+                                if (child2.CompareTag("pickupPrompt"))
+                                {
+                                    child2.gameObject.SetActive(false);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.Log("Can't find raycastweapon script");
                         }
                     }
                 }
