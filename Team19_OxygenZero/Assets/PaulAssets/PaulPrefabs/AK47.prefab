@@ -290,7 +290,7 @@ MonoBehaviour:
   effectSpawner: {fileID: 0}
   bulletEffectSpawner: {fileID: 0}
   GunMuzzleEffect: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
-  MuzzlePosition: {fileID: 0}
+  MuzzlePosition: {fileID: 4662723504233994183}
   playerCamera: {fileID: 0}
   weaponData: {fileID: 11400000, guid: 6e09804e7e9c37b42a1ce42a3f263c21, type: 2}
   inventory: {fileID: 0}
