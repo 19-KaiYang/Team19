@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
     public Inventory inventorySystem;
 
-    [SerializeField] private RaycastWeapon currentWeapon;
+    public RaycastWeapon currentWeapon;
 
     private bool disableRotation;
 
@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviour
         targetHeight = normalHeight;
         characterController.height = normalHeight; 
         disableRotation = false;
+
+        currentWeapon = null;
     }
 
     public void OnMove(InputValue value)
@@ -333,29 +335,21 @@ public class PlayerController : MonoBehaviour
                 GameObject hitObject = hit.collider.gameObject;
 
            
-                if (hitObject.CompareTag("Ammo"))
+                if (hitObject.CompareTag("Item"))
                 {
-                    inventorySystem.AddItem("Ammo", 0.5f, 0.8f);
+                    inventorySystem.AddItem(hitObject.name,"Item", 0.5f, 0.8f);
                     Destroy(hitObject);
                 }
 
-                if (hitObject.CompareTag("Ammo2"))
+                
+
+                if (hitObject.CompareTag("Weapon"))
                 {
-                    inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
+                    RaycastWeapon weaponItem = hitObject.GetComponent<RaycastWeapon>();                    
+                    inventorySystem.AddItem(weaponItem.weaponData.weaponName,"Weapon", 3.5f, 2.8f);
                     Destroy(hitObject);
                 }
 
-                if (hitObject.CompareTag("Revolver"))
-                {
-                    inventorySystem.AddItem("Revolver", 3.5f, 2.8f);
-                    Destroy(hitObject);
-                }
-
-                if (hitObject.CompareTag("AK47"))
-                {
-                    inventorySystem.AddItem("AK47", 5.2f, 3.8f);
-                    Destroy(hitObject);
-                }
             }
         }       
     }
@@ -373,8 +367,8 @@ public class PlayerController : MonoBehaviour
             {
                 if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
                 {
-                    inventorySystem.SpawnByTag(inventorySystem.itemSlots[i].tag, DropArea.position);
-                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+                    ItemManager.Instance.SpawnByTag(inventorySystem.itemSlots[i].name, DropArea.position);
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
                     break;
                 }
                 else if (inventorySystem.itemEquipped[i])
@@ -444,20 +438,23 @@ public class PlayerController : MonoBehaviour
     {
         var ShootAction = playerInput.actions["Shoot"];
 
-
-        if (RaycastWeapon.weaponName == "Ak47" && currentWeapon.CanShoot)
+        if (currentWeapon != null)
         {
-            if (ShootAction.IsPressed())
+
+            if (currentWeapon.weaponState == "Ak47" && currentWeapon.CanShoot)
             {
-                currentWeapon.Shoot();
+                if (ShootAction.IsPressed())
+                {
+                    currentWeapon.Shoot();
+                }
             }
-        }
 
-        if (RaycastWeapon.weaponName == "Revolver" && currentWeapon.CanShoot)
-        {
-            if (ShootAction.WasPressedThisFrame())
+            if (currentWeapon.weaponState == "Revolver" && currentWeapon.CanShoot)
             {
-                currentWeapon.Shoot();
+                if (ShootAction.WasPressedThisFrame())
+                {
+                    currentWeapon.Shoot();
+                }
             }
         }
     }
