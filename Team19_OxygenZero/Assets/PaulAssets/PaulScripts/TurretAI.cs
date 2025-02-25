@@ -104,14 +104,16 @@ public class TurretAI : MonoBehaviour
 
     void Fire()
     {
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        TurretBullet bulletScript = bulletPrefab.GetComponent<TurretBullet>();
+      
+        GameObject newBullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        TurretBullet bulletScript = newBullet.GetComponent<TurretBullet>(); 
 
         if (bulletScript != null)
         {
-            bulletScript.Initialize(firePoint.forward); // Fire in the turret head's direction
+            bulletScript.Initialize(firePoint.forward); 
         }
     }
+
 
     public void SetTarget(Transform newTarget)
     {
