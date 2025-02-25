@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
     private Vector3 velocity;
     private bool isGrounded;
-    
+
 
     [Header("Crouch Settings")]
     public float normalHeight = 2f;
@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
         // Set initial camera mode
         SetCameraMode(currentMode);
 
-        if(currentMode == CameraMode.ThirdPersonShiftlock)
+        if (currentMode == CameraMode.ThirdPersonShiftlock)
         {
             CamText.text = "Third Person";
         }
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
             if (disableRotation == false)
             {
                 //HandleLook();
-                
+
             }
             HandleCrouch();
             HandleSprint();
@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour
         ToggleCameraMode();
         // Handle player head rotation
         UpdateHeadRotation();
-        
+
     }
 
     private void LateUpdate()
@@ -327,27 +327,17 @@ public class PlayerController : MonoBehaviour
 
         if (crouchAction.IsPressed())
         {
-            if (!isCrouching)
-            {
-                isCrouching = true;
-                targetHeight = crouchHeight;
-            }
+            isCrouching = true;
+            targetHeight = crouchHeight;
         }
         else
         {
-            if (isCrouching)
-            {
-                if (!Physics.Raycast(transform.position, Vector3.up, normalHeight))
-                {
-                    isCrouching = false;
-                    targetHeight = normalHeight;
-                }
-            }
+            isCrouching = false;
+            targetHeight = normalHeight;
         }
 
         characterController.height = Mathf.Lerp(characterController.height, targetHeight, crouchTransitionSpeed * Time.deltaTime);
     }
-
     private void HandleSprint()
     {
         var sprintAction = playerInput.actions["Sprint"];
@@ -494,17 +484,17 @@ public class PlayerController : MonoBehaviour
                     {
                         if (child.CompareTag("pickupPrompt"))
                         {
-                            child.gameObject.SetActive(true);                          
+                            child.gameObject.SetActive(true);
                         }
                     }
 
                     currentWeapon = null;
 
-                    
+
 
                     inventorySystem.itemEquipped[i] = false;
 
-                    
+
 
                     break; // Stop after dropping the first selected item
                 }
