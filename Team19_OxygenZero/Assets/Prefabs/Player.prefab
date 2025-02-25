@@ -327,7 +327,7 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   playerHead: {fileID: 0}
   CamText: {fileID: 0}
-  toggleCameraMode: 304
+  toggleCameraMode: 117
 --- !u!1001 &870169323235953914
 PrefabInstance:
   m_ObjectHideFlags: 0

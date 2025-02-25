@@ -288,8 +288,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLook()
     {
+
+        if (currentMode == CameraMode.ThirdPersonShiftlock)
+            return;
+
         float mouseX = lookInput.x * lookSensitivity;
         float mouseY = lookInput.y * lookSensitivity;
+
+   
 
         // Rotate the player body (yaw rotation)
         transform.Rotate(Vector3.up * mouseX);
@@ -327,27 +333,17 @@ public class PlayerController : MonoBehaviour
 
         if (crouchAction.IsPressed())
         {
-            if (!isCrouching)
-            {
-                isCrouching = true;
-                targetHeight = crouchHeight;
-            }
+            isCrouching = true;
+            targetHeight = crouchHeight;
         }
         else
         {
-            if (isCrouching)
-            {
-                if (!Physics.Raycast(transform.position, Vector3.up, normalHeight))
-                {
-                    isCrouching = false;
-                    targetHeight = normalHeight;
-                }
-            }
+            isCrouching = false;
+            targetHeight = normalHeight;
         }
 
         characterController.height = Mathf.Lerp(characterController.height, targetHeight, crouchTransitionSpeed * Time.deltaTime);
     }
-
     private void HandleSprint()
     {
         var sprintAction = playerInput.actions["Sprint"];
@@ -628,6 +624,13 @@ public class PlayerController : MonoBehaviour
             case CameraMode.ThirdPersonShiftlock:
                 firstPersonCamera.Priority = 10;
                 thirdPersonCamera.Priority = 20;
+
+                // Allow horizontal rotation but keep vertical locked
+                thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500; // Re-enable horizontal rotation
+                thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Keep vertical rotation disabled
+
+                // You can remove or comment out this line if you want the player to control the rotation
+                // thirdPersonCamera.transform.rotation = Quaternion.Euler(new Vector3(15, 0, 0));
                 break;
         }
     }
