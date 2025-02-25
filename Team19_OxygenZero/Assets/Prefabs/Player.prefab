@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 852674599707476728}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -234,7 +234,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 835926937424014097}
-  - {fileID: 6737267496767245186}
+  - {fileID: 88366763965672343}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &8552925114989660919
@@ -311,16 +311,23 @@ MonoBehaviour:
   rotationSpeed: 5
   jumpHeight: 2
   gravity: -9.81
-  lookSensitivity: 0.4
-  maxLookAngle: 85
   normalHeight: 2
   crouchHeight: -0.9
   interactRange: 5
   inventory: {fileID: 0}
   inventorySystem: {fileID: 0}
-  currentWeapon: {fileID: 8901696210650176111}
+  currentWeapon: {fileID: 0}
   playerSpine: {fileID: 1849318692517257281}
   spineYRotationOffset: 40
+  firstPersonCamera: {fileID: 0}
+  thirdPersonCamera: {fileID: 0}
+  maxLookAngle: 85
+  lookSensitivity: 0.4
+  shoulderOffset: 1.2
+  playerTransform: {fileID: 0}
+  playerHead: {fileID: 0}
+  CamText: {fileID: 0}
+  toggleCameraMode: 304
 --- !u!1001 &870169323235953914
 PrefabInstance:
   m_ObjectHideFlags: 0

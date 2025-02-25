@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Animation Alignment")]
     [SerializeField] private GameObject playerSpine;
-    public float spineYRotationOffset = 40f;
+    public float spineYRotationOffset = 46f;
 
     private bool disableRotation;
 
@@ -59,10 +59,12 @@ public class PlayerController : MonoBehaviour
     public CinemachineFreeLook thirdPersonCamera;
 
     [Header("Camera Settings")]
+    [SerializeField] private float maxLookAngle;
     public float lookSensitivity = 1f;
     public float shoulderOffset = 1.2f;
     public Transform playerTransform;
     public Transform playerHead;
+    [SerializeField] private TMP_Text CamText;
 
     [Header("Controls")]
     public KeyCode toggleCameraMode = KeyCode.LeftShift;
@@ -73,9 +75,6 @@ public class PlayerController : MonoBehaviour
 
     // Components
     private CinemachinePOV fpsPOV;
-
-    [SerializeField] private TMP_Text CamText;
-    public float maxHeadAngle = 80f; // Limit head tilt to avoid unrealistic rotations
 
 
     private void Awake()
