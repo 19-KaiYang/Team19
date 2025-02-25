@@ -516,6 +516,11 @@ MonoBehaviour:
   pathWidth: 8
   pathLength: 10
   pathHeight: 0.01
+  generateNavMesh: 1
+  enemyPrefabs: []
+  enemySpawnChance: 0.7
+  minEnemiesPerRoom: 0
+  maxEnemiesPerRoom: 3
 --- !u!4 &797703479
 Transform:
   m_ObjectHideFlags: 0
@@ -792,6 +797,7 @@ MonoBehaviour:
   interactRange: 5
   inventory: {fileID: 150519832}
   inventorySystem: {fileID: 765956567}
+  currentWeapon: {fileID: 0}
 --- !u!114 &1318859338
 MonoBehaviour:
   m_ObjectHideFlags: 0
