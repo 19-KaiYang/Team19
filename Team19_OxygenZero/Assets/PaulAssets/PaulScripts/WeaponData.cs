@@ -12,6 +12,7 @@ public class WeaponData : ScriptableObject
     public int cost = 1;
     public int weight = 1;
     public int amount = 1;
+    public bool Usable = false;
     public LayerMask hitLayers; // Layers the weapon can hit
 }
 

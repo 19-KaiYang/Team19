@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Ammo
   icon: {fileID: 0}
   amount: 1
+  cost: 1.2
   weight: 2
-  price: 5
+  usable: 1

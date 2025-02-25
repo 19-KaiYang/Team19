@@ -117,6 +117,8 @@ public class CraftingScript : MonoBehaviour
         if (RecipeSelected == true)
         {
             bool[] obtainedIngredients = new bool[selectedRecipe.ingredients.Length];
+
+           
             if (selectedRecipe != null)
             {
                 // update the selected item name
@@ -149,6 +151,10 @@ public class CraftingScript : MonoBehaviour
                                     if (foundAmount >= selectedRecipe.ingredients[i].item.amount)
                                     {
                                         obtainedIngredients[i] = true;
+                                    }
+                                    else
+                                    {
+                                        obtainedIngredients[i] = false;
                                     }
                                     Debug.Log($"Found {foundAmount} of {selectedRecipe.ingredients[i].item.itemName}");
                                     break;  // Exit the j loop once we find the ingredient
@@ -199,7 +205,7 @@ public class CraftingScript : MonoBehaviour
                 inventory.RemoveItem(selectedRecipe.ingredients[i].item.itemName, selectedRecipe.ingredients[i].amount);
             }
             // add the crafted item to the inventory
-            inventory.AddItem(selectedRecipe.result.itemName, "Item", selectedRecipe.result.price, selectedRecipe.result.weight);
+            inventory.AddItem(selectedRecipe.result.itemName, "Item", selectedRecipe.result.cost, selectedRecipe.result.weight, selectedRecipe.result.usable);
             Debug.Log("Crafted: " + selectedRecipe.result.itemName);
         }
         // refresh UI after crafting

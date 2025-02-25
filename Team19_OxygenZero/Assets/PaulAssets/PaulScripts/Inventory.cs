@@ -21,6 +21,9 @@ public class Inventory : MonoBehaviour
     // Acts to set the item amount for each item
     private float[] itemWeight = new float[slotAmount];
 
+    // Acts to set whether its usable (consumable)
+    public bool[] usableItem = new bool[slotAmount];
+
     // Acts to set the button for each item
     [SerializeField] private Button[] itemButton = new Button[slotAmount];
 
@@ -63,6 +66,7 @@ public class Inventory : MonoBehaviour
             itemWeight[i] = 0;
             buttonInitialized[i] = false;
             itemEquipped[i] = false;
+            usableItem[i] = false;
         }
 
         for (int i = 0; i < itemVariables.Length; i++)
@@ -150,7 +154,7 @@ public class Inventory : MonoBehaviour
         buttonInitialized[slotIndex] = true;
     }
 
-    public void AddItem(string name,string tag, float cost, float weight)
+    public void AddItem(string name,string tag, float cost, float weight, bool usable)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
@@ -173,6 +177,9 @@ public class Inventory : MonoBehaviour
 
                 // Increase the item amount
                 itemAmount[i]++;
+
+                // set whether its usable(consumable)
+                usableItem[i] = usable;
 
                 
 
@@ -290,6 +297,7 @@ public class Inventory : MonoBehaviour
                     SlotSelected[i] = false;
                     itemButton[i] = null;
                     itemEquipped[i] = false;
+                    usableItem[i] = false;
 
                     if (InventoryBag.transform.childCount > 0)
                     {
@@ -310,6 +318,7 @@ public class Inventory : MonoBehaviour
                         itemButton[j] = itemButton[j + 1];
                         buttonInitialized[j] = false;
                         itemEquipped[j] = itemEquipped[j + 1];
+                        usableItem[j] = usableItem[j + 1];
                     }
 
                     // Clear the last slot 
@@ -322,6 +331,7 @@ public class Inventory : MonoBehaviour
                     SlotSelected[itemSlots.Length - 1] = false;
                     itemButton[itemSlots.Length - 1] = null;
                     itemEquipped[itemSlots.Length - 1] = false;
+                    usableItem[itemSlots.Length - 1] = false;
                 }
                 break;
             }
@@ -499,6 +509,7 @@ public class Inventory : MonoBehaviour
                     SlotSelected[i] = false;
                     itemButton[i] = null;
                     itemEquipped[i] = false;
+                    usableItem[i] = false;
 
                     
 
@@ -515,6 +526,7 @@ public class Inventory : MonoBehaviour
                         itemButton[j] = itemButton[j + 1];
                         buttonInitialized[j] = false;
                         itemEquipped[j] = itemEquipped[j + 1];
+                        usableItem[j] = usableItem[j + 1];
                     }
 
                     // Clear the last slot 
@@ -527,6 +539,7 @@ public class Inventory : MonoBehaviour
                     SlotSelected[itemSlots.Length - 1] = false;
                     itemButton[itemSlots.Length - 1] = null;
                     itemEquipped[itemSlots.Length - 1] = false;
+                    usableItem[itemSlots.Length - 1] = false;
                   
                 }
                 

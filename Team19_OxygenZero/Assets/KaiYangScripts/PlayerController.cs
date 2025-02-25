@@ -1,4 +1,6 @@
+using Cinemachine;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -19,10 +21,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
     private Vector3 velocity;
     private bool isGrounded;
-
-    [Header("Look Settings")]
-    public float lookSensitivity = 2f;
-    public float maxLookAngle = 85f;
+    
 
     [Header("Crouch Settings")]
     public float normalHeight = 2f;
@@ -51,6 +50,29 @@ public class PlayerController : MonoBehaviour
 
     private bool disableRotation;
 
+    [Header("Camera References")]
+    public CinemachineVirtualCamera firstPersonCamera;
+    public CinemachineFreeLook thirdPersonCamera;
+
+    [Header("Camera Settings")]
+    public float lookSensitivity = 1f;
+    public float shoulderOffset = 1.2f;
+    public Transform playerTransform;
+    public Transform playerHead;
+
+    [Header("Controls")]
+    public KeyCode toggleCameraMode = KeyCode.LeftShift;
+
+    // Camera states
+    private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
+    private CameraMode currentMode = CameraMode.ThirdPersonShiftlock;
+
+    // Components
+    private CinemachinePOV fpsPOV;
+
+    [SerializeField] private TMP_Text CamText;
+    public float maxHeadAngle = 80f; // Limit head tilt to avoid unrealistic rotations
+
 
     private void Awake()
     {
@@ -75,6 +97,38 @@ public class PlayerController : MonoBehaviour
         disableRotation = false;
 
         currentWeapon = null;
+
+        // Configure first person camera
+        if (firstPersonCamera != null)
+        {
+            fpsPOV = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
+            fpsPOV.m_HorizontalAxis.m_MaxSpeed = lookSensitivity * 700;
+            fpsPOV.m_VerticalAxis.m_MaxSpeed = lookSensitivity * 700;
+        }
+
+        // Configure third person camera
+        if (thirdPersonCamera != null)
+        {
+            // Set up the free look camera for shiftlock behavior
+            thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500;
+            thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Lock vertical orbit in shiftlock mode
+
+            // Set shoulder position
+            thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
+                new Vector3(shoulderOffset, 1.5f, 0);
+        }
+
+        // Set initial camera mode
+        SetCameraMode(currentMode);
+
+        if(currentMode == CameraMode.ThirdPersonShiftlock)
+        {
+            CamText.text = "Third Person";
+        }
+        else
+        {
+            CamText.text = "First Person";
+        }
     }
 
     public void OnMove(InputValue value)
@@ -106,12 +160,14 @@ public class PlayerController : MonoBehaviour
             HandleMovement();
             if (disableRotation == false)
             {
-                HandleLook();
+                //HandleLook();
+                
             }
             HandleCrouch();
             HandleSprint();
             InteractWithInventory();
             DropItem();
+            UseItem();
             HandleGuns();
         }
 
@@ -125,6 +181,10 @@ public class PlayerController : MonoBehaviour
                 PickupItem();
             }
         }
+        ToggleCameraMode();
+        // Handle player head rotation
+        UpdateHeadRotation();
+        
     }
 
     private void ToggleCursor()
@@ -210,23 +270,6 @@ public class PlayerController : MonoBehaviour
 
         Vector3 movement = (forward * moveInput.y + right * moveInput.x) * currentSpeed;
         characterController.Move(movement * Time.deltaTime);
-    }
-
-    private void HandleLook()
-    {
-        float mouseX = lookInput.x * lookSensitivity;
-        float mouseY = lookInput.y * lookSensitivity;
-
-
-        // Camera X rotation
-        transform.Rotate(Vector3.up * mouseX);
-        //Camera y rotation
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
     }
 
     private void HandleCrouch()
@@ -341,7 +384,7 @@ public class PlayerController : MonoBehaviour
                 if (hitObject.CompareTag("Item"))
                 {
                     ObjectData Item = hitObject.GetComponent<ObjectData>();
-                    inventorySystem.AddItem(Item.item.itemName, "Item", 0.5f, 0.8f);
+                    inventorySystem.AddItem(Item.item.itemName, "Item", Item.item.cost, Item.item.weight, Item.item.usable);
                     Destroy(hitObject);
                 }
 
@@ -350,7 +393,7 @@ public class PlayerController : MonoBehaviour
                 if (hitObject.CompareTag("Weapon"))
                 {
                     RaycastWeapon weaponItem = hitObject.GetComponent<RaycastWeapon>();
-                    inventorySystem.AddItem(weaponItem.weaponData.weaponName, "Weapon", 3.5f, 2.8f);
+                    inventorySystem.AddItem(weaponItem.weaponData.weaponName, "Weapon", weaponItem.weaponData.cost, weaponItem.weaponData.weight, weaponItem.weaponData.Usable);
                     Destroy(hitObject);
                 }
 
@@ -420,6 +463,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+    public void UseItem()
+    {
+        var UseAction = playerInput.actions["UseItem"];
+
+        if (UseAction.WasPressedThisFrame())
+        {
+            for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+            {
+                if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
+                {
+                    if (inventorySystem.usableItem[i] == true)
+                    {
+                        inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     public void HandleCursor()
     {
         if (inventory != null)
@@ -480,5 +544,53 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void ToggleCameraMode()
+    {
+        var ToggleCameraAction = playerInput.actions["ToggleCamera"];
+
+
+        if (ToggleCameraAction.WasPressedThisFrame())
+        {
+
+            if (currentMode == CameraMode.FirstPerson)
+            {
+                SetCameraMode(CameraMode.ThirdPersonShiftlock);
+                CamText.text = "Third Person";
+            }
+            else
+            {
+                SetCameraMode(CameraMode.FirstPerson);
+                CamText.text = "First Person";
+            }
+        }
+    }
+
+    void SetCameraMode(CameraMode mode)
+    {
+        currentMode = mode;
+
+        switch (mode)
+        {
+            case CameraMode.FirstPerson:
+                firstPersonCamera.Priority = 20;
+                thirdPersonCamera.Priority = 10;
+                break;
+
+            case CameraMode.ThirdPersonShiftlock:
+                firstPersonCamera.Priority = 10;
+                thirdPersonCamera.Priority = 20;
+                break;
+        }
+    }
+
+    void UpdateHeadRotation()
+    {
+        if (playerHead == null) return;
+
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+
+        playerHead.transform.rotation = camera.transform.rotation;
+
+    }
 
 }
