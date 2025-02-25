@@ -21,6 +21,7 @@ TagManager:
   - bulletEffect
   - Item
   - Turret
+  - GameItemManager
   layers:
   - Default
   - TransparentFX

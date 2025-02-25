@@ -114,7 +114,7 @@ public class PlayerController : MonoBehaviour
         {
             // Set up the free look camera for shiftlock behavior
             thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500;
-            thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Lock vertical orbit in shiftlock mode
+            thirdPersonCamera.m_YAxis.m_MaxSpeed = lookSensitivity; // Lock vertical orbit in shiftlock mode
 
             // Set shoulder position
             thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
@@ -380,6 +380,7 @@ public class PlayerController : MonoBehaviour
         {
             if (inventorySystem != null && inventorySystem.InventoryDisplay != null)
             {
+                inventorySystem.UpdateMoneyUI();
                 inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
                 disableRotation = inventorySystem.InventoryDisplay.activeSelf;
                 if (inventorySystem.InventoryDisplay.activeSelf == false)
@@ -457,11 +458,41 @@ public class PlayerController : MonoBehaviour
             {
                 if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
                 {
-                    ItemManager.Instance.SpawnByItemName(inventorySystem.itemSlots[i].name, DropArea.position);
+                    if (!inventorySystem.itemEquipped[i])
+                    {
+                        ItemManager.Instance.SpawnByItemName(inventorySystem.itemSlots[i].name, DropArea.position);
+                    }
+                    if (inventorySystem.itemEquipped[i])
+                    {
+                        Debug.Log("Object Dropped");
+
+                        Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
+
+                        equippedItem.transform.SetParent(null);
+
+                        equippedItem.transform.position = DropArea.position;
+
+                        if (equippedItem != null)
+                        {
+                            equippedItem.AddComponent<Rigidbody>();
+                        }
+
+                        foreach (Transform child in equippedItem)
+                        {
+                            if (child.CompareTag("pickupPrompt"))
+                            {
+                                child.gameObject.SetActive(true);
+                            }
+                        }
+
+                        currentWeapon = null;
+                        inventorySystem.itemEquipped[i] = false;
+                    }
                     inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
+                    
                     break;
                 }
-                else if (inventorySystem.itemEquipped[i])
+                else if (inventorySystem.itemEquipped[i] && !inventorySystem.SlotSelected[i])
                 {
                     Debug.Log("Object Dropped");
 
@@ -473,12 +504,11 @@ public class PlayerController : MonoBehaviour
 
                     inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
 
-                    // Disable Crosshair when weapon unequipped
-                    // Raycastweapon
-                    RaycastWeapon raycastWeapon = equippedItem.GetComponent<RaycastWeapon>();
-                    GameObject currentCrosshair = raycastWeapon.Crosshair;
-                    Image CrosshairImage = currentCrosshair.GetComponent<Image>();
-                    CrosshairImage.enabled = false;
+
+                    if (equippedItem != null)
+                    {
+                        equippedItem.AddComponent<Rigidbody>();
+                    }
 
                     foreach (Transform child in equippedItem)
                     {

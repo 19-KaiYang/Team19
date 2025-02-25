@@ -23,8 +23,6 @@ public class RaycastWeapon : Weapon
 
     public void InitializeWeapon()
     {
-        
-        
         Crosshair = GameObject.FindWithTag("Crosshair");        
         GameObject player = GameObject.FindWithTag("Player");
         fpsController = player.GetComponent<PlayerController>();

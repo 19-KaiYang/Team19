@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8f638b4ed4c5145ad2e7224e00c65f, type: 3}
   m_Name: Ammo
   m_EditorClassIdentifier: 
-  itemName: Ammo
+  itemName: Regular Ammo
   icon: {fileID: 0}
   amount: 1
   cost: 1.2
   weight: 2
   usable: 1
+  description: I hate kids

@@ -9,4 +9,5 @@ public class ItemData : ScriptableObject
     public float cost = 1.2f;
     public float weight = 1.3f;
     public bool usable;
+    public string description;
 }

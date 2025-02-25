@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,9 +44,11 @@ public class Inventory : MonoBehaviour
     // Acts as a bag to store all inventory items
     [SerializeField] private GameObject InventoryBag;
     [SerializeField] public GameObject InventoryDisplay;
+    [SerializeField] private TMP_Text moneyText;
 
     private GameObject player;
 
+    [SerializeField] private float creditsMoney;
 
     // Track button initialization
     private bool[] buttonInitialized = new bool[slotAmount];
@@ -77,13 +81,6 @@ public class Inventory : MonoBehaviour
 
         InventoryDisplay.SetActive(false);
 
-        GameObject CrossHair = GameObject.FindWithTag("Crosshair");
-        if (CrossHair != null)
-        {
-            Image CrosshairImage = CrossHair.GetComponent<Image>();
-            CrosshairImage.enabled = false;
-        }
-
 
     }
 
@@ -108,6 +105,26 @@ public class Inventory : MonoBehaviour
                 SlotSelected[i] = false;
             }
         }
+    }
+
+    public void UpdateMoney(float money, bool isAdding)
+    {
+        if (isAdding)
+        {
+            creditsMoney += money; // Add money
+        }
+        else
+        {
+            creditsMoney -= money; // Subtract money
+        }
+
+        UpdateMoneyUI();
+    }
+
+    public void UpdateMoneyUI()
+    {
+
+        moneyText.text = creditsMoney.ToString();
     }
 
     private void InitializeButtonForSlot(int slotIndex)
@@ -404,29 +421,25 @@ public class Inventory : MonoBehaviour
                     // Spawn item and set its parent to itemHolder
                     ItemManager.Instance.SpawnByItemName(itemSlots[i].name, itemHolder.transform.position, itemHolder.transform);
 
+
                     foreach (Transform child in itemHolder.transform)
                     {
                         child.localPosition = Vector3.zero;
                         child.localRotation = Quaternion.identity;
 
-                       
+                        Rigidbody rb = child.GetComponent<Rigidbody>();
+
+                        if (rb != null)
+                        {
+                            Destroy(rb);
+                        }
+
                         RaycastWeapon weaponItem = child.GetComponent<RaycastWeapon>();
 
                         if (weaponItem != null)
                         {
                             weaponItem.InitializeWeapon();
 
-                            if (weaponItem.Crosshair != null)
-                            {
-                                if (weaponItem.Crosshair.activeSelf == false)
-                                {
-                                    weaponItem.Crosshair.SetActive(true);
-                                }
-                            }
-                            else
-                            {
-                                Debug.Log("Crosshair is null");
-                            }
                             PlayerController currentPlayer = player.GetComponent<PlayerController>();
                             if (currentPlayer != null)
                             {

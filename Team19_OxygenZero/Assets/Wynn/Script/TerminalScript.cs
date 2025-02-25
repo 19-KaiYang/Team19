@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TerminalScript : MonoBehaviour
 {
-    [SerializeField] private GameObject messagePage, shopPage, sellPage, craftingPage, statusPage, recipePage;
+    [SerializeField] private GameObject messagePage, shopPage, sellPage, craftingPage, statusPage, recipePage, shopDescPage;
 
 
     void Start()
@@ -15,6 +15,7 @@ public class TerminalScript : MonoBehaviour
         craftingPage.SetActive(false);
         statusPage.SetActive(false);
         recipePage.SetActive(false);
+        shopDescPage.SetActive(false);
     }
 
     public void EnableShop()
@@ -56,5 +57,10 @@ public class TerminalScript : MonoBehaviour
     public void ToggleRecipePage(bool set)
     {
         recipePage.SetActive(set);
+    }
+
+    public void ToggleShopDescPage(bool set)
+    {
+        shopDescPage.SetActive(set);
     }
 }
