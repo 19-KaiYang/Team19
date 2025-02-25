@@ -797,8 +797,12 @@ MonoBehaviour:
     - {fileID: 2953230819233962126, guid: 105a0ca0a5c1b5c4089d9aa606fc7214, type: 3}
   - spawnPoint: {fileID: 4126879620059914778}
     possibleObjects:
-    - {fileID: 7267338717773695343, guid: c6387efd5f7b3ce43afa42122934c2d1, type: 3}
-    - {fileID: 7850883037210452163, guid: 93c2b73c422e6db4f9a03b1a64b8505c, type: 3}
+    - {fileID: 459558899342421740, guid: 91468954c9e4e1d4890df47ef2126068, type: 3}
+    - {fileID: 459558899342421740, guid: 91468954c9e4e1d4890df47ef2126068, type: 3}
+  - spawnPoint: {fileID: 4126879620059914778}
+    possibleObjects:
+    - {fileID: 459558899342421740, guid: 91468954c9e4e1d4890df47ef2126068, type: 3}
+    - {fileID: 459558899342421740, guid: 91468954c9e4e1d4890df47ef2126068, type: 3}
 --- !u!65 &1631125784325404283
 BoxCollider:
   m_ObjectHideFlags: 0
