@@ -60,9 +60,6 @@ public class PlayerController : MonoBehaviour
     public Transform playerTransform;
     public Transform playerHead;
 
-    [Header("Controls")]
-    public KeyCode toggleCameraMode = KeyCode.LeftShift;
-
     // Camera states
     private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
     private CameraMode currentMode = CameraMode.ThirdPersonShiftlock;
@@ -72,6 +69,14 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private TMP_Text CamText;
     public float maxHeadAngle = 80f; // Limit head tilt to avoid unrealistic rotations
+
+    // Player Health
+    public float playerHealth;
+    public float playerMaxHealth = 100;
+    public RectTransform healthBarFill;
+    public Image healthBarImage;
+    public float defaultHealthDrain = 1f;
+    private float originalHealthBarHeight;
 
 
     private void Awake()
@@ -111,7 +116,7 @@ public class PlayerController : MonoBehaviour
         {
             // Set up the free look camera for shiftlock behavior
             thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500;
-            thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Lock vertical orbit in shiftlock mode
+            thirdPersonCamera.m_YAxis.m_MaxSpeed = lookSensitivity * 10; // Lock vertical orbit in shiftlock mode
 
             // Set shoulder position
             thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
@@ -129,6 +134,11 @@ public class PlayerController : MonoBehaviour
         {
             CamText.text = "First Person";
         }
+        playerMaxHealth = 100f;
+        // Set player health
+        playerHealth = playerMaxHealth;
+
+        originalHealthBarHeight = healthBarFill.sizeDelta.y;
     }
 
     public void OnMove(InputValue value)
@@ -184,7 +194,8 @@ public class PlayerController : MonoBehaviour
         ToggleCameraMode();
         // Handle player head rotation
         UpdateHeadRotation();
-        
+        // Update Health UI
+        UpdateHealthUI();
     }
 
     private void ToggleCursor()
@@ -591,6 +602,23 @@ public class PlayerController : MonoBehaviour
 
         playerHead.transform.rotation = camera.transform.rotation;
 
+    }
+
+    private void UpdateHealthUI()
+    {
+        float normalizedHealth = playerHealth / playerMaxHealth;
+        healthBarFill.sizeDelta = new Vector2(healthBarFill.sizeDelta.x, originalHealthBarHeight * normalizedHealth);
+    }
+
+    public void DepletePlayerHealth(float health)
+    {
+        playerHealth -= health;
+    }
+
+
+    public float GetPlayerHealth()
+    {
+        return playerHealth;
     }
 
 }

@@ -8,6 +8,15 @@ public class TurretBullet : MonoBehaviour
     public float lifetime = 3f;
     public int damage = 10;
 
+    private GameObject Player;
+    private PlayerController Controller;
+
+    void Start()
+    {
+        Player = GameObject.FindWithTag("Player");
+        Controller = Player.GetComponent<PlayerController>();
+    }
+
     private Vector3 direction;
 
     public void Initialize(Vector3 shootDirection)
@@ -24,14 +33,7 @@ public class TurretBullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Apply damage logic here (e.g., call a health script on the player)
-            Debug.Log("Player hit!");
-
-            Destroy(gameObject); // Destroy bullet on impact
-        }
-        else if (!other.CompareTag("Turret")) // Prevent bullets from colliding with the turret itself
-        {
-            Destroy(gameObject); // Destroy on hitting any other object
+            Controller.DepletePlayerHealth(5);
         }
     }
 }

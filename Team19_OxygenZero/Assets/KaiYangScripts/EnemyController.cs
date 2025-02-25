@@ -23,12 +23,20 @@ public class EnemyController : MonoBehaviour
     private bool isChasing = false;
     private bool isAttacking = false;
 
+    public GameObject currentPlayerObject;
+    private PlayerController playerReference;
+
+   
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         startPosition = transform.position;
         SetNewPatrolDestination();
+
+        currentPlayerObject = GameObject.FindWithTag("Player");
+        playerReference = currentPlayerObject.GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -117,12 +125,7 @@ public class EnemyController : MonoBehaviour
     {
         if (attackTimer <= 0f)
         {
-            
-
-            
-
-
-
+            playerReference.DepletePlayerHealth(5);
             attackTimer = attackCooldown;
         }
     }
