@@ -96,9 +96,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 521e3a903fd10894eaebb1451cea3371, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6876658602069758388}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 521e3a903fd10894eaebb1451cea3371, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7520663168880037691}
   m_SourcePrefab: {fileID: 100100000, guid: 521e3a903fd10894eaebb1451cea3371, type: 3}
 --- !u!1 &8798755420477382425 stripped
 GameObject:
@@ -124,10 +121,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.9024935
+  m_Radius: 0.78259313
+  m_Height: 1.9024934
   m_Direction: 1
-  m_Center: {x: 0, y: 0.921227, z: 0}
+  m_Center: {x: 0.097230494, y: 0.92122686, z: 0.012508723}
 --- !u!195 &7427348984582081215
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -187,7 +184,7 @@ MonoBehaviour:
   detectionRange: 15
   fieldOfViewAngle: 120
   attackRange: 3
-  attackFieldOfView: 60
+  attackFieldOfView: 80
   attackCooldown: 2
   animationDampTime: 0.1
   idleAnimationParam: IsIdle
@@ -195,30 +192,3 @@ MonoBehaviour:
   attackAnimationParam: IsAttacking
   attackTriggerParam: Attack
   rotationSpeed: 120
---- !u!54 &7520663168880037691
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8798755420477382425}
-  serializedVersion: 4
-  m_Mass: 100
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0

@@ -51,7 +51,8 @@ public class EnemyController : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = true; // Make enemy immune to physics pushes
-            rb.constraints = RigidbodyConstraints.FreezeRotation; // Prevent rotation from physics
+            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+
         }
 
         if (animator == null)
@@ -75,24 +76,31 @@ public class EnemyController : MonoBehaviour
 
         if (isAttacking && !playerInAttackRange)
         {
-            isAttacking = false;
-            agent.isStopped = false;
+            // Add a short delay before breaking out of attack mode
+            attackTimer -= Time.deltaTime;
 
-            // Reset the attack animation state
-            UpdateAnimationState(false, false, false);
+            if (attackTimer <= 0f)
+            {
+                isAttacking = false;
+                agent.isStopped = false;
 
-            // Resume chasing or patrolling
-            if (playerInDetectionRange)
-            {
-                isChasing = true;
-                UpdateAnimationState(false, true, false); // Walking
-            }
-            else
-            {
-                isChasing = false;
-                SetNewPatrolDestination();
+                // Reset the attack animation state
+                UpdateAnimationState(false, false, false);
+
+                // Resume chasing or patrolling
+                if (playerInDetectionRange)
+                {
+                    isChasing = true;
+                    UpdateAnimationState(false, true, false); // Walking
+                }
+                else
+                {
+                    isChasing = false;
+                    SetNewPatrolDestination();
+                }
             }
         }
+
 
 
         // Handle attacking state
@@ -195,6 +203,11 @@ public class EnemyController : MonoBehaviour
 
     private bool IsPlayerInFieldOfView(float distance, float range, float angle)
     {
+
+        if (distance <= 1.0f)
+        {
+            return true;
+        }
         if (distance <= range)
         {
             Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
