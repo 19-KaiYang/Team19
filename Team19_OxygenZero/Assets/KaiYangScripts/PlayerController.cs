@@ -47,6 +47,10 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private RaycastWeapon currentWeapon;
 
+    [Header("Animation Alignment")]
+    [SerializeField] private GameObject playerSpine;
+    public float spineYRotationOffset = 40f;
+
     private bool disableRotation;
 
 
@@ -100,10 +104,6 @@ public class PlayerController : MonoBehaviour
         {
             CheckGround();
             HandleMovement();
-            if (disableRotation == false)
-            {
-                HandleLook();
-            }
             HandleCrouch();
             HandleSprint();
             InteractWithInventory();
@@ -119,6 +119,17 @@ public class PlayerController : MonoBehaviour
             {
                 InteractWithObject();
                 PickupItem();
+            }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (!isCursorToggle)
+        {
+            if (disableRotation == false)
+            {
+                HandleLook();
             }
         }
     }
@@ -210,20 +221,38 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLook()
     {
-            float mouseX = lookInput.x * lookSensitivity;
-            float mouseY = lookInput.y * lookSensitivity;
+        float mouseX = lookInput.x * lookSensitivity;
+        float mouseY = lookInput.y * lookSensitivity;
 
+        // Rotate the player body (yaw rotation)
+        transform.Rotate(Vector3.up * mouseX);
 
-            // Camera X rotation
-            transform.Rotate(Vector3.up * mouseX);
-            //Camera y rotation
-            cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        // Adjust X rotation for the camera (pitch rotation)
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
 
+        // Apply the camera's pitch rotation
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
+        // Get target rotation from the camera
+        Quaternion targetRotation = Quaternion.LookRotation(cameraTransform.forward);
 
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
+        // Convert to Euler angles for manual adjustments
+        Vector3 eulerRotation = targetRotation.eulerAngles;
+
+        // Evenly distribute rotation between X and Z
+        float combinedRotation = xRotation;  // Keep the same value for both axes
+
+        eulerRotation.x = combinedRotation;  // Rotate on X (looking up/down)
+        eulerRotation.z = combinedRotation;  // Rotate on Z to keep balance
+
+        // Apply Y offset if needed
+        eulerRotation.y += spineYRotationOffset;
+
+        // Apply the final rotation to the spine
+        playerSpine.transform.rotation = Quaternion.Euler(eulerRotation);
     }
+
 
     private void HandleCrouch()
     {
@@ -426,7 +455,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        float rayLength = characterController.height / 2 + 0.1f; 
+        float rayLength = characterController.height / 2 + 0.1f;    
         isGrounded = Physics.Raycast(transform.position, Vector3.down, rayLength);
     }
 
