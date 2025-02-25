@@ -13,24 +13,17 @@ public class Damageable : MonoBehaviour
     [SerializeField] private GameObject ExplosionEffect;
     [SerializeField] private GameObject DroneExplosionEffect;
 
-    private float health;
+    [SerializeField] private float health;
 
     public bool DroneDisabled;
 
     private void Start()
     {
-        if (gameObject.tag == "Damageable")
-        {
-            health = 200f;
-        }
-        else if (gameObject.tag == "Explosive")
+        if (gameObject.tag == "Turret")
         {
             health = 100f;
         }
-        else if (gameObject.tag == "AerialTarget")
-        {
-            health = 500f;
-        }
+       
         DroneDisabled = false;
 
         objectRenderer = GetComponent<Renderer>();
@@ -51,9 +44,9 @@ public class Damageable : MonoBehaviour
         if (health < 0)
         {
 
-            if (gameObject.tag == "Damageable")
+            if (gameObject.tag == "Turret")
             {
-                Destroy();
+                Destroy(this.gameObject);
             }
             else if(gameObject.tag == "Explosive")
             {

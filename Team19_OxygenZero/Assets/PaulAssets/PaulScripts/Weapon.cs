@@ -1,6 +1,7 @@
 using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
+    [SerializeField] private GameObject effectSpawner;
     [SerializeField] private ImpactEffectSpawner bulletEffectSpawner;
     [SerializeField] private GameObject GunMuzzleEffect;
     [SerializeField] private GameObject MuzzlePosition;
@@ -10,11 +11,19 @@ public abstract class Weapon : MonoBehaviour
     protected float nextFireTime = 0f;
 
 
+    private void Start()
+    {
+        effectSpawner = GameObject.FindWithTag("bulletEffect");
+        bulletEffectSpawner = effectSpawner.GetComponent<ImpactEffectSpawner>();
+    }
+
+
     // Abstract method for shooting, to be implemented by subclasses
     public abstract void Shoot();
     // Protected method to handle raycast logic, can be used by subclasses
     protected void PerformRaycast()
     {
+        playerCamera = Camera.main;
         // Find the muzzle for every weapon
         foreach (Transform child in inventory.itemHolderPosition)
         {
@@ -29,6 +38,7 @@ public abstract class Weapon : MonoBehaviour
             }
 
         }
+
 
         // Spawn Muzzle Effect at muzzle for every shot         
         GameObject MuzzleEffect = Instantiate(GunMuzzleEffect, MuzzlePosition.transform.position, Quaternion.identity);

@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+using Cinemachine;
+using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,10 +21,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
     private Vector3 velocity;
     private bool isGrounded;
-
-    [Header("Look Settings")]
-    public float lookSensitivity = 2f;
-    public float maxLookAngle = 85f;
+    
 
     [Header("Crouch Settings")]
     public float normalHeight = 2f;
@@ -45,13 +46,36 @@ public class PlayerController : MonoBehaviour
 
     public Inventory inventorySystem;
 
-    [SerializeField] private RaycastWeapon currentWeapon;
+    public RaycastWeapon currentWeapon;
 
     [Header("Animation Alignment")]
     [SerializeField] private GameObject playerSpine;
     public float spineYRotationOffset = 40f;
 
     private bool disableRotation;
+
+    [Header("Camera References")]
+    public CinemachineVirtualCamera firstPersonCamera;
+    public CinemachineFreeLook thirdPersonCamera;
+
+    [Header("Camera Settings")]
+    public float lookSensitivity = 1f;
+    public float shoulderOffset = 1.2f;
+    public Transform playerTransform;
+    public Transform playerHead;
+
+    [Header("Controls")]
+    public KeyCode toggleCameraMode = KeyCode.LeftShift;
+
+    // Camera states
+    private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
+    private CameraMode currentMode = CameraMode.ThirdPersonShiftlock;
+
+    // Components
+    private CinemachinePOV fpsPOV;
+
+    [SerializeField] private TMP_Text CamText;
+    public float maxHeadAngle = 80f; // Limit head tilt to avoid unrealistic rotations
 
 
     private void Awake()
@@ -71,17 +95,51 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        isCrouching = false; 
+        isCrouching = false;
         targetHeight = normalHeight;
-        characterController.height = normalHeight; 
+        characterController.height = normalHeight;
         disableRotation = false;
+
+        currentWeapon = null;
+
+        // Configure first person camera
+        if (firstPersonCamera != null)
+        {
+            fpsPOV = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
+            fpsPOV.m_HorizontalAxis.m_MaxSpeed = lookSensitivity * 700;
+            fpsPOV.m_VerticalAxis.m_MaxSpeed = lookSensitivity * 700;
+        }
+
+        // Configure third person camera
+        if (thirdPersonCamera != null)
+        {
+            // Set up the free look camera for shiftlock behavior
+            thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500;
+            thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Lock vertical orbit in shiftlock mode
+
+            // Set shoulder position
+            thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
+                new Vector3(shoulderOffset, 1.5f, 0);
+        }
+
+        // Set initial camera mode
+        SetCameraMode(currentMode);
+
+        if(currentMode == CameraMode.ThirdPersonShiftlock)
+        {
+            CamText.text = "Third Person";
+        }
+        else
+        {
+            CamText.text = "First Person";
+        }
     }
 
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
     }
-    
+
     public void OnLook(InputValue value)
     {
         lookInput = value.Get<Vector2>();
@@ -89,7 +147,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputValue value)
     {
-        if (value.isPressed && isGrounded) 
+        if (value.isPressed && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -104,23 +162,33 @@ public class PlayerController : MonoBehaviour
         {
             CheckGround();
             HandleMovement();
+            if (disableRotation == false)
+            {
+                //HandleLook();
+                
+            }
             HandleCrouch();
             HandleSprint();
             InteractWithInventory();
             DropItem();
+            UseItem();
             HandleGuns();
         }
 
         ApplyGravity();
 
         if (playerInput.actions["Interact"].WasPressedThisFrame())
-        {  
+        {
             if (Time.timeScale != 0)
             {
                 InteractWithObject();
                 PickupItem();
             }
         }
+        ToggleCameraMode();
+        // Handle player head rotation
+        UpdateHeadRotation();
+        
     }
 
     private void LateUpdate()
@@ -177,7 +245,7 @@ public class PlayerController : MonoBehaviour
 
                 // Try getting an animator component from the door
                 Animator doorAnimator = hit.collider.GetComponentInChildren<Animator>();
-                DoorScript doorScript = hit.collider.GetComponent<DoorScript>(); 
+                DoorScript doorScript = hit.collider.GetComponent<DoorScript>();
 
                 if (doorAnimator != null)
                 {
@@ -204,13 +272,13 @@ public class PlayerController : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-       
+
         float currentSpeed = walkSpeed;
         if (isCrouching)
         {
             currentSpeed = crouchSpeed;
         }
-        else if (isSprinting && !isCrouching) 
+        else if (isSprinting && !isCrouching)
         {
             currentSpeed = sprintSpeed;
         }
@@ -258,7 +326,7 @@ public class PlayerController : MonoBehaviour
     {
         var crouchAction = playerInput.actions["Crouch"];
 
-        if (crouchAction.IsPressed()) 
+        if (crouchAction.IsPressed())
         {
             if (!isCrouching)
             {
@@ -266,7 +334,7 @@ public class PlayerController : MonoBehaviour
                 targetHeight = crouchHeight;
             }
         }
-        else 
+        else
         {
             if (isCrouching)
             {
@@ -285,14 +353,14 @@ public class PlayerController : MonoBehaviour
     {
         var sprintAction = playerInput.actions["Sprint"];
 
-        if (sprintAction.IsPressed()) 
+        if (sprintAction.IsPressed())
         {
             if (!isSprinting)
             {
                 isSprinting = true;
             }
         }
-        else 
+        else
         {
             if (isSprinting)
             {
@@ -305,7 +373,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f;  
+            velocity.y = -2f;
         }
         else
         {
@@ -325,7 +393,7 @@ public class PlayerController : MonoBehaviour
             {
                 inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
                 disableRotation = inventorySystem.InventoryDisplay.activeSelf;
-                if(inventorySystem.InventoryDisplay.activeSelf == false)
+                if (inventorySystem.InventoryDisplay.activeSelf == false)
                 {
                     for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
                     {
@@ -338,7 +406,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-    
+
     }
 
     public void PickupItem()
@@ -355,38 +423,36 @@ public class PlayerController : MonoBehaviour
         // Cast the ray
         if (Physics.Raycast(ray, out hit, maxDistance))
         {
+            Debug.Log("Raycast hit: " + hit.collider.gameObject.name); // Debug log for hit object
             // Check if we hit something
             if (hit.collider != null)
             {
                 // Get the GameObject that was hit
                 GameObject hitObject = hit.collider.gameObject;
+                Debug.Log("Hit object tag: " + hitObject.tag); // Check detected tag
 
-           
-                if (hitObject.CompareTag("Ammo"))
+                if (hitObject.CompareTag("Item"))
                 {
-                    inventorySystem.AddItem("Ammo", 0.5f, 0.8f);
+                    ObjectData Item = hitObject.GetComponent<ObjectData>();
+                    inventorySystem.AddItem(Item.item.itemName, "Item", Item.item.cost, Item.item.weight, Item.item.usable);
                     Destroy(hitObject);
                 }
 
-                if (hitObject.CompareTag("Ammo2"))
+
+
+                if (hitObject.CompareTag("Weapon"))
                 {
-                    inventorySystem.AddItem("Ammo2", 0.5f, 0.8f);
+                    RaycastWeapon weaponItem = hitObject.GetComponent<RaycastWeapon>();
+                    inventorySystem.AddItem(weaponItem.weaponData.weaponName, "Weapon", weaponItem.weaponData.cost, weaponItem.weaponData.weight, weaponItem.weaponData.Usable);
                     Destroy(hitObject);
                 }
 
-                if (hitObject.CompareTag("Revolver"))
-                {
-                    inventorySystem.AddItem("Revolver", 3.5f, 2.8f);
-                    Destroy(hitObject);
-                }
-
-                if (hitObject.CompareTag("AK47"))
-                {
-                    inventorySystem.AddItem("AK47", 5.2f, 3.8f);
-                    Destroy(hitObject);
-                }
             }
-        }       
+        }
+        else
+        {
+            Debug.Log("Raycast did not hit anything");
+        }
     }
 
 
@@ -402,8 +468,8 @@ public class PlayerController : MonoBehaviour
             {
                 if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
                 {
-                    inventorySystem.SpawnByTag(inventorySystem.itemSlots[i].tag, DropArea.position);
-                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+                    ItemManager.Instance.SpawnByItemName(inventorySystem.itemSlots[i].name, DropArea.position);
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
                     break;
                 }
                 else if (inventorySystem.itemEquipped[i])
@@ -411,24 +477,58 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Object Dropped");
 
                     Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
-                    
+
                     equippedItem.transform.SetParent(null);
 
                     equippedItem.transform.position = DropArea.position;
-                                       
-                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].tag);
+
+                    inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
+
+                    // Disable Crosshair when weapon unequipped
+                    // Raycastweapon
+                    RaycastWeapon raycastWeapon = equippedItem.GetComponent<RaycastWeapon>();
+                    GameObject currentCrosshair = raycastWeapon.Crosshair;
+                    Image CrosshairImage = currentCrosshair.GetComponent<Image>();
+                    CrosshairImage.enabled = false;
 
                     foreach (Transform child in equippedItem)
                     {
                         if (child.CompareTag("pickupPrompt"))
                         {
-                            child.gameObject.SetActive(true);
+                            child.gameObject.SetActive(true);                          
                         }
                     }
 
+                    currentWeapon = null;
+
+                    
+
                     inventorySystem.itemEquipped[i] = false;
-                  
+
+                    
+
                     break; // Stop after dropping the first selected item
+                }
+            }
+        }
+    }
+
+
+    public void UseItem()
+    {
+        var UseAction = playerInput.actions["UseItem"];
+
+        if (UseAction.WasPressedThisFrame())
+        {
+            for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+            {
+                if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
+                {
+                    if (inventorySystem.usableItem[i] == true)
+                    {
+                        inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
+                    }
+                    break;
                 }
             }
         }
@@ -455,7 +555,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        float rayLength = characterController.height / 2 + 0.1f;    
+        float rayLength = characterController.height / 2 + 0.1f;
         isGrounded = Physics.Raycast(transform.position, Vector3.down, rayLength);
     }
 
@@ -473,23 +573,74 @@ public class PlayerController : MonoBehaviour
     {
         var ShootAction = playerInput.actions["Shoot"];
 
-
-        if (RaycastWeapon.weaponName == "Ak47" && currentWeapon.CanShoot)
+        if (currentWeapon != null)
         {
-            if (ShootAction.IsPressed())
+
+            if (currentWeapon.weaponState == "Ak47" && currentWeapon.CanShoot)
             {
-                currentWeapon.Shoot();
+                if (ShootAction.IsPressed())
+                {
+                    currentWeapon.Shoot();
+                }
             }
-        }
 
-        if (RaycastWeapon.weaponName == "Revolver" && currentWeapon.CanShoot)
-        {
-            if (ShootAction.WasPressedThisFrame())
+            if (currentWeapon.weaponState == "Revolver" && currentWeapon.CanShoot)
             {
-                currentWeapon.Shoot();
+                if (ShootAction.WasPressedThisFrame())
+                {
+                    currentWeapon.Shoot();
+                }
             }
         }
     }
 
+    void ToggleCameraMode()
+    {
+        var ToggleCameraAction = playerInput.actions["ToggleCamera"];
+
+
+        if (ToggleCameraAction.WasPressedThisFrame())
+        {
+
+            if (currentMode == CameraMode.FirstPerson)
+            {
+                SetCameraMode(CameraMode.ThirdPersonShiftlock);
+                CamText.text = "Third Person";
+            }
+            else
+            {
+                SetCameraMode(CameraMode.FirstPerson);
+                CamText.text = "First Person";
+            }
+        }
+    }
+
+    void SetCameraMode(CameraMode mode)
+    {
+        currentMode = mode;
+
+        switch (mode)
+        {
+            case CameraMode.FirstPerson:
+                firstPersonCamera.Priority = 20;
+                thirdPersonCamera.Priority = 10;
+                break;
+
+            case CameraMode.ThirdPersonShiftlock:
+                firstPersonCamera.Priority = 10;
+                thirdPersonCamera.Priority = 20;
+                break;
+        }
+    }
+
+    void UpdateHeadRotation()
+    {
+        if (playerHead == null) return;
+
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+
+        playerHead.transform.rotation = camera.transform.rotation;
+
+    }
 
 }

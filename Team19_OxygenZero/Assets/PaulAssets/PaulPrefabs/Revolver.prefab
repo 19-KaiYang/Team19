@@ -508,9 +508,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3233978446711689091}
   - component: {fileID: 4598365270405891780}
+  - component: {fileID: 6901923309789504743}
   m_Layer: 6
-  m_Name: Revolver_LP
-  m_TagString: Revolver
+  m_Name: Revolver
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -564,6 +565,35 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.076547146, y: 0.17955196, z: 0.25702897}
   m_Center: {x: 0.002584219, y: 0.016172588, z: 0.021485522}
+--- !u!114 &6901923309789504743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3573649893971100118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab6bb96a275e43343957e1c42b556ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectSpawner: {fileID: 0}
+  bulletEffectSpawner: {fileID: 0}
+  GunMuzzleEffect: {fileID: 1743301284569550, guid: ad2ab49d0a2a17148bd51c93d977bdbc, type: 3}
+  MuzzlePosition: {fileID: 4119913043167392397}
+  playerCamera: {fileID: 0}
+  weaponData: {fileID: 11400000, guid: 6e9f76ebae11b8f438ec7dae8307e2c0, type: 2}
+  inventory: {fileID: 0}
+  weaponState: 
+  ammoCount: 0
+  maxAmmoCount: 0
+  Missile: {fileID: 0}
+  MissilePosition: {fileID: 0}
+  LauncherMuzzleEffect: {fileID: 0}
+  LauncherMuzzlePosition: {fileID: 0}
+  CanShoot: 0
+  fpsController: {fileID: 0}
+  Crosshair: {fileID: 0}
 --- !u!1 &3781672950849591483
 GameObject:
   m_ObjectHideFlags: 0

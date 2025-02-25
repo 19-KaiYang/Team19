@@ -261,9 +261,10 @@ GameObject:
   - component: {fileID: 6114508699799939946}
   - component: {fileID: 8857835393679168839}
   - component: {fileID: 7790461967670946375}
+  - component: {fileID: 4882826880613976753}
   m_Layer: 0
   m_Name: Ammo2
-  m_TagString: Ammo2
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -355,3 +356,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4882826880613976753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9034113559786487516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d1b49e44b9b7be45ad2678b2dd39c6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: e3ea5728440df1e458e6e4df6d487a10, type: 2}
