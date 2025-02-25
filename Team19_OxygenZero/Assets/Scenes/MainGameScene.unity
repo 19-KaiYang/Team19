@@ -563,6 +563,8 @@ MonoBehaviour:
   innerGridSize: 3
   roomPrefabs:
   - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
+  - {fileID: 6645659838018712191, guid: fe5f013c4279d9244aa0b1e45c67795c, type: 3}
+  - {fileID: 6645659838018712191, guid: 9c582cc8bce6ce5499d0671eb4a633df, type: 3}
   pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
   shuttlePlatformPrefab: {fileID: 3366130203979176033, guid: fd991a1e685028240a8456a68db5694b, type: 3}
   roomSpacing: 40
