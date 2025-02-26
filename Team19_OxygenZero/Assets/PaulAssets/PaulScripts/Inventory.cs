@@ -56,7 +56,7 @@ public class Inventory : MonoBehaviour
     public bool[] itemEquipped = new bool[slotAmount];
 
     public Transform itemHolderPosition;
-    [SerializeField] private GameObject itemHolder;
+    public GameObject itemHolder;
     public Transform dropArea;
 
     void Start()
@@ -386,8 +386,6 @@ public class Inventory : MonoBehaviour
     }
 
     
-
-
     public void EquipItem()
     {
         for(int i=0;i <itemSlots.Length;i++)

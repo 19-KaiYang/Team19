@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour
     public float crouchHeight = 1f;
     private bool isCrouching = false;
     private float targetHeight;
-    private float crouchTransitionSpeed = 5f;
 
     [Header("References")]
     private PlayerInput playerInput;
@@ -39,8 +38,6 @@ public class PlayerController : MonoBehaviour
     private Transform cameraTransform;
 
     private bool isCursorToggle;
-
-    private float xRotation = 0f;
     public float interactRange = 5f;
 
     public GameObject inventory;
@@ -52,6 +49,9 @@ public class PlayerController : MonoBehaviour
     [Header("Animation Alignment")]
     [SerializeField] private GameObject playerSpine;
     public float spineYRotationOffset = 46f;
+
+    [Header("Animator")]
+    [SerializeField] private Animator animator;
 
     [Header("Camera References")]
     public CinemachineVirtualCamera firstPersonCamera;
@@ -83,6 +83,10 @@ public class PlayerController : MonoBehaviour
     private float originalHealthBarHeight;
     public GameObject playerPrefab;
     public GameObject playerModel;
+
+    public bool usingPistol;
+    public bool usingRifle;
+    public bool usingNothing;
 
 
     private void Awake()
@@ -129,12 +133,6 @@ public class PlayerController : MonoBehaviour
             // Set up the free look camera for shiftlock behavior
             thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 2000;
             thirdPersonCamera.m_YAxis.m_MaxSpeed = 5; // Lock vertical orbit in shiftlock mode
-
-            // Set shoulder position
-            thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
-                new Vector3(shoulderOffset, 1.5f, 0);
-
-            thirdPersonCamera.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
         }
 
         // Set initial camera mode
@@ -193,6 +191,9 @@ public class PlayerController : MonoBehaviour
         ApplyGravity();
         UpdateHealthUI();
 
+        SetIdleStateType();
+        SetIdleAnimation();
+
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
             if (Time.timeScale != 0)
@@ -216,6 +217,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SetIdleStateType()
+    {
+        // Assume the player is holding nothing by default
+        usingPistol = false;
+        usingRifle = false;
+        usingNothing = true;
+
+        // Loop through inventory slots to check if an item is equipped
+        for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+        {
+            if (inventorySystem.itemEquipped[i]) // If an item is equipped
+            {
+                // Ensure there's a weapon in the holder
+                if (inventorySystem.itemHolderPosition.childCount > 0)
+                {
+                    Transform Weapon = inventorySystem.itemHolderPosition.GetChild(0);
+                    RaycastWeapon type = Weapon.GetComponent<RaycastWeapon>();
+
+                    if (type != null)
+                    {
+                        if (type.weaponData.weaponType == WeaponType.Pistol)
+                        {
+                            usingPistol = true;
+                            usingRifle = false;
+                            usingNothing = false;
+                        }
+                        else if (type.weaponData.weaponType == WeaponType.Rifle)
+                        {
+                            usingRifle = true;
+                            usingPistol = false;
+                            usingNothing = false;
+                        }
+                        else // If the weapon exists but has an unknown type
+                        {
+                            usingRifle = false;
+                            usingPistol = false;
+                            usingNothing = true;
+                        }
+                    }
+                }
+                else // No weapon in the holder
+                {
+                    usingRifle = false;
+                    usingPistol = false;
+                    usingNothing = true;
+                }
+
+                // Exit loop early since we found an equipped item
+                break;
+            }
+        }
+    }
+
+
+    private void SetIdleAnimation()
+    {
+        if (usingRifle == true)
+        {
+
+        }
+        else if (usingPistol == true)
+        {
+            animator.SetBool("UsingPistol", true);
+        }
+        else if (usingNothing == true)
+        {
+            animator.SetBool("UsingPistol", false);
+        }
+    }
+
     private void ToggleCursor()
     {
         // Check if inventory is open; if it is, do nothing
@@ -225,20 +296,52 @@ public class PlayerController : MonoBehaviour
                 return;
 
             // If inventory is NOT open, allow Alt key to unlock the cursor
-            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held downs
+            if (playerInput.actions["ToggleCursor"].IsPressed()) // Alt key is held down
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                isCursorToggle = true;
+                Time.timeScale = 0;
+
+                // Disable First-Person camera rotation (both X and Y)
+                if (firstPersonCamera != null)
+                {
+                    CinemachinePOV pov = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
+                    pov.m_HorizontalAxis.m_MaxSpeed = 0; // Disable left-right rotation
+                    pov.m_VerticalAxis.m_MaxSpeed = 0;   // Disable up-down rotation
+                }
+
+                // Disable Third-Person camera rotation (both X and Y)
+                if (thirdPersonCamera != null)
+                {
+                    thirdPersonCamera.m_XAxis.m_MaxSpeed = 0; // Disable left-right rotation
+                    thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Disable up-down rotation
+                }
             }
             else // Alt key is released
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                isCursorToggle = false;
+                Time.timeScale = 1;
+
+                // Re-enable First-Person camera rotation
+                if (firstPersonCamera != null)
+                {
+                    CinemachinePOV pov = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
+                    pov.m_HorizontalAxis.m_MaxSpeed = lookSensitivity * 700;
+                    pov.m_VerticalAxis.m_MaxSpeed = lookSensitivity * 700;
+                }
+
+                // Re-enable Third-Person camera rotation
+                if (thirdPersonCamera != null)
+                {
+                    thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 2000;
+                    thirdPersonCamera.m_YAxis.m_MaxSpeed = 5; // Adjust to your preferred speed
+                }
             }
         }
     }
+
+
 
     private void InteractWithObject()
     {
@@ -277,6 +380,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private float lastMoveY = 0f;
+
     private void HandleMovement()
     {
         Vector3 forward = cameraTransform.forward;
@@ -285,7 +390,6 @@ public class PlayerController : MonoBehaviour
         right.y = 0;
         forward.Normalize();
         right.Normalize();
-
 
         float currentSpeed = walkSpeed;
         if (isCrouching)
@@ -297,62 +401,119 @@ public class PlayerController : MonoBehaviour
             currentSpeed = sprintSpeed;
         }
 
+        // Calculate movement direction
         Vector3 movement = (forward * moveInput.y + right * moveInput.x) * currentSpeed;
+
+        // Check if player is moving
+        bool isMoving = movement.magnitude > 0.01f;
+
+        // Detect if moving backward (Only while "S" is actively pressed)
+        if (moveInput.y < 0)
+        {
+            lastMoveY = moveInput.y; // Store last backward input
+        }
+        else if (moveInput.y > 0)
+        {
+            lastMoveY = moveInput.y; // Store last forward input
+        }
+
+        bool isMovingBackward = lastMoveY < 0 && moveInput.y < 0; // Ensure backward movement resets correctly
+
+        if (isMoving)
+        {
+            if (usingPistol)
+            {
+                if (isMovingBackward)
+                {
+                    // Add pistol movement behavior when moving backward
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("IsBackwardWalking", true);
+                }
+                else
+                {
+                    // Add pistol movement behavior when moving forward
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("IsBackwardWalking", false);
+                }
+            }
+            else if (usingRifle)
+            {
+                if (isMovingBackward)
+                {
+                    // Add rifle movement behavior when moving backward
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("IsBackwardWalking", true);
+                }
+                else
+                {
+                    // Add rifle movement behavior when moving forward
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("IsBackwardWalking", false);
+                }
+            }
+            else if (usingNothing)
+            {
+                if (isMovingBackward)
+                {
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("IsBackwardWalking", true);
+                }
+                else
+                {
+                    animator.SetBool("IsWalking", true);
+                    animator.SetBool("IsBackwardWalking", false);
+                }
+            }
+        }
+        else // Player is NOT moving
+        {
+            animator.SetBool("IsWalking", false);
+            animator.SetBool("IsBackwardWalking", false);
+        }
+
+        // Move the character
         characterController.Move(movement * Time.deltaTime);
     }
 
-    private void HandleLook()
-    {
-        float mouseX = lookInput.x * lookSensitivity;
-        float mouseY = lookInput.y * lookSensitivity;
-
-        // Rotate the player body (yaw rotation)
-        transform.Rotate(Vector3.up * mouseX);
-
-        // Adjust X rotation for the camera (pitch rotation)
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
-
-        // Apply the camera's pitch rotation
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-        // Get target rotation from the camera
-        Quaternion targetRotation = Quaternion.LookRotation(cameraTransform.forward);
-
-        // Convert to Euler angles for manual adjustments
-        Vector3 eulerRotation = targetRotation.eulerAngles;
-
-        // Evenly distribute rotation between X and Z
-        float combinedRotation = xRotation;  // Keep the same value for both axes
-
-        eulerRotation.x = combinedRotation;  // Rotate on X (looking up/down)
-        eulerRotation.z = combinedRotation;  // Rotate on Z to keep balance
-
-        // Apply Y offset if needed
-        eulerRotation.y += spineYRotationOffset;
-
-        // Apply the final rotation to the spine
-        playerSpine.transform.rotation = Quaternion.Euler(eulerRotation);
-    }
 
 
     private void HandleCrouch()
     {
+        float recenterController;
+        float cameraOffsetY;
+
         var crouchAction = playerInput.actions["Crouch"];
 
         if (crouchAction.IsPressed())
         {
+            recenterController = -0.2f;
+            cameraOffsetY = -2f;
+
             isCrouching = true;
             targetHeight = crouchHeight;
+            animator.SetBool("IsCrouch", true);
         }
         else
         {
+            recenterController = 0;
+            cameraOffsetY = 0.698f;
+
             isCrouching = false;
             targetHeight = normalHeight;
+            animator.SetBool("IsCrouch", false);
         }
 
-        characterController.height = Mathf.Lerp(characterController.height, targetHeight, crouchTransitionSpeed * Time.deltaTime);
+        characterController.height = targetHeight;
+        characterController.center = new Vector3(0, recenterController, 0);
+
+        // Move the camera Y position
+        Camera.main.transform.localPosition = new Vector3(
+            Camera.main.transform.localPosition.x,
+            cameraOffsetY,
+            Camera.main.transform.localPosition.z
+        );
     }
+
     private void HandleSprint()
     {
         var sprintAction = playerInput.actions["Sprint"];
@@ -420,9 +581,18 @@ public class PlayerController : MonoBehaviour
 
         // Variable to store hit information
         RaycastHit hit;
+        float maxDistance;
 
-        // Maximum distance for the raycast
-        float maxDistance = 3f;
+        if (currentMode == CameraMode.FirstPerson)
+        {
+            // Maximum distance for the raycast
+            maxDistance = 3f;
+        }
+        else
+        {
+            // Maximum distance for the raycast
+            maxDistance = 7f;
+        }
 
         // Cast the ray
         if (Physics.Raycast(ray, out hit, maxDistance))
@@ -597,20 +767,51 @@ public class PlayerController : MonoBehaviour
     {
         if (inventory != null)
         {
-            if (inventorySystem.InventoryDisplay.activeSelf == false)
+            if (inventorySystem.InventoryDisplay.activeSelf == false) // Inventory is closed
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 Time.timeScale = 1f;
+
+                // Re-enable First-Person camera rotation
+                if (firstPersonCamera != null)
+                {
+                    CinemachinePOV pov = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
+                    pov.m_HorizontalAxis.m_MaxSpeed = lookSensitivity * 700; // Restore left-right rotation
+                    pov.m_VerticalAxis.m_MaxSpeed = lookSensitivity * 700;   // Restore up-down rotation
+                }
+
+                // Re-enable Third-Person camera rotation
+                if (thirdPersonCamera != null)
+                {
+                    thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 2000; // Restore left-right rotation
+                    thirdPersonCamera.m_YAxis.m_MaxSpeed = 5; // Restore up-down rotation (adjust as needed)
+                }
             }
-            else
+            else // Inventory is open
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 Time.timeScale = 0f;
+
+                // Disable First-Person camera rotation
+                if (firstPersonCamera != null)
+                {
+                    CinemachinePOV pov = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
+                    pov.m_HorizontalAxis.m_MaxSpeed = 0; // Disable left-right rotation
+                    pov.m_VerticalAxis.m_MaxSpeed = 0;   // Disable up-down rotation
+                }
+
+                // Disable Third-Person camera rotation
+                if (thirdPersonCamera != null)
+                {
+                    thirdPersonCamera.m_XAxis.m_MaxSpeed = 0; // Disable left-right rotation
+                    thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Disable up-down rotation
+                }
             }
         }
     }
+
 
     private void CheckGround()
     {
@@ -705,7 +906,14 @@ public class PlayerController : MonoBehaviour
         GameObject camera = GameObject.FindWithTag("MainCamera");
         float cameraRotation = camera.transform.eulerAngles.x;
 
-        playerSpine.transform.localRotation = Quaternion.Euler(cameraRotation, 0, cameraRotation);
+        if (animator.GetBool("IsWalking") && usingNothing)
+        {
+            playerSpine.transform.localRotation = Quaternion.Euler(cameraRotation, 0, 0);
+        }
+        else
+        {
+            playerSpine.transform.localRotation = Quaternion.Euler(cameraRotation, 0, cameraRotation);
+        }
     }
 
     private void UpdateHealthUI()
@@ -735,7 +943,7 @@ public class PlayerController : MonoBehaviour
                 
                 firstPersonCamera.Priority = 20;
                 thirdPersonCamera.Priority = 10;
-                CinemachineBrain.SoloCamera = firstPersonCamera; 
+                CinemachineBrain.SoloCamera = firstPersonCamera;
                 break;
 
             case CameraMode.ThirdPersonShiftlock:

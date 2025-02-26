@@ -13,6 +13,12 @@ public class WeaponData : ScriptableObject
     public int weight = 1;
     public int amount = 1;
     public bool Usable = false;
+    public WeaponType weaponType;
     public LayerMask hitLayers; // Layers the weapon can hit
 }
 
+public enum WeaponType
+{
+    Pistol,
+    Rifle
+}

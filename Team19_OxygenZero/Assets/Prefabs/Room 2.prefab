@@ -702,6 +702,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6501130152868574986}
   - component: {fileID: 8465563343236338008}
+  - component: {fileID: 2977068511221183821}
+  - component: {fileID: 2819993748794491837}
   m_Layer: 0
   m_Name: Room 2
   m_TagString: Untagged
@@ -757,6 +759,59 @@ MonoBehaviour:
   oxygenConsumptionRate: 1
   spawnedDoors: []
   spawnPoints: []
+  spawnHeightOffset: 0.5
+--- !u!65 &2977068511221183821
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6645659838018712191}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 30.073288, y: 10.674465, z: 30.144001}
+  m_Center: {x: -0.018104553, y: 4.8372335, z: -0.018852234}
+--- !u!114 &2819993748794491837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6645659838018712191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: edf7ac0779392394b9f27788d536a293, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &6788404788634758816
 GameObject:
   m_ObjectHideFlags: 0
