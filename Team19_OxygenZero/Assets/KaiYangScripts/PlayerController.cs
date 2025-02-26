@@ -470,12 +470,15 @@ public class PlayerController : MonoBehaviour
         {
             for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
             {
+                // if in inventory and a slot selected
                 if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
                 {
+                    // if item not equipped
                     if (!inventorySystem.itemEquipped[i])
                     {
                         ItemManager.Instance.SpawnByItemName(inventorySystem.itemSlots[i].name, DropArea.position);
                     }
+                    /// if item equipped
                     if (inventorySystem.itemEquipped[i])
                     {
                         Debug.Log("Object Dropped");
@@ -506,8 +509,10 @@ public class PlayerController : MonoBehaviour
                     
                     break;
                 }
-                else if (inventorySystem.itemEquipped[i] && !inventorySystem.SlotSelected[i])
+                // if item is equipped and not opened inventory
+                else if (inventorySystem.itemEquipped[i] && !inventorySystem.InventoryDisplay.activeSelf)
                 {
+
                     Debug.Log("Object Dropped");
 
                     Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
@@ -542,6 +547,7 @@ public class PlayerController : MonoBehaviour
 
                     break; // Stop after dropping the first selected item
                 }
+                
             }
         }
     }
