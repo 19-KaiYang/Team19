@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1182029724723098543}
   - component: {fileID: 2561087098225236357}
   - component: {fileID: 2562372337352912901}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: AssaultRifle_Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 3403221041853619397}
   - component: {fileID: 5684105283994300523}
   - component: {fileID: 2628534852204935483}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 6004624544770370152}
   - component: {fileID: 2475925023469876773}
   - component: {fileID: 6425001354917908463}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: AK47
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -315,7 +315,7 @@ GameObject:
   - component: {fileID: 5563567437402806662}
   - component: {fileID: 2615488304028666301}
   - component: {fileID: 2927188883222218107}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: AssaultRifle_Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -396,7 +396,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6683916286422405553}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Ak47 Muzzle
   m_TagString: muzzleArea
   m_Icon: {fileID: 0}
@@ -431,7 +431,7 @@ GameObject:
   - component: {fileID: 9078944956393987821}
   - component: {fileID: 5349452803183140342}
   - component: {fileID: 6243192366724218158}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Canvas (World)
   m_TagString: pickupPrompt
   m_Icon: {fileID: 0}

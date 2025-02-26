@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 183323331214685968}
   - component: {fileID: 4965465415155759565}
   - component: {fileID: 9104019003691597537}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Receiver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 5796078168715599309}
   - component: {fileID: 5970151726224200076}
   - component: {fileID: 1077933884863102414}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 3038837722700588260}
   - component: {fileID: 8186985631030410606}
   - component: {fileID: 4961779416304866156}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Canvas (World)
   m_TagString: pickupPrompt
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 5435333206772054625}
   - component: {fileID: 5277776967756673829}
   - component: {fileID: 5511776033501934469}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,7 +375,7 @@ GameObject:
   - component: {fileID: 7239906843486082618}
   - component: {fileID: 1963761283532673909}
   - component: {fileID: 1040816997970376697}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: RevolverPrompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,7 +510,7 @@ GameObject:
   - component: {fileID: 4598365270405891780}
   - component: {fileID: 6901923309789504743}
   - component: {fileID: 8141239562535516799}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Revolver
   m_TagString: Weapon
   m_Icon: {fileID: 0}
@@ -633,7 +633,7 @@ GameObject:
   - component: {fileID: 7760051265309537792}
   - component: {fileID: 1014056325845509538}
   - component: {fileID: 7961542279040419644}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Front sight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -716,7 +716,7 @@ GameObject:
   - component: {fileID: 2240999595344171519}
   - component: {fileID: 611329954384800174}
   - component: {fileID: 1290513465808351107}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Extractor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -797,7 +797,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 113501613634683308}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Revolver Muzzle
   m_TagString: muzzleArea
   m_Icon: {fileID: 0}
@@ -830,7 +830,7 @@ GameObject:
   - component: {fileID: 6622497399449624225}
   - component: {fileID: 4696233627216871439}
   - component: {fileID: 5274109226662770804}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Grips
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 8821337486986455087}
   - component: {fileID: 4832448264430708406}
   - component: {fileID: 8352318680359026836}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Trigger guard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -996,7 +996,7 @@ GameObject:
   - component: {fileID: 2215480443568441512}
   - component: {fileID: 1759586691778899077}
   - component: {fileID: 7716443369769023518}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1079,7 +1079,7 @@ GameObject:
   - component: {fileID: 3515702253180804455}
   - component: {fileID: 687227240189428491}
   - component: {fileID: 5267734025608242830}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Hammer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1162,7 +1162,7 @@ GameObject:
   - component: {fileID: 5505062130330442432}
   - component: {fileID: 3251699135629298147}
   - component: {fileID: 6080260337997342662}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Grip bolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1245,7 +1245,7 @@ GameObject:
   - component: {fileID: 6211122032609373381}
   - component: {fileID: 1347413001493033956}
   - component: {fileID: 2593597783441142095}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Receiver bolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
