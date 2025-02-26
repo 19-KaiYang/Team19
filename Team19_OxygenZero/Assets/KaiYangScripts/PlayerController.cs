@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
@@ -67,10 +68,12 @@ public class PlayerController : MonoBehaviour
 
     // Camera states
     private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
-    private CameraMode currentMode = CameraMode.ThirdPersonShiftlock;
+    private CameraMode currentMode = CameraMode.FirstPerson;
 
     // Components
     private CinemachinePOV fpsPOV;
+
+    private bool disableRotation;
 
     [Header("Player Health")]
     // Player Health
@@ -194,6 +197,7 @@ public class PlayerController : MonoBehaviour
         }
 
         ToggleCameraMode();
+
         // Handle player head rotation
         UpdateHeadRotation();
     }
@@ -629,11 +633,13 @@ public class PlayerController : MonoBehaviour
             {
                 SetCameraMode(CameraMode.ThirdPersonShiftlock);
                 CamText.text = "Third Person";
+                Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("Playerlayer"));
             }
             else
             {
                 SetCameraMode(CameraMode.FirstPerson);
                 CamText.text = "First Person";
+                Camera.main.cullingMask &= ~(1 << LayerMask.NameToLayer("Playerlayer"));
             }
         }
     }
@@ -657,7 +663,23 @@ public class PlayerController : MonoBehaviour
         else
         {
             playerPrefab.transform.rotation = Quaternion.Euler(0, cameraYRotation, 0);
+            // Sync first-person camera to match player position before switching
+            playerModel.transform.rotation = Quaternion.Euler(0, cameraYRotation, 0);
         }
+    }
+
+    IEnumerator Transition(float time)
+    {
+        yield return new WaitForSeconds(time);
+    }
+
+    IEnumerator DisableRotation(float time)
+    {
+        disableRotation = true;
+
+        yield return new WaitForSeconds(time);
+
+        disableRotation = false;
     }
 
     private void SpineRotation()
@@ -676,7 +698,7 @@ public class PlayerController : MonoBehaviour
 
     public void DepletePlayerHealth(float health)
     {
-        playerHealth -= health * Time.deltaTime;
+        playerHealth -= health;
     }
 
 
@@ -692,13 +714,20 @@ public class PlayerController : MonoBehaviour
         switch (mode)
         {
             case CameraMode.FirstPerson:
+                
                 firstPersonCamera.Priority = 20;
                 thirdPersonCamera.Priority = 10;
+                CinemachineBrain.SoloCamera = firstPersonCamera; 
                 break;
 
             case CameraMode.ThirdPersonShiftlock:
+               
+
+              
+                
                 firstPersonCamera.Priority = 10;
                 thirdPersonCamera.Priority = 20;
+                CinemachineBrain.SoloCamera = thirdPersonCamera;
                 break;
         }
     }

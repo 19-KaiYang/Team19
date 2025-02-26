@@ -295,7 +295,7 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: 6e09804e7e9c37b42a1ce42a3f263c21, type: 2}
   inventory: {fileID: 0}
   weaponState: 
-  ammoCount: 0
+  ammoCount: 100
   maxAmmoCount: 0
   Missile: {fileID: 0}
   MissilePosition: {fileID: 0}

@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1150277063672270577}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.92, z: 0}
+  m_LocalPosition: {x: 0, y: 0.819, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -225,8 +225,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _turretAI: {fileID: 7115672823427955140}
-  detectionRange: 5
-  fieldOfViewAngle: 150
+  detectionRange: 6
+  fieldOfViewAngle: 180
   playerTransform: {fileID: 0}
 --- !u!1 &7815734051152107259
 GameObject:
@@ -253,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 7815734051152107259}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.74, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -405,5 +405,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2.6473234, z: 2.4727015}
-  m_Center: {x: 0, y: 0.42658988, z: 0.52706146}
+  m_Size: {x: 1, y: 2.6067784, z: 1}
+  m_Center: {x: 0, y: 0.471305, z: 0}
