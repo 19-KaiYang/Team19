@@ -24,7 +24,9 @@ public class RoomController : MonoBehaviour
 
     [SerializeField] private List<GameObject> spawnedDoors = new List<GameObject>(); // List to store spawned doors
 
-   
+    [Header("Object Spawning")]
+    public List<SpawnPointData> spawnPoints = new List<SpawnPointData>(); // Each spawn point has its own object list
+    public float spawnHeightOffset = 0.5f; // Default height offset for spawned objects
 
     public void Awake()
     {
@@ -38,9 +40,6 @@ public class RoomController : MonoBehaviour
         spawnedDoors.Add(SpawnDoor(rightDoor, Quaternion.Euler(0, 0, 0)));
         Debug.Log($"Right door added, final count: {spawnedDoors.Count}");
     }
-
-    [Header("Object Spawning")]
-    public List<SpawnPointData> spawnPoints = new List<SpawnPointData>(); // Each spawn point has its own object list
 
     private void Start()
     {
@@ -86,7 +85,6 @@ public class RoomController : MonoBehaviour
         }
     }
 
-
     private GameObject SpawnDoor(GameObject doorPosition, Quaternion rotation)
     {
         if (doorPosition != null)
@@ -113,7 +111,26 @@ public class RoomController : MonoBehaviour
             else
             {
                 GameObject selectedObject = spawnData.possibleObjects[Random.Range(0, spawnData.possibleObjects.Length)];
-                GameObject spawnedObject = Instantiate(selectedObject, spawnData.spawnPoint.position, Quaternion.identity, transform);
+                
+                // Calculate spawn position with height offset
+                Vector3 spawnPosition = spawnData.spawnPoint.position;
+                
+                // Try to get renderer from the prefab to calculate proper height
+                Renderer prefabRenderer = selectedObject.GetComponent<Renderer>();
+                if (prefabRenderer != null)
+                {
+                    // Use half the height of the renderer bounds as offset
+                    float objectHeight = prefabRenderer.bounds.size.y;
+                    spawnPosition.y += objectHeight / 2;
+                }
+                else
+                {
+                    // Fall back to default offset if no renderer found
+                    spawnPosition.y += spawnHeightOffset;
+                }
+                
+                // Instantiate the object at the adjusted position
+                GameObject spawnedObject = Instantiate(selectedObject, spawnPosition, Quaternion.identity, transform);
 
                 // Add NavMeshObstacle component if it doesn't exist
                 NavMeshObstacle obstacle = spawnedObject.GetComponent<NavMeshObstacle>();
@@ -187,6 +204,3 @@ public class RoomController : MonoBehaviour
         }
     }
 }
-
-
-

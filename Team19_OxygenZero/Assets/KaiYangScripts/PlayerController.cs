@@ -367,10 +367,10 @@ public class PlayerController : MonoBehaviour
     {
         var DropAction = playerInput.actions["DropItem"];
 
-        Transform DropArea = inventorySystem.dropArea.transform;
-
         if (DropAction.WasPressedThisFrame()) // Ensure it's only triggered once per frame
         {
+            Transform DropArea = inventorySystem.dropArea.transform;
+
             for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
             {
                 if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
