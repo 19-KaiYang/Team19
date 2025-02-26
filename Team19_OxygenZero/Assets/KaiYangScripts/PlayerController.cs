@@ -66,6 +66,9 @@ public class PlayerController : MonoBehaviour
     public Transform cameraLookAt;
     [SerializeField] private TMP_Text CamText;
 
+    [SerializeField] private float minFOV = 60f;
+    [SerializeField] private float maxFOV = 30f;
+
     // Camera states
     private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
     private CameraMode currentMode = CameraMode.FirstPerson;
@@ -83,6 +86,12 @@ public class PlayerController : MonoBehaviour
     private float originalHealthBarHeight;
     public GameObject playerPrefab;
     public GameObject playerModel;
+
+    public float zoominFOV = 35;
+    public float zoomoutFOV = 60;
+    public float FOVtransitionSpeed = 0.5f;
+
+    
 
 
     private void Awake()
@@ -121,6 +130,7 @@ public class PlayerController : MonoBehaviour
             fpsPOV = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
             fpsPOV.m_HorizontalAxis.m_MaxSpeed = lookSensitivity * 700;
             fpsPOV.m_VerticalAxis.m_MaxSpeed = lookSensitivity * 700;
+            
         }
 
         // Configure third person camera
@@ -206,6 +216,8 @@ public class PlayerController : MonoBehaviour
 
         // Handle player head rotation
         UpdateHeadRotation();
+        Reload();
+       
     }
 
     private void LateUpdate()
@@ -286,15 +298,37 @@ public class PlayerController : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
+        if (!isSprinting)
+        {
+            if (currentMode == CameraMode.FirstPerson && firstPersonCamera.m_Lens.FieldOfView < zoomoutFOV)
+            {
+                firstPersonCamera.m_Lens.FieldOfView += FOVtransitionSpeed;
+            }
+            if (currentMode == CameraMode.ThirdPersonShiftlock && thirdPersonCamera.m_Lens.FieldOfView < zoomoutFOV)
+            {
+                thirdPersonCamera.m_Lens.FieldOfView += FOVtransitionSpeed;
+            }
+        }
+
 
         float currentSpeed = walkSpeed;
         if (isCrouching)
         {
             currentSpeed = crouchSpeed;
+           
+            
         }
         else if (isSprinting && !isCrouching)
         {
             currentSpeed = sprintSpeed;
+            if (currentMode == CameraMode.FirstPerson && firstPersonCamera.m_Lens.FieldOfView > zoominFOV)
+            {
+                firstPersonCamera.m_Lens.FieldOfView -= FOVtransitionSpeed;
+            }
+            if (currentMode == CameraMode.ThirdPersonShiftlock && thirdPersonCamera.m_Lens.FieldOfView > zoominFOV)
+            {
+                thirdPersonCamera.m_Lens.FieldOfView -= FOVtransitionSpeed;
+            }
         }
 
         Vector3 movement = (forward * moveInput.y + right * moveInput.x) * currentSpeed;
@@ -442,6 +476,12 @@ public class PlayerController : MonoBehaviour
                     Destroy(hitObject);
                 }
 
+                if(hitObject.CompareTag("Money"))
+                {
+                    inventorySystem.UpdateMoney(20, true);
+                    Destroy(hitObject);
+                }
+
 
 
                 if (hitObject.CompareTag("Weapon"))
@@ -489,7 +529,7 @@ public class PlayerController : MonoBehaviour
 
                         equippedItem.transform.position = DropArea.position;
 
-
+                        inventorySystem.AmmoPanel.SetActive(false);
 
                         if (equippedItem != null)
                         {
@@ -532,6 +572,7 @@ public class PlayerController : MonoBehaviour
 
                     inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
 
+                    inventorySystem.AmmoPanel.SetActive(false);
 
                     if (equippedItem != null)
                     {
@@ -749,4 +790,97 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+
+    public void Reload()
+    {
+        var ReloadAction = playerInput.actions["Reload"];
+
+        if (ReloadAction.WasPressedThisFrame())
+        {
+            for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+            {
+                // Check if there is a weapon equipped on player
+                if (inventorySystem.itemEquipped[i] == true)
+                {
+                    Transform Weapon = inventorySystem.itemHolderPosition.GetChild(0);
+                    RaycastWeapon WeaponInfo = Weapon.GetComponent<RaycastWeapon>();
+
+                    if (WeaponInfo.weaponData.weaponName == "Revolver")
+                    {
+                        if (WeaponInfo.maxAmmoCount >= WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+                            // Remove maxAmmo
+                            WeaponInfo.maxAmmoCount -= GivenAmmo;
+                            // Add Ammo
+                            WeaponInfo.ammoCount += GivenAmmo;
+                            Debug.Log("Reload sufficient Ammo");
+                        }
+                        else if (WeaponInfo.maxAmmoCount < WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+
+                            int MaxAmmoleft = WeaponInfo.maxAmmoCount;
+
+                            if (GivenAmmo > MaxAmmoleft)
+                            {
+                                // Add Ammo
+                                WeaponInfo.ammoCount += WeaponInfo.maxAmmoCount;
+                                WeaponInfo.maxAmmoCount = 0;
+                                Debug.Log("Reload insufficient Ammo");
+                            }
+                            else if (GivenAmmo < MaxAmmoleft)
+                            {
+                                WeaponInfo.ammoCount += GivenAmmo;
+
+                                WeaponInfo.maxAmmoCount -= GivenAmmo;
+                                Debug.Log("Reload sufficient Ammo");
+                            }
+                        }
+                    }
+
+                    if (WeaponInfo.weaponData.weaponName == "Ak47")
+                    {
+                        if (WeaponInfo.maxAmmoCount >= WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+                            // Remove maxAmmo
+                            WeaponInfo.maxAmmoCount -= GivenAmmo;
+                            // Add Ammo
+                            WeaponInfo.ammoCount += GivenAmmo;
+                        }
+                        else if (WeaponInfo.maxAmmoCount < WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+
+                            int MaxAmmoleft = WeaponInfo.maxAmmoCount;
+
+                            if (GivenAmmo > MaxAmmoleft)
+                            {
+                                // Add Ammo
+                                WeaponInfo.ammoCount += WeaponInfo.maxAmmoCount;
+                                WeaponInfo.maxAmmoCount = 0;
+                            }
+                            else if (GivenAmmo < MaxAmmoleft)
+                            {
+                                WeaponInfo.ammoCount += GivenAmmo;
+
+                                WeaponInfo.maxAmmoCount -= GivenAmmo;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            
+        }
+    }
+
+  
 }
+

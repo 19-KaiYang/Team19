@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,11 @@ public class RaycastWeapon : Weapon
     public GameObject MissilePosition;
     public GameObject LauncherMuzzleEffect;
     public GameObject LauncherMuzzlePosition;
+
+    public int magazineSize;
+
+    public GameObject ammoText;
+    public TMP_Text ammoTextComponent;
 
 
 
@@ -30,6 +36,8 @@ public class RaycastWeapon : Weapon
         inventory = inventoryObject.GetComponent<Inventory>();
         fpsController.currentWeapon = this.GetComponent<RaycastWeapon>();
         Image CrosshairImage = Crosshair.GetComponent<Image>();
+        ammoText = GameObject.FindWithTag("ammoText");
+        ammoTextComponent = ammoText.GetComponent<TMP_Text>();
 
         CrosshairImage.enabled = true;
 
@@ -45,8 +53,6 @@ public class RaycastWeapon : Weapon
                     if (inventory.itemSlots[i].tag == "Weapon")
                     {
                         weaponState = weaponData.weaponName;
-                        ammoCount = weaponData.Ammo;
-                        maxAmmoCount = weaponData.maxAmmo;
                         if (Crosshair.activeSelf == false)
                         {
                             Crosshair.SetActive(true);
@@ -73,6 +79,11 @@ public class RaycastWeapon : Weapon
         if (Time.time >= nextFireTime)
         {
             CanShoot = true;
+        }
+
+        if(ammoTextComponent != null)
+        {
+            ammoTextComponent.text = "Ammo: " + ammoCount + " / " + maxAmmoCount;
         }
     }
 

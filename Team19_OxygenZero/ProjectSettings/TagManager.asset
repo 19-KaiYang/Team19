@@ -22,6 +22,9 @@ TagManager:
   - Item
   - Turret
   - GameItemManager
+  - ammoText
+  - ammoPanel
+  - Money
   layers:
   - Default
   - TransparentFX

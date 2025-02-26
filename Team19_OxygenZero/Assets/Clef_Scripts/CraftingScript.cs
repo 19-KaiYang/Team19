@@ -41,7 +41,10 @@ public class CraftingScript : MonoBehaviour
 
         bool[] obtainedIngredients = new bool[selectedRecipe.ingredients.Length];
 
-        foreach(Transform child in ingredientContents)
+        // Add this debug line
+        Debug.Log("Looking for recipe: " + itemName + ", Found: " + (selectedRecipe != null));
+
+        foreach (Transform child in ingredientContents)
         {
             Destroy(child.gameObject);
         }
@@ -118,14 +121,14 @@ public class CraftingScript : MonoBehaviour
         {
             bool[] obtainedIngredients = new bool[selectedRecipe.ingredients.Length];
 
-           
+
             if (selectedRecipe != null)
             {
                 // update the selected item name
                 selectedItemText.text = "<b>" + selectedRecipe.result.itemName + "</b>";
 
 
-                
+
 
 
                 for (int i = 0; i < selectedRecipe.ingredients.Length; i++)
@@ -133,7 +136,7 @@ public class CraftingScript : MonoBehaviour
                     // set ingredient texts
                     if (selectedRecipe.ingredients.Length > 0)
                     {
-                       GameObject Text = ingredientContents.GetChild(i).gameObject;
+                        GameObject Text = ingredientContents.GetChild(i).gameObject;
                         TMP_Text ingredientText = Text.GetComponent<TMP_Text>();
 
                         // Search inventory for this ingredient
@@ -212,13 +215,10 @@ public class CraftingScript : MonoBehaviour
         SelectItem(selectedRecipe.result.itemName);
     }
 
-    public void onClickOxygenTank()
+    public void ChooseRecipe(string Recipe)
     {
-        SelectItem("Oxygen Tank");
+        SelectItem(Recipe);
     }
 
-    public void OnClickBatteryPack()
-    {
-        SelectItem("Battery Pack");
-    }
+   
 }

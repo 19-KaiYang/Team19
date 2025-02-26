@@ -296,12 +296,13 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: 6e09804e7e9c37b42a1ce42a3f263c21, type: 2}
   inventory: {fileID: 0}
   weaponState: 
-  ammoCount: 100
-  maxAmmoCount: 0
+  ammoCount: 20
+  maxAmmoCount: 100
   Missile: {fileID: 0}
   MissilePosition: {fileID: 0}
   LauncherMuzzleEffect: {fileID: 0}
   LauncherMuzzlePosition: {fileID: 0}
+  magazineSize: 30
   CanShoot: 0
   fpsController: {fileID: 0}
   Crosshair: {fileID: 0}

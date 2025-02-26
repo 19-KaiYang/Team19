@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee925d289fe31784187e6ef18405897b, type: 3}
   m_Name: BatteryPackRecipe
   m_EditorClassIdentifier: 
-  ingredients: []
-  result: {fileID: 0}
+  ingredients:
+  - item: {fileID: 11400000, guid: f7bbda84495897f43af9e7d1ee2030bf, type: 2}
+    amount: 2
+  result: {fileID: 11400000, guid: 36a5aaf0d7233924bb5ab94471e8708a, type: 2}

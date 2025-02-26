@@ -59,9 +59,12 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject itemHolder;
     public Transform dropArea;
 
+    public GameObject AmmoPanel;
+
     void Start()
     {
-
+        AmmoPanel = GameObject.FindWithTag("ammoPanel");
+        AmmoPanel.SetActive(false);
         player = GameObject.FindWithTag("Player");
         for (int i = 0; i < itemSlots.Length; i++)
         {
@@ -413,7 +416,10 @@ public class Inventory : MonoBehaviour
                 if (itemSlots[i].tag == "Weapon")
                 {
                     // Toggle equipment status for the selected item
-                    itemEquipped[i] = !itemEquipped[i];                   
+                    itemEquipped[i] = !itemEquipped[i];
+
+                    // Ammotext should be set active if item equipped
+                    AmmoPanel.SetActive(itemEquipped[i]);
                 }
 
                 if (itemEquipped[i] == true)
