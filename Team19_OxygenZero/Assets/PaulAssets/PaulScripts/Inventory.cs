@@ -427,6 +427,10 @@ public class Inventory : MonoBehaviour
                         child.localPosition = Vector3.zero;
                         child.localRotation = Quaternion.identity;
 
+
+                        // child is the weapon , change child layer to weapon
+                        SetLayerRecursively(child.gameObject, "Weapon");
+
                         Rigidbody rb = child.GetComponent<Rigidbody>();
 
                         if (rb != null)
@@ -470,6 +474,17 @@ public class Inventory : MonoBehaviour
                 }
             
             }
+        }
+    }
+
+    void SetLayerRecursively(GameObject obj, string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        obj.layer = layer; // Set parent layer
+
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layerName); // Recursively set child layers
         }
     }
 

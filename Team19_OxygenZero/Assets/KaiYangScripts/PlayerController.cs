@@ -489,9 +489,12 @@ public class PlayerController : MonoBehaviour
 
                         equippedItem.transform.position = DropArea.position;
 
+
+
                         if (equippedItem != null)
                         {
                             equippedItem.AddComponent<Rigidbody>();
+                            SetLayerRecursively(equippedItem.gameObject, "Ground");
                         }
 
                         foreach (Transform child in equippedItem)
@@ -505,6 +508,8 @@ public class PlayerController : MonoBehaviour
                         currentWeapon = null;
                         inventorySystem.itemEquipped[i] = false;
                     }
+
+                    // put layer
                     inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
                     
                     break;
@@ -520,6 +525,10 @@ public class PlayerController : MonoBehaviour
                     equippedItem.transform.SetParent(null);
 
                     equippedItem.transform.position = DropArea.position;
+
+                    // set layer to ground
+
+                    SetLayerRecursively(equippedItem.gameObject, "Ground");
 
                     inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
 
@@ -549,6 +558,17 @@ public class PlayerController : MonoBehaviour
                 }
                 
             }
+        }
+    }
+
+    void SetLayerRecursively(GameObject obj, string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        obj.layer = layer; // Set parent layer
+
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layerName); // Recursively set child layers
         }
     }
 
