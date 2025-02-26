@@ -10,6 +10,16 @@ public class TurretBullet : MonoBehaviour
 
     private Vector3 direction;
 
+    // Oxygen System get player health
+    private GameObject PlayerObject;
+    private PlayerController playerhealth;
+
+    private void Start()
+    {
+        PlayerObject = GameObject.FindWithTag("Player");
+        playerhealth = PlayerObject.GetComponent<PlayerController>();
+    }
+
     public void Initialize(Vector3 shootDirection)
     {
         direction = shootDirection.normalized; // Normalize direction to ensure consistent speed
@@ -24,14 +34,9 @@ public class TurretBullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Apply damage logic here (e.g., call a health script on the player)
-            Debug.Log("Player hit!");
-
-            Destroy(gameObject); // Destroy bullet on impact
-        }
-        else if (!other.CompareTag("Turret")) // Prevent bullets from colliding with the turret itself
-        {
-            Destroy(gameObject); // Destroy on hitting any other object
-        }
+            playerhealth.DepletePlayerHealth(5);
+        }     
     }
+
+
 }

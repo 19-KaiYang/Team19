@@ -66,15 +66,21 @@ public class PlayerController : MonoBehaviour
     public Transform playerHead;
     [SerializeField] private TMP_Text CamText;
 
-    [Header("Controls")]
-    public KeyCode toggleCameraMode = KeyCode.LeftShift;
-
     // Camera states
     private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
     private CameraMode currentMode = CameraMode.ThirdPersonShiftlock;
 
     // Components
     private CinemachinePOV fpsPOV;
+
+    // Player Health
+    public float playerHealth;
+    public float playerMaxHealth = 100;
+    public RectTransform healthBarFill;
+    public Image healthBarImage;
+    public float defaultHealthDrain = 1f;
+    private float originalHealthBarHeight;
+    public GameObject DeadSpacePrefab;
 
 
     private void Awake()
@@ -113,8 +119,8 @@ public class PlayerController : MonoBehaviour
         if (thirdPersonCamera != null)
         {
             // Set up the free look camera for shiftlock behavior
-            thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500;
-            thirdPersonCamera.m_YAxis.m_MaxSpeed = 0; // Lock vertical orbit in shiftlock mode
+            thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 2000;
+            thirdPersonCamera.m_YAxis.m_MaxSpeed = 5; // Lock vertical orbit in shiftlock mode
 
             // Set shoulder position
             thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
@@ -132,6 +138,12 @@ public class PlayerController : MonoBehaviour
         {
             CamText.text = "First Person";
         }
+
+        // Set player health
+        playerHealth = playerMaxHealth;
+
+        originalHealthBarHeight = healthBarFill.sizeDelta.y;
+
     }
 
     public void OnMove(InputValue value)
@@ -188,6 +200,8 @@ public class PlayerController : MonoBehaviour
         // Handle player head rotation
         UpdateHeadRotation();
 
+        UpdateHealthUI();
+
     }
 
     private void LateUpdate()
@@ -196,7 +210,7 @@ public class PlayerController : MonoBehaviour
         {
             if (disableRotation == false)
             {
-                HandleLook();
+                SpineRotation();
             }
         }
     }
@@ -294,8 +308,8 @@ public class PlayerController : MonoBehaviour
         // Rotate the player body (yaw rotation)
         transform.Rotate(Vector3.up * mouseX);
 
-        // Adjust X rotation for the camera (pitch rotation)
-        xRotation -= mouseY;
+        //// Adjust X rotation for the camera (pitch rotation)
+        //xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -maxLookAngle, maxLookAngle);
 
         // Apply the camera's pitch rotation
@@ -313,7 +327,7 @@ public class PlayerController : MonoBehaviour
         eulerRotation.x = combinedRotation;  // Rotate on X (looking up/down)
         eulerRotation.z = combinedRotation;  // Rotate on Z to keep balance
 
-        // Apply Y offset if needed
+        //// Apply Y offset if needed
         eulerRotation.y += spineYRotationOffset;
 
         // Apply the final rotation to the spine
@@ -630,6 +644,37 @@ public class PlayerController : MonoBehaviour
 
         playerHead.transform.rotation = camera.transform.rotation;
 
+        // Fix: Extract Y rotation properly
+        float cameraYRotation = camera.transform.eulerAngles.y;
+       
+       
+        DeadSpacePrefab.transform.rotation = Quaternion.Euler(0, cameraYRotation, 0);      
+        
+    }
+
+    private void SpineRotation()
+    {
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+        float cameraRotation = camera.transform.eulerAngles.x;
+       
+        playerSpine.transform.localRotation = Quaternion.Euler(cameraRotation, 0, cameraRotation);
+    }
+
+    private void UpdateHealthUI()
+    {
+        float normalizedHealth = playerHealth / playerMaxHealth;
+        healthBarFill.sizeDelta = new Vector2(healthBarFill.sizeDelta.x, originalHealthBarHeight * normalizedHealth);
+    }
+
+    public void DepletePlayerHealth(float health)
+    {
+        playerHealth -= health * Time.deltaTime;
+    }
+
+
+    public float GetPlayerHealth()
+    {
+        return playerHealth;
     }
 
 }

@@ -27,6 +27,10 @@ public class OxygenSystem : MonoBehaviour
     public Volume postProcessingVolume;  
     private ChromaticAberration chromaticAberration;
 
+    // Oxygen System get player health
+    public GameObject PlayerObject;
+    private PlayerController playerhealth;
+
 
     private void Start()
     {
@@ -40,6 +44,9 @@ public class OxygenSystem : MonoBehaviour
         {
             chromaticAberration.intensity.value = 0f; 
         }
+
+        PlayerObject = GameObject.FindWithTag("Player");
+        playerhealth = PlayerObject.GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -57,6 +64,11 @@ public class OxygenSystem : MonoBehaviour
         UpdateChromaticAberration();
 
         if (currentOxygen <= 0 && !isDead)
+        {
+            playerhealth.DepletePlayerHealth(1);
+        }
+
+        if (playerhealth.GetPlayerHealth() <= 0)
         {
             Die();
         }

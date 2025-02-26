@@ -23,12 +23,18 @@ public class EnemyController : MonoBehaviour
     private bool isChasing = false;
     private bool isAttacking = false;
 
+    // Oxygen System get player health
+    private GameObject PlayerObject;
+    private PlayerController playerhealth;
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         startPosition = transform.position;
         SetNewPatrolDestination();
+        PlayerObject = GameObject.FindWithTag("Player");
+        playerhealth = PlayerObject.GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -117,10 +123,10 @@ public class EnemyController : MonoBehaviour
     {
         if (attackTimer <= 0f)
         {
-            
 
-            
 
+
+            playerhealth.DepletePlayerHealth(5);
 
 
             attackTimer = attackCooldown;
