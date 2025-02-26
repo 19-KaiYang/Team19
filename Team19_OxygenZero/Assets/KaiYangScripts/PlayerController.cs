@@ -1,4 +1,4 @@
-using Cinemachine;
+﻿using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -273,17 +273,20 @@ public class PlayerController : MonoBehaviour
 
     private void SetIdleAnimation()
     {
-        if (usingRifle == true)
+        if (usingRifle)
         {
-
+            animator.SetLayerWeight(2, 1); // Enable Rifle Layer
+            animator.SetLayerWeight(1, 0); // Disable Pistol Layer
         }
-        else if (usingPistol == true)
+        else if (usingPistol)
         {
-            animator.SetBool("UsingPistol", true);
+            animator.SetLayerWeight(2, 0); // Disable Rifle Layer
+            animator.SetLayerWeight(1, 1); // Enable Pistol Layer
         }
-        else if (usingNothing == true)
+        else if (usingNothing)
         {
-            animator.SetBool("UsingPistol", false);
+            animator.SetLayerWeight(2, 0); // Disable Rifle Layer
+            animator.SetLayerWeight(1, 0); // Disable Pistol Layer
         }
     }
 
@@ -522,6 +525,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isSprinting)
             {
+                animator.SetBool("IsRunning", true);
                 isSprinting = true;
             }
         }
@@ -529,6 +533,7 @@ public class PlayerController : MonoBehaviour
         {
             if (isSprinting)
             {
+                animator.SetBool("IsRunning", false);
                 isSprinting = false;
             }
         }
@@ -576,23 +581,26 @@ public class PlayerController : MonoBehaviour
 
     public void PickupItem()
     {
-        // Create a ray from the center of the camera's view
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray ray;
 
-        // Variable to store hit information
-        RaycastHit hit;
-        float maxDistance;
-
-        if (currentMode == CameraMode.FirstPerson)
+        if (currentMode == CameraMode.ThirdPersonShiftlock)
         {
-            // Maximum distance for the raycast
-            maxDistance = 3f;
+            ray = new Ray(cameraLookAt.transform.position, cameraLookAt.transform.forward); // Create ray from object
         }
         else
         {
-            // Maximum distance for the raycast
-            maxDistance = 7f;
+            ray = new Ray(playerHead.transform.position, playerHead.transform.forward);
         }
+
+        // Variable to store hit information
+        RaycastHit hit;
+        float maxDistance ;
+
+        // Variable to store hit information
+        maxDistance = (currentMode == CameraMode.FirstPerson) ? 3f : 10f;
+
+        // ✅ Draw the ray in the Scene view (Red if it hits, Green if it misses)
+        Debug.DrawRay(ray.origin, ray.direction * maxDistance, Color.green, 1f);
 
         // Cast the ray
         if (Physics.Raycast(ray, out hit, maxDistance))
