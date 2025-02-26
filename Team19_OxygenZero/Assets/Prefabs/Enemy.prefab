@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7339989616606116453}
   - component: {fileID: 8552123276974904736}
   - component: {fileID: 3288525294852630614}
+  - component: {fileID: 1944014455025131069}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -199,3 +200,27 @@ MonoBehaviour:
   attackRange: 5
   attackFieldOfView: 60
   attackCooldown: 2
+  animationDampTime: 0.1
+  idleAnimationParam: IsIdle
+  walkAnimationParam: IsWalking
+  attackAnimationParam: IsAttacking
+  attackTriggerParam: Attack
+  rotationSpeed: 120
+--- !u!114 &1944014455025131069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5848866822026551962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3c53abd8f01d54e9abffc967d6f4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageEffectDuration: 0.5
+  ExplosionEffect: {fileID: 0}
+  DroneExplosionEffect: {fileID: 0}
+  health: 100
+  DroneDisabled: 0

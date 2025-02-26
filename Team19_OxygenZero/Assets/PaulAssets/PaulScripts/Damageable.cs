@@ -19,10 +19,7 @@ public class Damageable : MonoBehaviour
 
     private void Start()
     {
-        if (gameObject.tag == "Turret")
-        {
-            health = 100f;
-        }
+        
        
         DroneDisabled = false;
 
@@ -42,28 +39,8 @@ public class Damageable : MonoBehaviour
             damageCoroutine = StartCoroutine(DamageEffect());
         }
         if (health < 0)
-        {
-
-            if (gameObject.tag == "Turret")
-            {
-                Destroy(this.gameObject);
-            }
-            else if(gameObject.tag == "Explosive")
-            {
-                if (ExplosionEffect != null)
-                {
-                    GameObject BarrelExplosion = Instantiate(ExplosionEffect, gameObject.transform.position, Quaternion.identity);
-                    Destroy();
-                }
-            }
-            else if(gameObject.tag == "AerialTarget")
-            {
-                if (DroneExplosionEffect != null)
-                {
-                    DroneDisabled = true;
-                   
-                }
-            }
+        {           
+            Destroy(this.gameObject);          
         }
         
     }
@@ -100,18 +77,5 @@ public class Damageable : MonoBehaviour
         }
         // Ensure the final color is reset to the original
         objectRenderer.material.color = originalColor;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.tag == "Wall")
-        {
-            if (gameObject.tag == "AerialTarget")
-            {
-                Instantiate(DroneExplosionEffect, gameObject.transform.position, Quaternion.identity);
-                Destroy();
-                Debug.Log("Drone collided with wall");
-            }
-        }
     }
 }

@@ -52,8 +52,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject playerSpine;
     public float spineYRotationOffset = 46f;
 
-    private bool disableRotation;
-
     [Header("Camera References")]
     public CinemachineVirtualCamera firstPersonCamera;
     public CinemachineFreeLook thirdPersonCamera;
@@ -64,10 +62,8 @@ public class PlayerController : MonoBehaviour
     public float shoulderOffset = 1.2f;
     public Transform playerTransform;
     public Transform playerHead;
+    public Transform cameraLookAt;
     [SerializeField] private TMP_Text CamText;
-
-    [Header("Controls")]
-    public KeyCode toggleCameraMode = KeyCode.LeftShift;
 
     // Camera states
     private enum CameraMode { FirstPerson, ThirdPersonShiftlock }
@@ -75,6 +71,17 @@ public class PlayerController : MonoBehaviour
 
     // Components
     private CinemachinePOV fpsPOV;
+
+    [Header("Player Health")]
+    // Player Health
+    public float playerHealth;
+    public float playerMaxHealth = 100;
+    public RectTransform healthBarFill;
+    public Image healthBarImage;
+    public float defaultHealthDrain = 1f;
+    private float originalHealthBarHeight;
+    public GameObject playerPrefab;
+    public GameObject playerModel;
 
 
     private void Awake()
@@ -97,11 +104,9 @@ public class PlayerController : MonoBehaviour
         isCrouching = false;
         targetHeight = normalHeight;
         characterController.height = normalHeight;
-        disableRotation = false;
 
         currentWeapon = null;
 
-        // Configure first person camera
         if (firstPersonCamera != null)
         {
             fpsPOV = firstPersonCamera.GetCinemachineComponent<CinemachinePOV>();
@@ -113,12 +118,14 @@ public class PlayerController : MonoBehaviour
         if (thirdPersonCamera != null)
         {
             // Set up the free look camera for shiftlock behavior
-            thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 500;
-            thirdPersonCamera.m_YAxis.m_MaxSpeed = lookSensitivity; // Lock vertical orbit in shiftlock mode
+            thirdPersonCamera.m_XAxis.m_MaxSpeed = lookSensitivity * 2000;
+            thirdPersonCamera.m_YAxis.m_MaxSpeed = 5; // Lock vertical orbit in shiftlock mode
 
             // Set shoulder position
             thirdPersonCamera.GetRig(1).GetCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset =
                 new Vector3(shoulderOffset, 1.5f, 0);
+
+            thirdPersonCamera.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
         }
 
         // Set initial camera mode
@@ -132,6 +139,11 @@ public class PlayerController : MonoBehaviour
         {
             CamText.text = "First Person";
         }
+
+        // Set player health
+        playerHealth = playerMaxHealth;
+
+        originalHealthBarHeight = healthBarFill.sizeDelta.y;
     }
 
     public void OnMove(InputValue value)
@@ -161,11 +173,6 @@ public class PlayerController : MonoBehaviour
         {
             CheckGround();
             HandleMovement();
-            if (disableRotation == false)
-            {
-                //HandleLook();
-
-            }
             HandleCrouch();
             HandleSprint();
             InteractWithInventory();
@@ -175,6 +182,7 @@ public class PlayerController : MonoBehaviour
         }
 
         ApplyGravity();
+        UpdateHealthUI();
 
         if (playerInput.actions["Interact"].WasPressedThisFrame())
         {
@@ -184,20 +192,17 @@ public class PlayerController : MonoBehaviour
                 PickupItem();
             }
         }
+
         ToggleCameraMode();
         // Handle player head rotation
         UpdateHeadRotation();
-
     }
 
     private void LateUpdate()
     {
         if (!isCursorToggle)
         {
-            if (disableRotation == false)
-            {
-                HandleLook();
-            }
+            SpineRotation();
         }
     }
 
@@ -382,7 +387,6 @@ public class PlayerController : MonoBehaviour
             {
                 inventorySystem.UpdateMoneyUI();
                 inventorySystem.InventoryDisplay.SetActive(!inventorySystem.InventoryDisplay.activeSelf);
-                disableRotation = inventorySystem.InventoryDisplay.activeSelf;
                 if (inventorySystem.InventoryDisplay.activeSelf == false)
                 {
                     for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
@@ -634,6 +638,53 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void UpdateHeadRotation()
+    {
+        if (playerHead == null) return;
+
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+
+        playerHead.transform.rotation = camera.transform.rotation;
+        cameraLookAt.transform.rotation = camera.transform.rotation;
+
+        // Fix: Extract Y rotation properly
+        float cameraYRotation = camera.transform.eulerAngles.y;
+
+        if (currentMode == CameraMode.FirstPerson)
+        {
+            playerModel.transform.rotation = Quaternion.Euler(0, cameraYRotation, 0);
+        }
+        else
+        {
+            playerPrefab.transform.rotation = Quaternion.Euler(0, cameraYRotation, 0);
+        }
+    }
+
+    private void SpineRotation()
+    {
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+        float cameraRotation = camera.transform.eulerAngles.x;
+
+        playerSpine.transform.localRotation = Quaternion.Euler(cameraRotation, 0, cameraRotation);
+    }
+
+    private void UpdateHealthUI()
+    {
+        float normalizedHealth = playerHealth / playerMaxHealth;
+        healthBarFill.sizeDelta = new Vector2(healthBarFill.sizeDelta.x, originalHealthBarHeight * normalizedHealth);
+    }
+
+    public void DepletePlayerHealth(float health)
+    {
+        playerHealth -= health * Time.deltaTime;
+    }
+
+
+    public float GetPlayerHealth()
+    {
+        return playerHealth;
+    }
+
     void SetCameraMode(CameraMode mode)
     {
         currentMode = mode;
@@ -651,15 +702,4 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-
-    void UpdateHeadRotation()
-    {
-        if (playerHead == null) return;
-
-        GameObject camera = GameObject.FindWithTag("MainCamera");
-
-        playerHead.transform.rotation = camera.transform.rotation;
-
-    }
-
 }

@@ -384,7 +384,7 @@ MonoBehaviour:
   damageEffectDuration: 0.5
   ExplosionEffect: {fileID: 0}
   DroneExplosionEffect: {fileID: 0}
-  health: 0
+  health: 100
   DroneDisabled: 0
 --- !u!65 &8202972302192208147
 BoxCollider:
