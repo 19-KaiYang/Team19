@@ -283,7 +283,7 @@ public class RoomController : MonoBehaviour
             // Match obstacle size to collider
             if (objectCollider is BoxCollider boxCollider)
             {
-                obstacle.size = Vector3.Scale(boxCollider.size, spawnedObject.transform.localScale);
+                obstacle.size = boxCollider.size;
                 obstacle.center = boxCollider.center;
             }
             else
