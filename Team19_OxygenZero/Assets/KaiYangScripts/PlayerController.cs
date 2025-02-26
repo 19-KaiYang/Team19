@@ -73,8 +73,6 @@ public class PlayerController : MonoBehaviour
     // Components
     private CinemachinePOV fpsPOV;
 
-    private bool disableRotation;
-
     [Header("Player Health")]
     // Player Health
     public float playerHealth;
@@ -107,6 +105,14 @@ public class PlayerController : MonoBehaviour
         isCrouching = false;
         targetHeight = normalHeight;
         characterController.height = normalHeight;
+        if (currentMode == CameraMode.FirstPerson)
+        {
+            Camera.main.cullingMask &= ~(1 << LayerMask.NameToLayer("Playerlayer"));
+        }
+        else
+        {
+            Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("Playerlayer"));
+        }
 
         currentWeapon = null;
 
@@ -666,20 +672,6 @@ public class PlayerController : MonoBehaviour
             // Sync first-person camera to match player position before switching
             playerModel.transform.rotation = Quaternion.Euler(0, cameraYRotation, 0);
         }
-    }
-
-    IEnumerator Transition(float time)
-    {
-        yield return new WaitForSeconds(time);
-    }
-
-    IEnumerator DisableRotation(float time)
-    {
-        disableRotation = true;
-
-        yield return new WaitForSeconds(time);
-
-        disableRotation = false;
     }
 
     private void SpineRotation()
