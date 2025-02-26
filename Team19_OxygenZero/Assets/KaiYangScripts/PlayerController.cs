@@ -88,6 +88,7 @@ public class PlayerController : MonoBehaviour
     public bool usingRifle;
     public bool usingNothing;
 
+    public AvatarMask upperBodyMask; // Assign in Inspector
 
     private void Awake()
     {
@@ -489,6 +490,11 @@ public class PlayerController : MonoBehaviour
 
         if (crouchAction.IsPressed())
         {
+
+            upperBodyMask.SetHumanoidBodyPartActive(AvatarMaskBodyPart.LeftLeg, false);
+            upperBodyMask.SetHumanoidBodyPartActive(AvatarMaskBodyPart.RightLeg, false);
+            upperBodyMask.SetHumanoidBodyPartActive(AvatarMaskBodyPart.Body, false);
+
             recenterController = -0.2f;
             cameraOffsetY = -2f;
 
@@ -498,6 +504,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+
+            upperBodyMask.SetHumanoidBodyPartActive(AvatarMaskBodyPart.LeftLeg, true);
+            upperBodyMask.SetHumanoidBodyPartActive(AvatarMaskBodyPart.RightLeg, true);
+            upperBodyMask.SetHumanoidBodyPartActive(AvatarMaskBodyPart.Body, true);
+
             recenterController = 0;
             cameraOffsetY = 0.698f;
 
@@ -914,7 +925,7 @@ public class PlayerController : MonoBehaviour
         GameObject camera = GameObject.FindWithTag("MainCamera");
         float cameraRotation = camera.transform.eulerAngles.x;
 
-        if (animator.GetBool("IsWalking") && usingNothing)
+        if (usingNothing)
         {
             playerSpine.transform.localRotation = Quaternion.Euler(cameraRotation, 0, 0);
         }
