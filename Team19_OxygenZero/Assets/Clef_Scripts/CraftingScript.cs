@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using static UnityEditor.Progress;
 
 public class CraftingScript : MonoBehaviour
 {

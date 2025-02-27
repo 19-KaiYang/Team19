@@ -200,6 +200,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(this.transform.position.y < 0)
+        {
+            StartCoroutine(FindAndPositionOnShuttle());
+        }
         HandleCursor();
         ToggleCursor();
 
