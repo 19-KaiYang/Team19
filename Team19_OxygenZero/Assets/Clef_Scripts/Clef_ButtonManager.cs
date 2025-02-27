@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Clef_ButtonManager : MonoBehaviour
 {
@@ -24,5 +25,10 @@ public class Clef_ButtonManager : MonoBehaviour
         settingButton.SetActive(false);
         hideButtons.SetActive(true);
         hideTitle.SetActive(true);
+    }
+
+    public void PlayGame()
+    {
+        SceneManager.LoadScene("MainGameScene");
     }
 }
