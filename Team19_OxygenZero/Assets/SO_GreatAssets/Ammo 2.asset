@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8f638b4ed4c5145ad2e7224e00c65f, type: 3}
   m_Name: Ammo 2
   m_EditorClassIdentifier: 
-  itemName: Armor Piercing Ammo
+  itemName: Rifle Ammo
   icon: {fileID: 0}
   amount: 1
   cost: 1.2
   weight: 3
   usable: 1
-  itemDesc: 
+  description: 
