@@ -3915,7 +3915,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -4310216869362589468, guid: dfc4b9c9c297ff94f81fdf1fcab37d83, type: 2}
   m_audioClip: {fileID: 8300000, guid: aa66a1518bde4774ca27b48331fd690c, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -4184,7 +4184,7 @@ PrefabInstance:
       objectReference: {fileID: 1989241233}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: bgmClips.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.size
@@ -4193,7 +4193,7 @@ PrefabInstance:
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: bgmClips.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: fd5024fc80ccae64ea33db617785555c, type: 3}
+      objectReference: {fileID: 8300000, guid: aa66a1518bde4774ca27b48331fd690c, type: 3}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: bgmClips.Array.data[1]
       value: 

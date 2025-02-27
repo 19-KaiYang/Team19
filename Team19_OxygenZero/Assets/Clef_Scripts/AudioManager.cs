@@ -241,7 +241,7 @@ public class AudioManager : MonoBehaviour
         }
 
         // Initialize and play last saved BGM
-        string lastPlayingBGM = PlayerPrefs.GetString("LastPlayingBGM", "Main   MenuBGM");
+        string lastPlayingBGM = PlayerPrefs.GetString("LastPlayingBGM", "MainMenuBGM");
         PlayBGM(lastPlayingBGM);
 
         Debug.Log($"Applied Volumes -> BGM: {bgmVolume} (dB: {Mathf.Log10(bgmVolume) * 20f}), SFX: {sfxVolume} (dB: {Mathf.Log10(sfxVolume) * 20f}), Muted: {isMuted}");
