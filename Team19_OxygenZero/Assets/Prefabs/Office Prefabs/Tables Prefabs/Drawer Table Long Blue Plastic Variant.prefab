@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 173979386888316162, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 255160672878323940, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 454075758230258980, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -128,14 +136,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: Drawer Table Long Blue Plastic Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 3465074232591431479, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3975776617354597990, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 43c6c333495c322469f9cf093afac0d9, type: 2}
+    - target: {fileID: 5644908750213118379, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5793892833375638171, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6595547597327314732, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 43c6c333495c322469f9cf093afac0d9, type: 2}
+    - target: {fileID: 6600140097274655119, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8313607214534279095, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1250313141522799289, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
     - {fileID: 1250313141522799288, guid: 0fc223096406f3d4d964af094cc016ab, type: 3}
