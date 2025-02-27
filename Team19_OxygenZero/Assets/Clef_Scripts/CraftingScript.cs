@@ -212,13 +212,8 @@ public class CraftingScript : MonoBehaviour
         SelectItem(selectedRecipe.result.itemName);
     }
 
-    public void onClickOxygenTank()
+    public void ChooseRecipe(string Recipe)
     {
-        SelectItem("Oxygen Tank");
-    }
-
-    public void OnClickBatteryPack()
-    {
-        SelectItem("Battery Pack");
+        SelectItem(Recipe);
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class OxygenSystem : MonoBehaviour
 {
@@ -150,5 +151,6 @@ public class OxygenSystem : MonoBehaviour
     {
         isDead = true;
         //wynn or someone add the relevant codes here
+        SceneManager.LoadScene("LoseScene");
     }
 }

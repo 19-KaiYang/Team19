@@ -13,7 +13,12 @@ public class LandmineScript : MonoBehaviour
 
             Destroy(explosion, 3f); // destroy effect after 3 sec
 
+            PlayerController playerhealth = other.GetComponent<PlayerController>();
+            playerhealth.DepletePlayerHealth(30);
+
             Destroy(gameObject); // destroy landmine because it exploded
+
+            
         }
     }
 }
