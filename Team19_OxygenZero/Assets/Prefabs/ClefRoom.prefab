@@ -1633,7 +1633,6 @@ MonoBehaviour:
     possibleObjects:
     - {fileID: 1604149384589184819, guid: e8405aed7761ef749a8ca27283f60a47, type: 3}
     - {fileID: 3852021707066020736, guid: ac36d7b7f7d9ef040b548f61b981ca2c, type: 3}
-    - {fileID: 5684165453150314776, guid: 73b914254aef83241a5ea2157864a420, type: 3}
   - spawnPoint: {fileID: 682876134112831673}
     possibleObjects:
     - {fileID: 3852021707066020736, guid: ac36d7b7f7d9ef040b548f61b981ca2c, type: 3}
