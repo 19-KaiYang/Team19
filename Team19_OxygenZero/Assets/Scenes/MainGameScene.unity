@@ -217,8 +217,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
+  m_fontSize: 13
+  m_fontSizeBase: 13
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1600,9 +1600,9 @@ Light:
   m_GameObject: {fileID: 1312434221}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 1
+  m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1661,13 +1661,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312434221}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.012538718, y: 0.00670261, z: -0.6564896, w: -0.7542011}
+  m_LocalRotation: {x: -0.15502396, y: 0.19850957, z: -0.63804656, w: -0.7276387}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -0.579, y: -1.523, z: -277.917}
+  m_LocalEulerAnglesHint: {x: 28.615, y: -5.954, z: -279.027}
 --- !u!224 &1330402045 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5045848752370097702, guid: d52bf5ee07ad7a445b162d71895f363c, type: 3}
@@ -2359,31 +2359,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: field of view
-      value: 50
+      value: 58.30003
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: far clip plane
-      value: 5000
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: near clip plane
-      value: 0.1
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: orthographic size
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.489
+      value: 72.1693
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.76
+      value: 1.575249
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3
+      value: 87.34776
+      objectReference: {fileID: 0}
+    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.29754394
+      objectReference: {fileID: 0}
+    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.0034745801
+      objectReference: {fileID: 0}
+    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9546367
+      objectReference: {fileID: 0}
+    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.011147804
       objectReference: {fileID: 0}
     - target: {fileID: 7706419343517768354, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: oxygenBarFill
