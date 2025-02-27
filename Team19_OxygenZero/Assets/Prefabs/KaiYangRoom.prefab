@@ -2119,10 +2119,10 @@ MonoBehaviour:
     spawnProbability: 0.7
     maxCount: 3
   - objectPrefab: {fileID: 5303560257060247746, guid: d435a288fd88cbe489f13acf67308e2b, type: 3}
-    spawnProbability: 0.8
+    spawnProbability: 1
     maxCount: 4
   - objectPrefab: {fileID: 2415239096136621148, guid: 91d21976076ccb3498f14962f582e18d, type: 3}
-    spawnProbability: 0.8
+    spawnProbability: 1
     maxCount: 4
   - objectPrefab: {fileID: 3922192954965300429, guid: 78f2873840cccd046adee8782efa45fb, type: 3}
     spawnProbability: 0.8
