@@ -13,6 +13,18 @@ public class LandmineScript : MonoBehaviour
 
             Destroy(explosion, 3f); // destroy effect after 3 sec
 
+            // Play landmine explosion sound
+            AudioManager audioManager = FindObjectOfType<AudioManager>();
+            if (audioManager != null)
+            {
+                audioManager.PlaySFX("LandmineExplosion");
+                Debug.Log("Landmine Exploded");
+            }
+            else
+            {
+                Debug.LogWarning("AudioManager not found!");
+            }
+
             PlayerController playerhealth = other.GetComponent<PlayerController>();
             playerhealth.DepletePlayerHealth(30);
 

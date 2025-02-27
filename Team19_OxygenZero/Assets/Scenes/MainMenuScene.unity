@@ -667,8 +667,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: aa66a1518bde4774ca27b48331fd690c, type: 3}
   - {fileID: 8300000, guid: e17a7a49577863c44810f77e735732af, type: 3}
   sfxClips:
-  - {fileID: 8300000, guid: 7afa68414ed04fe4fb7294b1f0fef0d6, type: 3}
-  - {fileID: 8300000, guid: 701586a43e090e54cbf02c5d2c38883c, type: 3}
+  - {fileID: 8300000, guid: 67f6245014142ad409d44047599ef3bd, type: 3}
+  - {fileID: 8300000, guid: 1d4e04e815be26244821bcaa6e918bfa, type: 3}
 --- !u!1 &167726510
 GameObject:
   m_ObjectHideFlags: 0
