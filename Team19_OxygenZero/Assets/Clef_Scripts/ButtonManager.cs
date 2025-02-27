@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ButtonManager : MonoBehaviour
 {
@@ -24,5 +25,10 @@ public class ButtonManager : MonoBehaviour
         settingButton.SetActive(false);
         hideButtons.SetActive(true);
         hideTitle.SetActive(true);
+    }
+
+    public void OnStartPressed()
+    {
+        SceneManager.LoadScene("MainGameScene");
     }
 }

@@ -1117,7 +1117,7 @@ GameObject:
   - component: {fileID: 607470936}
   m_Layer: 5
   m_Name: SFX
-  m_TagString: Untagged
+  m_TagString: SFX
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1319,7 +1319,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 635279387}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 336694701}
+        m_TargetAssemblyTypeName: ButtonManager, Assembly-CSharp
+        m_MethodName: OnStartPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &635279387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3426,7 +3438,7 @@ GameObject:
   - component: {fileID: 1989241233}
   m_Layer: 5
   m_Name: BGM
-  m_TagString: Untagged
+  m_TagString: BGM
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3729,6 +3741,14 @@ PrefabInstance:
       propertyPath: backgroundMusic
       value: 
       objectReference: {fileID: 1989241233}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 67f6245014142ad409d44047599ef3bd, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

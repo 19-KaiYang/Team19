@@ -25,6 +25,8 @@ TagManager:
   - ammoText
   - ammoPanel
   - Money
+  - BGM
+  - SFX
   layers:
   - Default
   - TransparentFX

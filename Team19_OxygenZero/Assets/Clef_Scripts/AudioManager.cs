@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -31,18 +33,168 @@ public class AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> bgmDictionary = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> sfxDictionary = new Dictionary<string, AudioClip>();
 
+    // Singleton instance
+    public static AudioManager Instance { get; private set; }
+
     void Awake()
     {
-        if (FindObjectsOfType<AudioManager>().Length > 1)
+        // Singleton pattern implementation
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
+        Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Initialize dictionary
+        // Initialize audio dictionaries
         LoadAudioDictionaries();
+
+        // Setup initial audio references
+        SetupAudioReferences();
+
+        // Register scene load event to reconnect audio sources after scene changes
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        // Unregister event when destroyed
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // This gets called when a new scene is loaded
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log($"Scene loaded: {scene.name}. Setting up audio references...");
+        StartCoroutine(DelayedSetupAfterSceneLoad());
+    }
+
+    // Allow scene to fully load before looking for audio objects
+    IEnumerator DelayedSetupAfterSceneLoad()
+    {
+        yield return new WaitForSeconds(0.2f);
+        SetupAudioReferences();
+        SetInitialVolumes();
+    }
+
+    // Find and setup audio references - used both at start and after scene loads
+    private void SetupAudioReferences()
+    {
+        // Auto-find and assign AudioSource for BGM if null
+        if (backgroundMusic == null)
+        {
+            GameObject bgmObj = GameObject.FindWithTag("BGM");
+            if (bgmObj != null)
+            {
+                backgroundMusic = bgmObj.GetComponent<AudioSource>();
+                // Don't destroy the BGM object as its AudioSource is needed
+                DontDestroyOnLoad(bgmObj);
+                Debug.Log("Found and assigned Background Music AudioSource.");
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ No BGM object found in the scene.");
+            }
+        }
+
+        // Auto-find and assign AudioSource for SFX if null
+        if (soundEffects == null)
+        {
+            GameObject sfxObj = GameObject.FindWithTag("SFX");
+            if (sfxObj != null)
+            {
+                soundEffects = sfxObj.GetComponent<AudioSource>();
+                // Don't destroy the SFX object as its AudioSource is needed
+                DontDestroyOnLoad(sfxObj);
+                Debug.Log("Found and assigned Sound Effects AudioSource.");
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ No SFX object found in the scene.");
+            }
+        }
+
+        // Also look for and set up UI references in the current scene
+        SetupUIReferences();
+    }
+
+    // Find and setup UI references in the current scene
+    private void SetupUIReferences()
+    {
+        // Find UI elements if they're not assigned
+        if (bgmSlider == null)
+        {
+            // Find all sliders and manually check their names
+            Slider[] allSliders = GameObject.FindObjectsOfType<Slider>();
+            foreach (Slider slider in allSliders)
+            {
+                if (slider.gameObject.name.Contains("BGM"))
+                {
+                    bgmSlider = slider;
+                    break;
+                }
+            }
+        }
+
+        if (sfxSlider == null)
+        {
+            // Find all sliders and manually check their names
+            Slider[] allSliders = GameObject.FindObjectsOfType<Slider>();
+            foreach (Slider slider in allSliders)
+            {
+                if (slider.gameObject.name.Contains("SFX"))
+                {
+                    sfxSlider = slider;
+                    break;
+                }
+            }
+        }
+
+        if (muteToggle == null)
+        {
+            // Find all toggles and manually check their names
+            Toggle[] allToggles = GameObject.FindObjectsOfType<Toggle>();
+            foreach (Toggle toggle in allToggles)
+            {
+                if (toggle.gameObject.name.Contains("Mute"))
+                {
+                    muteToggle = toggle;
+                    break;
+                }
+            }
+        }
+
+        // Set up UI listeners
+        if (bgmSlider != null)
+        {
+            bgmSlider.onValueChanged.RemoveAllListeners(); // Clear existing listeners first
+            bgmSlider.onValueChanged.AddListener(SetBGMVolume);
+        }
+
+        if (sfxSlider != null)
+        {
+            sfxSlider.onValueChanged.RemoveAllListeners(); // Clear existing listeners first
+            sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+        }
+
+        if (muteToggle != null)
+        {
+            muteToggle.onValueChanged.RemoveAllListeners(); // Clear existing listeners first
+            muteToggle.onValueChanged.AddListener(ToggleMute);
+        }
+    }
+
+    void Start()
+    {
+        StartCoroutine(DelayedInitialization()); // Initialize volume settings
+    }
+
+    IEnumerator DelayedInitialization()
+    {
+        yield return new WaitForSeconds(0.1f); // Ensure scene loads fully
+        SetInitialVolumes();
     }
 
     private void SetInitialVolumes()
@@ -73,22 +225,19 @@ public class AudioManager : MonoBehaviour
         if (bgmSlider != null)
         {
             bgmSlider.value = bgmVolume;
-            bgmSlider.onValueChanged.AddListener(SetBGMVolume);
-            SetBGMVolume(bgmSlider.value); // 🔥 Trigger listener at start
+            SetBGMVolume(bgmSlider.value); // Trigger listener at start
         }
 
         if (sfxSlider != null)
         {
             sfxSlider.value = sfxVolume;
-            sfxSlider.onValueChanged.AddListener(SetSFXVolume);
-            SetSFXVolume(sfxSlider.value); // 🔥 Trigger listener at start
+            SetSFXVolume(sfxSlider.value); // Trigger listener at start
         }
 
         if (muteToggle != null)
         {
             muteToggle.isOn = isMuted;
-            muteToggle.onValueChanged.AddListener(ToggleMute);
-            ToggleMute(muteToggle.isOn); // 🔥 Trigger listener at start
+            ToggleMute(muteToggle.isOn); // Trigger listener at start
         }
 
         // Initialize and play last saved BGM
@@ -96,16 +245,6 @@ public class AudioManager : MonoBehaviour
         PlayBGM(lastPlayingBGM);
 
         Debug.Log($"Applied Volumes -> BGM: {bgmVolume} (dB: {Mathf.Log10(bgmVolume) * 20f}), SFX: {sfxVolume} (dB: {Mathf.Log10(sfxVolume) * 20f}), Muted: {isMuted}");
-    }
-
-
-
-
-
-    void Start()
-    {
-        // Initialize both AudioSource and AudioMixer volumes
-        SetInitialVolumes();
     }
 
     private void LoadAudioDictionaries()
@@ -128,7 +267,6 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
-
 
     public void SetBGMVolume(float volume)
     {
@@ -188,27 +326,17 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    private void ApplyAudioSettings()
-    {
-        bool isMuted = PlayerPrefs.GetInt("IsMuted", 0) == 1;
-
-        float bgmVolumeDB = isMuted ? -80f : Mathf.Log10(bgmVolume) * 20;
-        float sfxVolumeDB = isMuted ? -80f : Mathf.Log10(sfxVolume) * 20;
-
-        backgroundMusic.volume = isMuted ? 0 : bgmVolume;
-        soundEffects.volume = isMuted ? 0 : sfxVolume;
-    }
-
     public void PlayBGM(string name)
     {
         if (bgmDictionary.TryGetValue(name, out AudioClip clip))
         {
-            if (backgroundMusic.clip == clip)
+            if (backgroundMusic == null)
+            {
+                Debug.LogError("Cannot play BGM: backgroundMusic is null");
+                return;
+            }
+
+            if (backgroundMusic.clip == clip && backgroundMusic.isPlaying)
             {
                 Debug.Log($"BGM already playing: {name}");
                 return;
@@ -231,14 +359,26 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(string name)
     {
+        if (soundEffects == null)
+        {
+            Debug.LogError("soundEffects AudioSource is NULL! Cannot play SFX.");
+            return;
+        }
+
         if (sfxDictionary.TryGetValue(name, out AudioClip clip))
         {
+            if (clip == null)
+            {
+                Debug.LogError($"SFX '{name}' is NULL!");
+                return;
+            }
+
             Debug.Log($"Playing SFX: {name}");
             soundEffects.PlayOneShot(clip);
         }
         else
         {
-            Debug.LogError($"SFX not found: {name}");
+            Debug.LogError($"SFX '{name}' not found in dictionary.");
         }
     }
 }
