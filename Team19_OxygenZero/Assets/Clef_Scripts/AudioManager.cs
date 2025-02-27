@@ -95,7 +95,7 @@ public class AudioManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("⚠️ No BGM object found in the scene.");
+                Debug.Log("⚠️ No BGM object found in the scene.");
             }
         }
 
@@ -112,7 +112,7 @@ public class AudioManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("⚠️ No SFX object found in the scene.");
+                Debug.Log("⚠️ No SFX object found in the scene.");
             }
         }
 
@@ -332,7 +332,7 @@ public class AudioManager : MonoBehaviour
         {
             if (backgroundMusic == null)
             {
-                Debug.LogError("Cannot play BGM: backgroundMusic is null");
+                Debug.Log("Cannot play BGM: backgroundMusic is null");
                 return;
             }
 
@@ -353,7 +353,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"BGM not found: {name}");
+            Debug.Log($"BGM not found: {name}");
         }
     }
 
@@ -361,7 +361,7 @@ public class AudioManager : MonoBehaviour
     {
         if (soundEffects == null)
         {
-            Debug.LogError("soundEffects AudioSource is NULL! Cannot play SFX.");
+            Debug.Log("soundEffects AudioSource is NULL! Cannot play SFX.");
             return;
         }
 
@@ -369,7 +369,7 @@ public class AudioManager : MonoBehaviour
         {
             if (clip == null)
             {
-                Debug.LogError($"SFX '{name}' is NULL!");
+                Debug.Log($"SFX '{name}' is NULL!");
                 return;
             }
 
@@ -378,7 +378,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"SFX '{name}' not found in dictionary.");
+            Debug.Log($"SFX '{name}' not found in dictionary.");
         }
     }
 }

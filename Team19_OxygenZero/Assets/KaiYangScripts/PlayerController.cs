@@ -104,11 +104,11 @@ public class PlayerController : MonoBehaviour
         {
             gameObject.tag = "Player";
         }
+        StartCoroutine(FindAndPositionOnShuttle());
     }
 
     private void Start()
     {
-        StartCoroutine(FindAndPositionOnShuttle());
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -157,6 +157,7 @@ public class PlayerController : MonoBehaviour
         playerHealth = playerMaxHealth;
 
         originalHealthBarHeight = healthBarFill.sizeDelta.y;
+        StartCoroutine(FindAndPositionOnShuttle());
     }
 
     IEnumerator FindAndPositionOnShuttle()

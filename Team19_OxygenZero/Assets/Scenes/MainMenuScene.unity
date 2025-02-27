@@ -4184,7 +4184,7 @@ PrefabInstance:
       objectReference: {fileID: 1989241233}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: bgmClips.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.size
@@ -4197,7 +4197,11 @@ PrefabInstance:
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: bgmClips.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: aa66a1518bde4774ca27b48331fd690c, type: 3}
+      objectReference: {fileID: 8300000, guid: fd5024fc80ccae64ea33db617785555c, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: bgmClips.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: fd5024fc80ccae64ea33db617785555c, type: 3}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[0]
       value: 

@@ -606,7 +606,7 @@ public class Inventory : MonoBehaviour
 
                             if (WeaponInfo.weaponData.weaponName == "Ak47")
                             {
-                                if (itemSlots[i].name == "Armor Piercing Ammo")
+                                if (itemSlots[i].name == "Rifle Ammo")
                                 {
                                     WeaponInfo.maxAmmoCount += WeaponInfo.magazineSize;
                                     RemoveItem(itemSlots[i].name);
