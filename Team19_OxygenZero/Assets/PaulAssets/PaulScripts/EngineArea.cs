@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class EngineArea : MonoBehaviour
 {
+    public ShuttleStatus terminal;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Item")
@@ -15,7 +16,7 @@ public class EngineArea : MonoBehaviour
             {
                 if (EngineData.item.itemName == "Engine")
                 {
-                    SceneManager.LoadScene("WinScene");
+                    if (terminal != null) terminal.EngineFound();
                 }
             }
         }

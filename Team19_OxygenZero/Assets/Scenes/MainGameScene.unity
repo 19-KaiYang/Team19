@@ -612,7 +612,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -992,6 +992,10 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 7.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6068344790986105762, guid: c79b476886921824883cd3beab9ec600, type: 3}
+      propertyPath: m_Spacing
+      value: -20
+      objectReference: {fileID: 0}
     - target: {fileID: 6272021796826400131, guid: c79b476886921824883cd3beab9ec600, type: 3}
       propertyPath: dropArea
       value: 
@@ -1247,7 +1251,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bd5105d6cee95c7449e8a169b0c7b529, type: 2}
+  - {fileID: 2100000, guid: b7405b370787ca3488ea5d5bfdfeed9f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2355,47 +2359,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: field of view
-      value: 60.000004
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: far clip plane
-      value: 1000
+      value: 5000
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: near clip plane
-      value: 0.3
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6450809337145913889, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: orthographic size
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00013076146
+      value: 0.489
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.550262
+      value: 0.76
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.0036193992
-      objectReference: {fileID: 0}
-    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 7706419343517768354, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: oxygenBarFill
@@ -2409,18 +2397,6 @@ PrefabInstance:
       propertyPath: postProcessingVolume
       value: 
       objectReference: {fileID: 1824247935}
-    - target: {fileID: 8621376753470565146, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.257
-      objectReference: {fileID: 0}
-    - target: {fileID: 8621376753470565146, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.383
-      objectReference: {fileID: 0}
-    - target: {fileID: 8621376753470565146, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.663
-      objectReference: {fileID: 0}
     - target: {fileID: 8690739973067516734, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
