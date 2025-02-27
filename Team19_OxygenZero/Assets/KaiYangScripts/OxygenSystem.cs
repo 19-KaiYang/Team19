@@ -66,7 +66,7 @@ public class OxygenSystem : MonoBehaviour
 
         if (currentOxygen <= 0 && !isDead)
         {
-            playerhealth.DepletePlayerHealth(1);
+            playerhealth.DepletePlayerHealth(0.03f);
         }
 
         if (playerhealth.GetPlayerHealth() <= 0)
