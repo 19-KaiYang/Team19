@@ -189,9 +189,10 @@ public class PlayerController : MonoBehaviour
             HandleSprint();
             InteractWithInventory();
             DropItem();
-            UseItem();
+           
             HandleGuns();
         }
+       
 
         ApplyGravity();
         UpdateHealthUI();
@@ -789,27 +790,6 @@ public class PlayerController : MonoBehaviour
         foreach (Transform child in obj.transform)
         {
             SetLayerRecursively(child.gameObject, layerName); // Recursively set child layers
-        }
-    }
-
-
-    public void UseItem()
-    {
-        var UseAction = playerInput.actions["UseItem"];
-
-        if (UseAction.WasPressedThisFrame())
-        {
-            for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
-            {
-                if (inventorySystem.SlotSelected[i] && inventorySystem.InventoryDisplay.activeSelf)
-                {
-                    if (inventorySystem.usableItem[i] == true)
-                    {
-                        inventorySystem.RemoveItem(inventorySystem.itemSlots[i].name);
-                    }
-                    break;
-                }
-            }
         }
     }
 

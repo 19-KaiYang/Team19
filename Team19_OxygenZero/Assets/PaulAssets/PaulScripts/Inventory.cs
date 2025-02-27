@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
@@ -578,6 +579,48 @@ public class Inventory : MonoBehaviour
             }
         }
     }
+
+    public void UseItem()
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (SlotSelected[i] && InventoryDisplay.activeSelf)
+            {
+                if (usableItem[i] == true)
+                {
+                    Transform Weapon = itemHolderPosition.GetChild(0);
+                    if (Weapon != null)
+                    {
+                        RaycastWeapon WeaponInfo = Weapon.GetComponent<RaycastWeapon>();
+
+                        if (WeaponInfo != null)
+                        {
+                            if (WeaponInfo.weaponData.weaponName == "Revolver")
+                            {
+                                if (itemSlots[i].name == "Regular Ammo")
+                                {
+                                    WeaponInfo.maxAmmoCount += WeaponInfo.magazineSize;
+                                    RemoveItem(itemSlots[i].name);
+                                }
+                            }
+
+                            if (WeaponInfo.weaponData.weaponName == "Ak47")
+                            {
+                                if (itemSlots[i].name == "Armor Piercing Ammo")
+                                {
+                                    WeaponInfo.maxAmmoCount += WeaponInfo.magazineSize;
+                                    RemoveItem(itemSlots[i].name);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                break;
+            }
+        }
+    }
+    
 
 
 
