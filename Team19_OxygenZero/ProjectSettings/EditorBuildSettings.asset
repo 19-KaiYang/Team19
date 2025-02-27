@@ -8,6 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ClefTestScene.unity
     guid: cc2ecd82dd9b4ce4891572d595f5f1bd
-    path: Assets/Scenes/KaiYangTestScene.unity
-    guid: ee9ba2ee70a2de840a10fa41d17bde34
+  - enabled: 1
+    path: Assets/Scenes/MainGameScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/LoseScene.unity
+    guid: 4967dca2d1873fd4ea188817fcef385c
+  - enabled: 1
+    path: Assets/Scenes/WinScene.unity
+    guid: 67b327e6213ecf448b0cc690c8acb230
   m_configObjects: {}

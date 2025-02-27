@@ -90,6 +90,10 @@ public class PlayerController : MonoBehaviour
 
     public AvatarMask upperBodyMask; // Assign in Inspector
 
+    private float zoominFOV = 50;
+    private float zoomoutFOV = 60;
+    private float FOVtransitionSpeed = 0.1f;
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -208,6 +212,7 @@ public class PlayerController : MonoBehaviour
 
         // Handle player head rotation
         UpdateHeadRotation();
+        Reload();
     }
 
     private void LateUpdate()
@@ -395,6 +400,18 @@ public class PlayerController : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
+        if (!isSprinting)
+        {
+            if (currentMode == CameraMode.FirstPerson && firstPersonCamera.m_Lens.FieldOfView < zoomoutFOV)
+            {
+                firstPersonCamera.m_Lens.FieldOfView += FOVtransitionSpeed;
+            }
+            if (currentMode == CameraMode.ThirdPersonShiftlock && thirdPersonCamera.m_Lens.FieldOfView < zoomoutFOV)
+            {
+                thirdPersonCamera.m_Lens.FieldOfView += FOVtransitionSpeed;
+            }
+        }
+
         float currentSpeed = walkSpeed;
         if (isCrouching)
         {
@@ -403,6 +420,14 @@ public class PlayerController : MonoBehaviour
         else if (isSprinting && !isCrouching)
         {
             currentSpeed = sprintSpeed;
+            if (currentMode == CameraMode.FirstPerson && firstPersonCamera.m_Lens.FieldOfView > zoominFOV)
+            {
+                firstPersonCamera.m_Lens.FieldOfView -= FOVtransitionSpeed;
+            }
+            if (currentMode == CameraMode.ThirdPersonShiftlock && thirdPersonCamera.m_Lens.FieldOfView > zoominFOV)
+            {
+                thirdPersonCamera.m_Lens.FieldOfView -= FOVtransitionSpeed;
+            }
         }
 
         // Calculate movement direction
@@ -631,7 +656,11 @@ public class PlayerController : MonoBehaviour
                     Destroy(hitObject);
                 }
 
-
+                if (hitObject.CompareTag("Money"))
+                {
+                    inventorySystem.UpdateMoney(20, true);
+                    Destroy(hitObject);
+                }
 
                 if (hitObject.CompareTag("Weapon"))
                 {
@@ -678,7 +707,7 @@ public class PlayerController : MonoBehaviour
 
                         equippedItem.transform.position = DropArea.position;
 
-
+                        inventorySystem.AmmoPanel.SetActive(false);
 
                         if (equippedItem != null)
                         {
@@ -714,6 +743,8 @@ public class PlayerController : MonoBehaviour
                     equippedItem.transform.SetParent(null);
 
                     equippedItem.transform.position = DropArea.position;
+
+                    inventorySystem.AmmoPanel.SetActive(false);
 
                     // set layer to ground
 
@@ -974,6 +1005,97 @@ public class PlayerController : MonoBehaviour
                 thirdPersonCamera.Priority = 20;
                 CinemachineBrain.SoloCamera = thirdPersonCamera;
                 break;
+        }
+    }
+
+    public void Reload()
+    {
+        var ReloadAction = playerInput.actions["Reload"];
+
+        if (ReloadAction.WasPressedThisFrame())
+        {
+            for (int i = 0; i < inventorySystem.itemSlots.Length; i++)
+            {
+                // Check if there is a weapon equipped on player
+                if (inventorySystem.itemEquipped[i] == true)
+                {
+                    Transform Weapon = inventorySystem.itemHolderPosition.GetChild(0);
+                    RaycastWeapon WeaponInfo = Weapon.GetComponent<RaycastWeapon>();
+
+                    if (WeaponInfo.weaponData.weaponName == "Revolver")
+                    {
+                        Debug.Log("Reload");
+                        if (WeaponInfo.maxAmmoCount >= WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+                            // Remove maxAmmo
+                            WeaponInfo.maxAmmoCount -= GivenAmmo;
+                            // Add Ammo
+                            WeaponInfo.ammoCount += GivenAmmo;
+                            Debug.Log("Reload sufficient Ammo");
+                        }
+                        else if (WeaponInfo.maxAmmoCount < WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+
+                            int MaxAmmoleft = WeaponInfo.maxAmmoCount;
+
+                            if (GivenAmmo > MaxAmmoleft)
+                            {
+                                // Add Ammo
+                                WeaponInfo.ammoCount += WeaponInfo.maxAmmoCount;
+                                WeaponInfo.maxAmmoCount = 0;
+                                Debug.Log("Reload insufficient Ammo");
+                            }
+                            else if (GivenAmmo < MaxAmmoleft)
+                            {
+                                WeaponInfo.ammoCount += GivenAmmo;
+
+                                WeaponInfo.maxAmmoCount -= GivenAmmo;
+                                Debug.Log("Reload sufficient Ammo");
+                            }
+                        }
+                    }
+
+                    if (WeaponInfo.weaponData.weaponName == "Ak47")
+                    {
+                        if (WeaponInfo.maxAmmoCount >= WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+                            // Remove maxAmmo
+                            WeaponInfo.maxAmmoCount -= GivenAmmo;
+                            // Add Ammo
+                            WeaponInfo.ammoCount += GivenAmmo;
+                        }
+                        else if (WeaponInfo.maxAmmoCount < WeaponInfo.magazineSize)
+                        {
+                            // The amount of ammo you need to give
+                            int GivenAmmo = WeaponInfo.magazineSize - WeaponInfo.ammoCount;
+
+                            int MaxAmmoleft = WeaponInfo.maxAmmoCount;
+
+                            if (GivenAmmo > MaxAmmoleft)
+                            {
+                                // Add Ammo
+                                WeaponInfo.ammoCount += WeaponInfo.maxAmmoCount;
+                                WeaponInfo.maxAmmoCount = 0;
+                            }
+                            else if (GivenAmmo < MaxAmmoleft)
+                            {
+                                WeaponInfo.ammoCount += GivenAmmo;
+
+                                WeaponInfo.maxAmmoCount -= GivenAmmo;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+
         }
     }
 }
