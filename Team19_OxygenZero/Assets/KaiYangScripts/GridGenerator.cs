@@ -16,8 +16,8 @@ public class GridGenerator : MonoBehaviour
     public bool generateNavMesh = true;
 
     [Header("Enemy Spawning")]
-    public GameObject[] enemyPrefabs;  // Array of different enemy types
-    public float enemySpawnChance = 0.7f;  // 70% chance for a room to have enemies
+    public GameObject[] enemyPrefabs;  
+    public float enemySpawnChance = 0.7f;  
     public int minEnemiesPerRoom = 0;
     public int maxEnemiesPerRoom = 3;
 

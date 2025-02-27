@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
     public bool usingRifle;
     public bool usingNothing;
 
-    public AvatarMask upperBodyMask; // Assign in Inspector
+    public AvatarMask upperBodyMask; 
 
     private float zoominFOV = 50;
     private float zoomoutFOV = 60;
@@ -659,13 +659,13 @@ public class PlayerController : MonoBehaviour
         // Variable to store hit information
         maxDistance = (currentMode == CameraMode.FirstPerson) ? 3f : 10f;
 
-        // ✅ Draw the ray in the Scene view (Red if it hits, Green if it misses)
+        // Draw the ray in the Scene view (Red if it hits, Green if it misses)
         Debug.DrawRay(ray.origin, ray.direction * maxDistance, Color.green, 1f);
 
         // Cast the ray
         if (Physics.Raycast(ray, out hit, maxDistance))
         {
-            Debug.Log("Raycast hit: " + hit.collider.gameObject.name); // Debug log for hit object
+            Debug.Log("Raycast hit: " + hit.collider.gameObject.name); 
             // Check if we hit something
             if (hit.collider != null)
             {

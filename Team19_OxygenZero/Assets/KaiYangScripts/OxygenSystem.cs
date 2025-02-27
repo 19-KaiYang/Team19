@@ -172,7 +172,6 @@ public class OxygenSystem : MonoBehaviour
     private void Die()
     {
         isDead = true;
-        //wynn or someone add the relevant codes here
         SceneManager.LoadScene("LoseScene");
     }
 }

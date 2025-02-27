@@ -12,12 +12,12 @@ public class EnemyController : MonoBehaviour
 
     [Header("Attack Settings")]
     public float attackRange = 5f;
-    public float attackFieldOfView = 45f;  // Smaller FOV for attack detection
+    public float attackFieldOfView = 45f;  
     public float attackCooldown = 2f;
     private float attackTimer = 0f;
 
     [Header("Animation Settings")]
-    public float animationDampTime = 0.1f; // Smoothing for animation transitions
+    public float animationDampTime = 0.1f; 
     public string idleAnimationParam = "IsIdle";
     public string walkAnimationParam = "IsWalking";
     public string attackAnimationParam = "IsAttacking";
@@ -33,9 +33,9 @@ public class EnemyController : MonoBehaviour
     private Rigidbody rb;
 
     [Header("Movement Settings")]
-    public float rotationSpeed = 120f; // Degrees per second, adjust as needed
+    public float rotationSpeed = 120f; 
     private bool isPatrolling = true;
-    private float patrolWaitTime = 1f; // Time to wait at each patrol point
+    private float patrolWaitTime = 1f; 
     private float patrolTimer = 0f;
 
     // Oxygen System get player health
@@ -54,7 +54,7 @@ public class EnemyController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.isKinematic = true; // Make enemy immune to physics pushes
+            rb.isKinematic = true; 
             rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
 
         }
@@ -115,8 +115,8 @@ public class EnemyController : MonoBehaviour
             agent.isStopped = true; // Ensure agent remains stopped
             agent.velocity = Vector3.zero; // Reset velocity
             LookAtTarget(playerTransform.position); // Keep facing the player
-            AttackPlayer(); // Execute attack logic
-            return; // Skip the rest of the update while attacking
+            AttackPlayer(); 
+            return; 
         }
 
         // Handle detection and chasing
@@ -180,7 +180,7 @@ public class EnemyController : MonoBehaviour
 
     private void LateUpdate()
     {
-        // If we're stopped (like during attacking), ensure we stay still
+      
         if (agent.isStopped)
         {
             // Reset NavMeshAgent velocity
@@ -219,7 +219,7 @@ public class EnemyController : MonoBehaviour
 
             // Check angle to player - ignore Y axis for better detection
             Vector3 directionToPlayer = playerTransform.position - transform.position;
-            directionToPlayer.y = 0; // IMPORTANT: Ignore height difference
+            directionToPlayer.y = 0; 
             directionToPlayer.Normalize();
 
             float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
@@ -229,7 +229,7 @@ public class EnemyController : MonoBehaviour
             {
                 Debug.Log("Angle check PASSED - player is within FOV");
 
-                // Use more reliable raycast - ignore Y differences for better detection
+             
                 Vector3 rayOrigin = transform.position + Vector3.up * 1.0f;
                 Vector3 rayDirection = playerTransform.position - rayOrigin;
                 float rayDistance = rayDirection.magnitude;
@@ -255,9 +255,9 @@ public class EnemyController : MonoBehaviour
                 }
                 else
                 {
-                    // Try a direct line test as fallback
+                  
                     Debug.Log("FALLBACK: Raycast didn't hit anything, trying direct test");
-                    return true; // If in range and FOV but raycast fails, still detect
+                    return true; 
                 }
             }
         }
@@ -323,7 +323,7 @@ public class EnemyController : MonoBehaviour
             agent.ResetPath(); // Clear any paths
         }
 
-        agent.velocity = Vector3.zero; // Stop movement
+        agent.velocity = Vector3.zero; 
 
         if (attackTimer <= 0f)
         {
@@ -342,7 +342,7 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            attackTimer -= Time.deltaTime; // Countdown until the next attack
+            attackTimer -= Time.deltaTime;
         }
 
         // Keep looking at the player
@@ -352,7 +352,7 @@ public class EnemyController : MonoBehaviour
 
     private void SetNewPatrolDestination()
     {
-        for (int i = 0; i < 5; i++) // Try 5 times to find a valid patrol point
+        for (int i = 0; i < 5; i++) 
         {
             Vector2 randomCircle = Random.insideUnitCircle * patrolRadius;
             Vector3 randomPoint = startPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
@@ -381,11 +381,10 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    // You might want to add this method and call it from an animation event
+  
     public void OnAttackAnimationHit()
     {
-        // This method can be called from an animation event when the attack animation reaches the point of impact
-        // Implement damage dealing logic here
+
         if (Vector3.Distance(transform.position, playerTransform.position) <= attackRange)
         {
             Debug.Log("Player takes damage from enemy attack!");

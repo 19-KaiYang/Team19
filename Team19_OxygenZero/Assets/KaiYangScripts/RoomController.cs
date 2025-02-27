@@ -9,17 +9,17 @@ using UnityEngine.AI;
 [System.Serializable]
 public class SpawnPointData
 {
-    public Transform spawnPoint; // The position where objects can spawn
-    public GameObject[] possibleObjects; // Unique objects that can spawn here
+    public Transform spawnPoint; 
+    public GameObject[] possibleObjects; 
 }
 
 [System.Serializable]
 public class ScatteredObjectData
 {
     public GameObject objectPrefab;
-    public float spawnProbability = 0.5f; // Chance of this object spawning
+    public float spawnProbability = 0.5f; 
     [Range(0, 10)]
-    public int maxCount = 3; // Maximum number of this object type to spawn
+    public int maxCount = 3; 
 }
 
 public class RoomController : MonoBehaviour
@@ -31,20 +31,20 @@ public class RoomController : MonoBehaviour
     [Header("Room Oxygen Settings")]
     public float oxygenConsumptionRate = 1f;
 
-    [SerializeField] private List<GameObject> spawnedDoors = new List<GameObject>(); // List to store spawned doors
+    [SerializeField] private List<GameObject> spawnedDoors = new List<GameObject>(); 
 
     [Header("Original Object Spawning")]
-    public List<SpawnPointData> spawnPoints = new List<SpawnPointData>(); // Each spawn point has its own object list
+    public List<SpawnPointData> spawnPoints = new List<SpawnPointData>(); 
 
     [Header("Scattered Object Spawning")]
-    public bool useScatteredObjects = true; // Toggle for scattered spawning
-    public Transform roomCenter; // Central reference point
-    public float spawnRadius = 5f; // How far from center objects can spawn
+    public bool useScatteredObjects = true; 
+    public Transform roomCenter; 
+    public float spawnRadius = 5f; 
     public List<ScatteredObjectData> scatteredObjects = new List<ScatteredObjectData>();
-    public float spawnHeightOffset = 0.5f; // Default height offset for spawned objects
-    public int maxSpawnAttempts = 30; // Prevent infinite loops
-    public LayerMask obstacleLayer; // Layer for collision checking
-    public float minDistanceBetweenObjects = 1.5f; // Minimum distance between spawned objects
+    public float spawnHeightOffset = 0.5f; 
+    public int maxSpawnAttempts = 30; 
+    public LayerMask obstacleLayer; 
+    public float minDistanceBetweenObjects = 1.5f; 
 
     private List<GameObject> spawnedObjects = new List<GameObject>();
 
@@ -64,11 +64,11 @@ public class RoomController : MonoBehaviour
     private void Start()
     {
         // Use both spawning methods
-        SpawnObjects(); // Original method
+        SpawnObjects();
 
         if (useScatteredObjects)
         {
-            SpawnScatteredObjects(); // New scattered method
+            SpawnScatteredObjects(); 
         }
     }
 
@@ -183,7 +183,7 @@ public class RoomController : MonoBehaviour
                 if (Random.value > objectData.spawnProbability)
                     continue;
 
-                // Try to find a valid spawn position
+                // Find a valid spawn position
                 Vector3 spawnPosition;
                 bool validPositionFound = false;
                 int attempts = 0;
