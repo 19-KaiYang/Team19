@@ -157,8 +157,6 @@ public class PlayerController : MonoBehaviour
         playerHealth = playerMaxHealth;
 
         originalHealthBarHeight = healthBarFill.sizeDelta.y;
-
-        StartCoroutine(FindAndPositionOnShuttle());
     }
 
     IEnumerator FindAndPositionOnShuttle()
@@ -198,6 +196,7 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
+
     private void Update()
     {
         HandleCursor();
@@ -304,8 +303,8 @@ public class PlayerController : MonoBehaviour
     {
         if (usingRifle)
         {
-            animator.SetLayerWeight(2, 1); // Enable Rifle Layer
-            animator.SetLayerWeight(1, 0); // Disable Pistol Layer
+            animator.SetLayerWeight(2, 0); // Disable Rifle Layer
+            animator.SetLayerWeight(1, 1); // Enable Pistol Layer
         }
         else if (usingPistol)
         {
@@ -603,6 +602,7 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
+            animator.SetBool("IsJumping", false);
         }
         else
         {

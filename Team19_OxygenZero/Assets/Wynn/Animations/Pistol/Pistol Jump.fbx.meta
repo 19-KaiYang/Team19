@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: eaa2af6721ef3144895157f480592535
+guid: 96b6e763a723f8742bca5c37732c0cb8
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,11 +33,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Normal Jump
+      name: Pistol Jump
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 57
+      lastFrame: 37
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
