@@ -207,6 +207,18 @@ public class CraftingScript : MonoBehaviour
             // add the crafted item to the inventory
             inventory.AddItem(selectedRecipe.result.itemName, "Item", selectedRecipe.result.cost, selectedRecipe.result.weight, selectedRecipe.result.usable);
             Debug.Log("Crafted: " + selectedRecipe.result.itemName);
+            // Play craft sound
+            AudioManager audioManager = FindObjectOfType<AudioManager>();
+            if (audioManager != null)
+            {
+
+                audioManager.PlaySFX("Crafting");
+
+            }
+            else
+            {
+                Debug.LogWarning("Crafting");
+            }
         }
         // refresh UI after crafting
         SelectItem(selectedRecipe.result.itemName);

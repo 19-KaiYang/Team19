@@ -18,7 +18,7 @@ public class LandmineScript : MonoBehaviour
             if (audioManager != null)
             {
                 audioManager.PlaySFX("LandmineExplosion");
-                Debug.Log("Landmine Exploded");
+               
             }
             else
             {

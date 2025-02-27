@@ -105,8 +105,21 @@ public class RaycastWeapon : Weapon
                         nextFireTime = Time.time + weaponData.fireRate;
                         ammoCount -= 1;
 
-                        // if weapon is not rocket launcher, perform raycast
-                        if (weaponData.name != null || weaponData.weaponName != "Not Equipped")
+                        // Play shot explosion sound
+                        AudioManager audioManager = FindObjectOfType<AudioManager>();
+                        if (audioManager != null)
+                        {
+                           
+                           audioManager.PlaySFX("GunShot");
+
+                        }
+                        else
+                        {
+                           Debug.LogWarning("GunShot");
+                        }
+
+                    // if weapon is not rocket launcher, perform raycast
+                    if (weaponData.name != null || weaponData.weaponName != "Not Equipped")
                         {
                             PerformRaycast();
                             CanShoot = false;

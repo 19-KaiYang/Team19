@@ -654,12 +654,40 @@ public class PlayerController : MonoBehaviour
                 {
                     ObjectData Item = hitObject.GetComponent<ObjectData>();
                     inventorySystem.AddItem(Item.item.itemName, "Item", Item.item.cost, Item.item.weight, Item.item.usable);
+
+                    // Play pick up sound
+                    AudioManager audioManager = FindObjectOfType<AudioManager>();
+                    if (audioManager != null)
+                    {
+
+                        audioManager.PlaySFX("PickUp");
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Pickup");
+                    }
+
                     Destroy(hitObject);
                 }
 
                 if (hitObject.CompareTag("Money"))
                 {
                     inventorySystem.UpdateMoney(20, true);
+
+                    // Play money sound
+                    AudioManager audioManager = FindObjectOfType<AudioManager>();
+                    if (audioManager != null)
+                    {
+
+                        audioManager.PlaySFX("Money");
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Money");
+                    }
+
                     Destroy(hitObject);
                 }
 
@@ -667,6 +695,20 @@ public class PlayerController : MonoBehaviour
                 {
                     RaycastWeapon weaponItem = hitObject.GetComponent<RaycastWeapon>();
                     inventorySystem.AddItem(weaponItem.weaponData.weaponName, "Weapon", weaponItem.weaponData.cost, weaponItem.weaponData.weight, weaponItem.weaponData.Usable);
+
+                    // Play pick up sound
+                    AudioManager audioManager = FindObjectOfType<AudioManager>();
+                    if (audioManager != null)
+                    {
+
+                        audioManager.PlaySFX("PickUp");
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Pickup");
+                    }
+
                     Destroy(hitObject);
                 }
 

@@ -40,6 +40,17 @@ public class TurretAI : MonoBehaviour
             if (fireCooldown <= 0f)
             {
                 Fire();
+                // Play turretshot explosion sound
+                AudioManager audioManager = FindObjectOfType<AudioManager>();
+                if (audioManager != null)
+                {
+                    audioManager.PlaySFX("TurretShot");
+
+                }
+                else
+                {
+                    Debug.LogWarning("TurretShot");
+                }
                 fireCooldown = fireRate;
                 Debug.Log("bullet fired");
             }
