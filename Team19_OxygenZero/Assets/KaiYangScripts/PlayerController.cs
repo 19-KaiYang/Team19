@@ -198,25 +198,6 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
-
-    IEnumerator FindAndPositionOnShuttle()
-    {
-        // Wait for grid generation
-        yield return new WaitForSeconds(0.5f);
-
-        // Find shuttle platform
-        GameObject shuttlePlatform = GameObject.FindGameObjectWithTag("ShuttlePlatform");
-
-        if (shuttlePlatform != null)
-        {
-            transform.position = shuttlePlatform.transform.position + Vector3.up * 1f;
-            transform.rotation = shuttlePlatform.transform.rotation;
-        }
-        else
-        {
-            Debug.LogError("Shuttle platform not found! Cannot position player.");
-        }
-    }
     private void Update()
     {
         HandleCursor();
@@ -782,22 +763,7 @@ public class PlayerController : MonoBehaviour
                     }
                     /// if item equipped
                     if (inventorySystem.itemEquipped[i])
-                    {
-                        Debug.Log("Object Dropped");
-
-                        // Play drop sound
-                        AudioManager audioManager = FindObjectOfType<AudioManager>();
-                        if (audioManager != null)
-                        {
-
-                            audioManager.PlaySFX("Drop");
-
-                        }
-                        else
-                        {
-                            Debug.LogWarning("Drop");
-                        }
-
+                    {                     
 
                         Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
 
@@ -823,6 +789,18 @@ public class PlayerController : MonoBehaviour
 
                         currentWeapon = null;
                         inventorySystem.itemEquipped[i] = false;
+                    }
+                    // Play drop sound
+                    AudioManager audioManager = FindObjectOfType<AudioManager>();
+                    if (audioManager != null)
+                    {
+
+                        audioManager.PlaySFX("Drop");
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Drop");
                     }
 
                     // put layer

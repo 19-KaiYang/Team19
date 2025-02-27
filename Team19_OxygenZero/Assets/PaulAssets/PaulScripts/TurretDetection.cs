@@ -17,7 +17,10 @@ public class TurretDetection : MonoBehaviour
         // Turret
         if (IsPlayerInFieldOfView(distanceToPlayer, detectionRange, fieldOfViewAngle))
         {
-            _turretAI.SetTarget(playerTransform); // Notify the turret AI
+            if (_turretAI.GetTarget() == null)
+            {
+                _turretAI.SetTarget(playerTransform); // Notify the turret AI
+            }
         }
         else
         {
