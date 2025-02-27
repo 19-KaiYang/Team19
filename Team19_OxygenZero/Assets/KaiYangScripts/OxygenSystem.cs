@@ -87,21 +87,43 @@ public class OxygenSystem : MonoBehaviour
         currentOxygen = Mathf.Clamp(currentOxygen, 0, maxOxygen);
     }
 
+    private bool lowOxygenWarningPlayed = false;
+
     private void UpdateChromaticAberration()
     {
         if (chromaticAberration != null)
         {
             if (currentOxygen <= 20)
             {
-               
                 float intensity = Mathf.InverseLerp(20, 0, currentOxygen); 
                 chromaticAberration.intensity.value = intensity;
+
+                if (currentOxygen >= 19 && currentOxygen <= 20 && !lowOxygenWarningPlayed)
+                {
+                    // Play low oxygen sound
+                    AudioManager audioManager = FindObjectOfType<AudioManager>();
+                    if (audioManager != null)
+                    {
+
+                        audioManager.PlaySFX("LowOxygen");
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("LowOxygen");
+                    }
+                    lowOxygenWarningPlayed = true;
+                }
             }
+
             else
             {
-                
                 chromaticAberration.intensity.value = 0f;
+
+                // Reset the flag when oxygen regenerates above 20
+                lowOxygenWarningPlayed = false;
             }
+           
         }
     }
 

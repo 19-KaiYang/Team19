@@ -156,6 +156,27 @@ public class PlayerController : MonoBehaviour
         playerHealth = playerMaxHealth;
 
         originalHealthBarHeight = healthBarFill.sizeDelta.y;
+
+        StartCoroutine(FindAndPositionOnShuttle());
+    }
+
+    IEnumerator FindAndPositionOnShuttle()
+    {
+        // Wait for grid generation
+        yield return new WaitForSeconds(0.5f);
+
+        // Find shuttle platform
+        GameObject shuttlePlatform = GameObject.FindGameObjectWithTag("ShuttlePlatform");
+
+        if (shuttlePlatform != null)
+        {
+            transform.position = shuttlePlatform.transform.position + Vector3.up * 1f;
+            transform.rotation = shuttlePlatform.transform.rotation;
+        }
+        else
+        {
+            Debug.LogError("Shuttle platform not found! Cannot position player.");
+        }
     }
 
     public void OnMove(InputValue value)
@@ -744,6 +765,20 @@ public class PlayerController : MonoBehaviour
                     {
                         Debug.Log("Object Dropped");
 
+                        // Play drop sound
+                        AudioManager audioManager = FindObjectOfType<AudioManager>();
+                        if (audioManager != null)
+                        {
+
+                            audioManager.PlaySFX("Drop");
+
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Drop");
+                        }
+
+
                         Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
 
                         equippedItem.transform.SetParent(null);
@@ -780,6 +815,20 @@ public class PlayerController : MonoBehaviour
                 {
 
                     Debug.Log("Object Dropped");
+
+                    // Play drop sound
+                    AudioManager audioManager = FindObjectOfType<AudioManager>();
+                    if (audioManager != null)
+                    {
+
+                        audioManager.PlaySFX("Drop");
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Drop");
+                    }
+
 
                     Transform equippedItem = inventorySystem.itemHolderPosition.GetChild(0);
 
@@ -997,6 +1046,20 @@ public class PlayerController : MonoBehaviour
     public void DepletePlayerHealth(float health)
     {
         playerHealth -= health;
+
+        // Play hurt sound
+        AudioManager audioManager = FindObjectOfType<AudioManager>();
+        if (audioManager != null)
+        {
+
+            audioManager.PlaySFX("Hurt");
+
+        }
+        else
+        {
+            Debug.LogWarning("Hurt");
+        }
+
     }
 
 

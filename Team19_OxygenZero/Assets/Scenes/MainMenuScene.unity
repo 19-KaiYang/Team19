@@ -773,20 +773,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55ef680248d3afb4ba2b52bf4ae53165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundMusic: {fileID: 1989241233}
-  soundEffects: {fileID: 607470936}
-  audioMixer: {fileID: 24100000, guid: dfc4b9c9c297ff94f81fdf1fcab37d83, type: 2}
-  bgmMixerParam: BGMVolume
-  sfxMixerParam: SFXVolume
-  bgmSlider: {fileID: 339718996}
-  sfxSlider: {fileID: 62461912}
-  muteToggle: {fileID: 1463458455}
-  bgmClips:
-  - {fileID: 8300000, guid: fd5024fc80ccae64ea33db617785555c, type: 3}
-  - {fileID: 8300000, guid: e17a7a49577863c44810f77e735732af, type: 3}
-  sfxClips:
-  - {fileID: 8300000, guid: 7afa68414ed04fe4fb7294b1f0fef0d6, type: 3}
-  - {fileID: 8300000, guid: 701586a43e090e54cbf02c5d2c38883c, type: 3}
 --- !u!1 &167726510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1565,8 +1551,9 @@ GameObject:
   - component: {fileID: 635279385}
   - component: {fileID: 635279388}
   - component: {fileID: 635279386}
+  - component: {fileID: 635279387}
   m_Layer: 5
-  m_Name: SingleplayerButton
+  m_Name: Singleplayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4187,7 +4174,7 @@ PrefabInstance:
       objectReference: {fileID: 1989241233}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.size
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[0]
@@ -4196,23 +4183,47 @@ PrefabInstance:
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: 831ab68d31e8e1647a7ab7d519c1b1d6, type: 3}
+      objectReference: {fileID: 8300000, guid: 2814cc263b1631e479bdc163c58d3dd0, type: 3}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[2]
       value: 
-      objectReference: {fileID: 8300000, guid: bb5d74b2dd972484d9b4c821bd17950c, type: 3}
+      objectReference: {fileID: 8300000, guid: 831ab68d31e8e1647a7ab7d519c1b1d6, type: 3}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[3]
       value: 
-      objectReference: {fileID: 8300000, guid: 2462c8136a240bf44a442a423eae748f, type: 3}
+      objectReference: {fileID: 8300000, guid: bb5d74b2dd972484d9b4c821bd17950c, type: 3}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[4]
       value: 
-      objectReference: {fileID: 8300000, guid: 39f21544fed08a14d9ea4833f4d839e0, type: 3}
+      objectReference: {fileID: 8300000, guid: 2462c8136a240bf44a442a423eae748f, type: 3}
     - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
       propertyPath: sfxClips.Array.data[5]
       value: 
+      objectReference: {fileID: 8300000, guid: a39b8bba2c82cf44b88b784641c115aa, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[6]
+      value: 
+      objectReference: {fileID: 8300000, guid: 39f21544fed08a14d9ea4833f4d839e0, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[7]
+      value: 
       objectReference: {fileID: 8300000, guid: 71133ee49265d5f4c87af209c18e694a, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[8]
+      value: 
+      objectReference: {fileID: 8300000, guid: cfc86d78dab895247b31936aa207d4a6, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[9]
+      value: 
+      objectReference: {fileID: 8300000, guid: bb4fdf7fe50b6b24d8221ccc15085836, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: cfc86d78dab895247b31936aa207d4a6, type: 3}
+    - target: {fileID: 9063110381881159506, guid: 7b26483f675acd4449b2f47d0cfb5b34, type: 3}
+      propertyPath: sfxClips.Array.data[11]
+      value: 
+      objectReference: {fileID: 8300000, guid: c3488c2472a555645a98503b792155fe, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4227,5 +4238,4 @@ SceneRoots:
   - {fileID: 336694700}
   - {fileID: 1371543593}
   - {fileID: 1591173938059868658}
-  - {fileID: 153552515}
   - {fileID: 1316427839}

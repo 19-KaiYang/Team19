@@ -99,6 +99,18 @@ public class TurretAI : MonoBehaviour
     {
         target = newTarget;
         currentState = TurretState.Attack;
+
+        // Play turret sensor sound
+        //AudioManager audioManager = FindObjectOfType<AudioManager>();
+        //if (audioManager != null)
+        //{
+        //    audioManager.PlaySFX("TurretSensor");
+
+        //}
+        //else
+        //{
+        //    Debug.LogWarning("TurretSensor not found");
+        //}
     }
 
     public void ClearTarget()
