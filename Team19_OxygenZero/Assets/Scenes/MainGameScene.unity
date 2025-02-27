@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.12226521, g: 0.12690432, b: 0.1111161, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -672,10 +672,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   innerGridSize: 3
   roomPrefabs:
-  - {fileID: 6645659838018712191, guid: b5c95ac82b3d461468915442a07699b1, type: 3}
-  - {fileID: 6645659838018712191, guid: fe5f013c4279d9244aa0b1e45c67795c, type: 3}
-  - {fileID: 6645659838018712191, guid: 9c582cc8bce6ce5499d0671eb4a633df, type: 3}
-  pathPrefab: {fileID: 4534199855098893183, guid: 17a73cf889155304e87fd6acec86e0be, type: 3}
+  - {fileID: 6645659838018712191, guid: 415be50c39c5d584c93f63b4b436944e, type: 3}
+  pathPrefab: {fileID: 5675768948812929542, guid: 43041ea5d9ef55841ab3fe78bbaf58bc, type: 3}
   shuttlePlatformPrefab: {fileID: 3366130203979176033, guid: fd991a1e685028240a8456a68db5694b, type: 3}
   roomSpacing: 40
   pathWidth: 8
@@ -1044,13 +1042,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312434221}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.012538718, y: 0.00670261, z: -0.6564896, w: -0.7542011}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.579, y: -1.523, z: -277.917}
 --- !u!1 &1330402044
 GameObject:
   m_ObjectHideFlags: 0
@@ -1523,31 +1521,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.8220667
+      value: 87.87766
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.3917207
+      value: 1.8279998
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 119.0859
+      value: 120.65893
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.13158691
+      value: 0.3142027
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0030478076
+      value: -0.22000605
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.99103415
+      value: -0.75649774
       objectReference: {fileID: 0}
     - target: {fileID: 6619458877379442603, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.022954272
+      value: -0.5297029
       objectReference: {fileID: 0}
     - target: {fileID: 7706419343517768354, guid: c13ca6e1113eaf6409957ed3ccfa78cb, type: 3}
       propertyPath: oxygenBarFill

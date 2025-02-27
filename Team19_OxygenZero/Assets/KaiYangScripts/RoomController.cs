@@ -13,6 +13,15 @@ public class SpawnPointData
     public GameObject[] possibleObjects; // Unique objects that can spawn here
 }
 
+[System.Serializable]
+public class ScatteredObjectData
+{
+    public GameObject objectPrefab;
+    public float spawnProbability = 0.5f; // Chance of this object spawning
+    [Range(0, 10)]
+    public int maxCount = 3; // Maximum number of this object type to spawn
+}
+
 public class RoomController : MonoBehaviour
 {
     [Header("Doors")]
@@ -24,9 +33,20 @@ public class RoomController : MonoBehaviour
 
     [SerializeField] private List<GameObject> spawnedDoors = new List<GameObject>(); // List to store spawned doors
 
-    [Header("Object Spawning")]
+    [Header("Original Object Spawning")]
     public List<SpawnPointData> spawnPoints = new List<SpawnPointData>(); // Each spawn point has its own object list
+
+    [Header("Scattered Object Spawning")]
+    public bool useScatteredObjects = true; // Toggle for scattered spawning
+    public Transform roomCenter; // Central reference point
+    public float spawnRadius = 5f; // How far from center objects can spawn
+    public List<ScatteredObjectData> scatteredObjects = new List<ScatteredObjectData>();
     public float spawnHeightOffset = 0.5f; // Default height offset for spawned objects
+    public int maxSpawnAttempts = 30; // Prevent infinite loops
+    public LayerMask obstacleLayer; // Layer for collision checking
+    public float minDistanceBetweenObjects = 1.5f; // Minimum distance between spawned objects
+
+    private List<GameObject> spawnedObjects = new List<GameObject>();
 
     public void Awake()
     {
@@ -43,7 +63,13 @@ public class RoomController : MonoBehaviour
 
     private void Start()
     {
-        SpawnObjects();
+        // Use both spawning methods
+        SpawnObjects(); // Original method
+
+        if (useScatteredObjects)
+        {
+            SpawnScatteredObjects(); // New scattered method
+        }
     }
 
     public void SetDoors(bool top, bool bottom, bool left, bool right)
@@ -131,40 +157,146 @@ public class RoomController : MonoBehaviour
 
                 // Instantiate the object at the adjusted position
                 GameObject spawnedObject = Instantiate(selectedObject, spawnPosition, Quaternion.identity, transform);
+                spawnedObjects.Add(spawnedObject);
 
                 // Add NavMeshObstacle component if it doesn't exist
-                NavMeshObstacle obstacle = spawnedObject.GetComponent<NavMeshObstacle>();
-                if (obstacle == null)
-                {
-                    obstacle = spawnedObject.AddComponent<NavMeshObstacle>();
-                }
+                ConfigureNavMeshObstacle(spawnedObject);
+            }
+        }
+    }
 
-                // Configure the obstacle
-                Collider objectCollider = spawnedObject.GetComponent<Collider>();
-                if (objectCollider != null)
+    private void SpawnScatteredObjects()
+    {
+        if (roomCenter == null)
+        {
+            Debug.LogError("Room center transform is not assigned!");
+            return;
+        }
+
+        foreach (ScatteredObjectData objectData in scatteredObjects)
+        {
+            int objectsToSpawn = Random.Range(0, objectData.maxCount + 1);
+
+            for (int i = 0; i < objectsToSpawn; i++)
+            {
+                // Check spawn probability
+                if (Random.value > objectData.spawnProbability)
+                    continue;
+
+                // Try to find a valid spawn position
+                Vector3 spawnPosition;
+                bool validPositionFound = false;
+                int attempts = 0;
+
+                do
                 {
-                    // Match obstacle size to collider
-                    if (objectCollider is BoxCollider boxCollider)
+                    // Generate random position within radius
+                    Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
+                    spawnPosition = roomCenter.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+
+                    // Check if position is valid (not overlapping other objects)
+                    validPositionFound = IsValidSpawnPosition(spawnPosition, objectData.objectPrefab);
+                    attempts++;
+
+                } while (!validPositionFound && attempts < maxSpawnAttempts);
+
+                if (validPositionFound)
+                {
+                    // Adjust height based on object
+                    Renderer prefabRenderer = objectData.objectPrefab.GetComponent<Renderer>();
+                    if (prefabRenderer != null)
                     {
-                        obstacle.size = Vector3.Scale(boxCollider.size, spawnedObject.transform.localScale);
-                        obstacle.center = boxCollider.center;
+                        float objectHeight = prefabRenderer.bounds.size.y;
+                        spawnPosition.y += objectHeight / 2;
                     }
                     else
                     {
-                        // Default size for other collider types
-                        obstacle.radius = 0.5f;
-                        obstacle.height = 2f;
+                        spawnPosition.y += spawnHeightOffset;
                     }
+
+                    // Spawn object with random rotation around Y axis
+                    Quaternion randomRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
+                    GameObject spawnedObject = Instantiate(objectData.objectPrefab, spawnPosition, randomRotation, transform);
+                    spawnedObjects.Add(spawnedObject);
+
+                    // Add NavMeshObstacle
+                    ConfigureNavMeshObstacle(spawnedObject);
                 }
-
-                // Set obstacle properties
-                obstacle.carving = true; // This makes the agent avoid the obstacle
-                obstacle.carveOnlyStationary = true; // Only carve if object doesn't move
-
-                // Rebuild NavMesh to include new obstacles
-                StartCoroutine(RebuildNavMeshDelayed());
             }
         }
+
+        // Rebuild NavMesh once after all objects are spawned
+        StartCoroutine(RebuildNavMeshDelayed());
+    }
+
+    private bool IsValidSpawnPosition(Vector3 position, GameObject objectToSpawn)
+    {
+        // Get approximate size of object
+        float objectRadius = 0.5f;
+        Renderer prefabRenderer = objectToSpawn.GetComponent<Renderer>();
+        if (prefabRenderer != null)
+        {
+            // Use the largest dimension as a radius check
+            Vector3 size = prefabRenderer.bounds.size;
+            objectRadius = Mathf.Max(size.x, size.z) / 2;
+        }
+
+        // Check for obstacles and other spawned objects
+        Collider[] hitColliders = Physics.OverlapSphere(position, objectRadius + minDistanceBetweenObjects, obstacleLayer);
+        if (hitColliders.Length > 0)
+            return false;
+
+        // Check distance from doors
+        foreach (GameObject door in spawnedDoors)
+        {
+            if (door != null)
+            {
+                float distanceToDoor = Vector3.Distance(position, door.transform.position);
+                if (distanceToDoor < 2f) // Keep area around doors clear
+                    return false;
+            }
+        }
+
+        // Check distance from other spawned objects
+        foreach (GameObject obj in spawnedObjects)
+        {
+            float distanceToObject = Vector3.Distance(position, obj.transform.position);
+            if (distanceToObject < minDistanceBetweenObjects)
+                return false;
+        }
+
+        return true;
+    }
+
+    private void ConfigureNavMeshObstacle(GameObject spawnedObject)
+    {
+        NavMeshObstacle obstacle = spawnedObject.GetComponent<NavMeshObstacle>();
+        if (obstacle == null)
+        {
+            obstacle = spawnedObject.AddComponent<NavMeshObstacle>();
+        }
+
+        // Configure the obstacle
+        Collider objectCollider = spawnedObject.GetComponent<Collider>();
+        if (objectCollider != null)
+        {
+            // Match obstacle size to collider
+            if (objectCollider is BoxCollider boxCollider)
+            {
+                obstacle.size = boxCollider.size;
+                obstacle.center = boxCollider.center;
+            }
+            else
+            {
+                // Default size for other collider types
+                obstacle.radius = 0.5f;
+                obstacle.height = 2f;
+            }
+        }
+
+        // Set obstacle properties
+        obstacle.carving = true;
+        obstacle.carveOnlyStationary = true;
     }
 
     private System.Collections.IEnumerator RebuildNavMeshDelayed()
