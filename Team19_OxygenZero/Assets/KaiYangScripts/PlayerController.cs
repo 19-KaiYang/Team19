@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(FindAndPositionOnShuttle());
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -172,10 +173,29 @@ public class PlayerController : MonoBehaviour
     {
         if (value.isPressed && isGrounded)
         {
+            animator.SetBool("IsJumping", true);
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
     }
 
+    IEnumerator FindAndPositionOnShuttle()
+    {
+        // Wait for grid generation
+        yield return new WaitForSeconds(0.5f);
+
+        // Find shuttle platform
+        GameObject shuttlePlatform = GameObject.FindGameObjectWithTag("ShuttlePlatform");
+
+        if (shuttlePlatform != null)
+        {
+            transform.position = shuttlePlatform.transform.position + Vector3.up * 1f;
+            transform.rotation = shuttlePlatform.transform.rotation;
+        }
+        else
+        {
+            Debug.LogError("Shuttle platform not found! Cannot position player.");
+        }
+    }
     private void Update()
     {
         HandleCursor();
