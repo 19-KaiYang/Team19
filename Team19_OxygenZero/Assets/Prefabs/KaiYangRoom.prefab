@@ -2128,11 +2128,11 @@ MonoBehaviour:
     spawnProbability: 0.8
     maxCount: 2
   - objectPrefab: {fileID: 2401193932629053284, guid: 464c423e401a01340871e61588a47084, type: 3}
-    spawnProbability: 0.3
-    maxCount: 2
+    spawnProbability: 1
+    maxCount: 3
   - objectPrefab: {fileID: 7879050746897552096, guid: 51a110d7a8bc8484a9de9fd0665ea4f4, type: 3}
-    spawnProbability: 0.3
-    maxCount: 2
+    spawnProbability: 1
+    maxCount: 3
   spawnHeightOffset: 0.5
   maxSpawnAttempts: 20
   obstacleLayer:
